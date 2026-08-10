@@ -10,33 +10,219 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DataManagementRouteImport } from './routes/data-management'
+import { Route as EnergyRouteImport } from './routes/energy'
+import { Route as ImportExportRouteImport } from './routes/import-export'
+import { Route as IndustrialClustersRouteImport } from './routes/industrial-clusters'
+import { Route as IndustryDatabaseRouteImport } from './routes/industry-database'
+import { Route as IntegrationRouteImport } from './routes/integration'
+import { Route as MarketRouteImport } from './routes/market'
+import { Route as PlatformOverviewRouteImport } from './routes/platform-overview'
+import { Route as TradePromotionRouteImport } from './routes/trade-promotion'
+import { Route as WorkflowRouteImport } from './routes/workflow'
+import { Route as EnterprisesIdRouteImport } from './routes/enterprises/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataManagementRoute = DataManagementRouteImport.update({
+  id: '/data-management',
+  path: '/data-management',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnergyRoute = EnergyRouteImport.update({
+  id: '/energy',
+  path: '/energy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportExportRoute = ImportExportRouteImport.update({
+  id: '/import-export',
+  path: '/import-export',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndustrialClustersRoute = IndustrialClustersRouteImport.update({
+  id: '/industrial-clusters',
+  path: '/industrial-clusters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndustryDatabaseRoute = IndustryDatabaseRouteImport.update({
+  id: '/industry-database',
+  path: '/industry-database',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationRoute = IntegrationRouteImport.update({
+  id: '/integration',
+  path: '/integration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketRoute = MarketRouteImport.update({
+  id: '/market',
+  path: '/market',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlatformOverviewRoute = PlatformOverviewRouteImport.update({
+  id: '/platform-overview',
+  path: '/platform-overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradePromotionRoute = TradePromotionRouteImport.update({
+  id: '/trade-promotion',
+  path: '/trade-promotion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkflowRoute = WorkflowRouteImport.update({
+  id: '/workflow',
+  path: '/workflow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnterprisesIdRoute = EnterprisesIdRouteImport.update({
+  id: '/enterprises/$id',
+  path: '/enterprises/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/analytics': typeof AnalyticsRoute
+  '/dashboard': typeof DashboardRoute
+  '/data-management': typeof DataManagementRoute
+  '/energy': typeof EnergyRoute
+  '/import-export': typeof ImportExportRoute
+  '/industrial-clusters': typeof IndustrialClustersRoute
+  '/industry-database': typeof IndustryDatabaseRoute
+  '/integration': typeof IntegrationRoute
+  '/market': typeof MarketRoute
+  '/platform-overview': typeof PlatformOverviewRoute
+  '/trade-promotion': typeof TradePromotionRoute
+  '/workflow': typeof WorkflowRoute
+  '/enterprises/$id': typeof EnterprisesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/analytics': typeof AnalyticsRoute
+  '/dashboard': typeof DashboardRoute
+  '/data-management': typeof DataManagementRoute
+  '/energy': typeof EnergyRoute
+  '/import-export': typeof ImportExportRoute
+  '/industrial-clusters': typeof IndustrialClustersRoute
+  '/industry-database': typeof IndustryDatabaseRoute
+  '/integration': typeof IntegrationRoute
+  '/market': typeof MarketRoute
+  '/platform-overview': typeof PlatformOverviewRoute
+  '/trade-promotion': typeof TradePromotionRoute
+  '/workflow': typeof WorkflowRoute
+  '/enterprises/$id': typeof EnterprisesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/analytics': typeof AnalyticsRoute
+  '/dashboard': typeof DashboardRoute
+  '/data-management': typeof DataManagementRoute
+  '/energy': typeof EnergyRoute
+  '/import-export': typeof ImportExportRoute
+  '/industrial-clusters': typeof IndustrialClustersRoute
+  '/industry-database': typeof IndustryDatabaseRoute
+  '/integration': typeof IntegrationRoute
+  '/market': typeof MarketRoute
+  '/platform-overview': typeof PlatformOverviewRoute
+  '/trade-promotion': typeof TradePromotionRoute
+  '/workflow': typeof WorkflowRoute
+  '/enterprises/$id': typeof EnterprisesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/analytics'
+    | '/dashboard'
+    | '/data-management'
+    | '/energy'
+    | '/import-export'
+    | '/industrial-clusters'
+    | '/industry-database'
+    | '/integration'
+    | '/market'
+    | '/platform-overview'
+    | '/trade-promotion'
+    | '/workflow'
+    | '/enterprises/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/analytics'
+    | '/dashboard'
+    | '/data-management'
+    | '/energy'
+    | '/import-export'
+    | '/industrial-clusters'
+    | '/industry-database'
+    | '/integration'
+    | '/market'
+    | '/platform-overview'
+    | '/trade-promotion'
+    | '/workflow'
+    | '/enterprises/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/analytics'
+    | '/dashboard'
+    | '/data-management'
+    | '/energy'
+    | '/import-export'
+    | '/industrial-clusters'
+    | '/industry-database'
+    | '/integration'
+    | '/market'
+    | '/platform-overview'
+    | '/trade-promotion'
+    | '/workflow'
+    | '/enterprises/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  DashboardRoute: typeof DashboardRoute
+  DataManagementRoute: typeof DataManagementRoute
+  EnergyRoute: typeof EnergyRoute
+  ImportExportRoute: typeof ImportExportRoute
+  IndustrialClustersRoute: typeof IndustrialClustersRoute
+  IndustryDatabaseRoute: typeof IndustryDatabaseRoute
+  IntegrationRoute: typeof IntegrationRoute
+  MarketRoute: typeof MarketRoute
+  PlatformOverviewRoute: typeof PlatformOverviewRoute
+  TradePromotionRoute: typeof TradePromotionRoute
+  WorkflowRoute: typeof WorkflowRoute
+  EnterprisesIdRoute: typeof EnterprisesIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +234,124 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-management': {
+      id: '/data-management'
+      path: '/data-management'
+      fullPath: '/data-management'
+      preLoaderRoute: typeof DataManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/energy': {
+      id: '/energy'
+      path: '/energy'
+      fullPath: '/energy'
+      preLoaderRoute: typeof EnergyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/import-export': {
+      id: '/import-export'
+      path: '/import-export'
+      fullPath: '/import-export'
+      preLoaderRoute: typeof ImportExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/industrial-clusters': {
+      id: '/industrial-clusters'
+      path: '/industrial-clusters'
+      fullPath: '/industrial-clusters'
+      preLoaderRoute: typeof IndustrialClustersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/industry-database': {
+      id: '/industry-database'
+      path: '/industry-database'
+      fullPath: '/industry-database'
+      preLoaderRoute: typeof IndustryDatabaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integration': {
+      id: '/integration'
+      path: '/integration'
+      fullPath: '/integration'
+      preLoaderRoute: typeof IntegrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market': {
+      id: '/market'
+      path: '/market'
+      fullPath: '/market'
+      preLoaderRoute: typeof MarketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform-overview': {
+      id: '/platform-overview'
+      path: '/platform-overview'
+      fullPath: '/platform-overview'
+      preLoaderRoute: typeof PlatformOverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade-promotion': {
+      id: '/trade-promotion'
+      path: '/trade-promotion'
+      fullPath: '/trade-promotion'
+      preLoaderRoute: typeof TradePromotionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workflow': {
+      id: '/workflow'
+      path: '/workflow'
+      fullPath: '/workflow'
+      preLoaderRoute: typeof WorkflowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enterprises/$id': {
+      id: '/enterprises/$id'
+      path: '/enterprises/$id'
+      fullPath: '/enterprises/$id'
+      preLoaderRoute: typeof EnterprisesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  DashboardRoute: DashboardRoute,
+  DataManagementRoute: DataManagementRoute,
+  EnergyRoute: EnergyRoute,
+  ImportExportRoute: ImportExportRoute,
+  IndustrialClustersRoute: IndustrialClustersRoute,
+  IndustryDatabaseRoute: IndustryDatabaseRoute,
+  IntegrationRoute: IntegrationRoute,
+  MarketRoute: MarketRoute,
+  PlatformOverviewRoute: PlatformOverviewRoute,
+  TradePromotionRoute: TradePromotionRoute,
+  WorkflowRoute: WorkflowRoute,
+  EnterprisesIdRoute: EnterprisesIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
