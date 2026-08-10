@@ -3,7 +3,7 @@ import { ArrowRight, Database, LayoutGrid, Layers, ShieldCheck } from "lucide-re
 import { PageHeader } from "@/components/common/PageHeader";
 import { ModuleCard } from "@/components/common/ModuleCard";
 import { ChartCard } from "@/components/common/ChartCard";
-import { MODULE_CARDS } from "@/lib/nav";
+import { PLATFORM_MODULES } from "@/lib/nav";
 import { ARCHITECTURE_LAYERS, PLATFORM_PRINCIPLES } from "@/data/mock";
 
 export const Route = createFileRoute("/platform-overview")({
@@ -88,7 +88,7 @@ function PlatformOverview() {
             Bản đồ phân hệ nghiệp vụ
           </h2>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {MODULE_CARDS.map((m) => (
+            {PLATFORM_MODULES.map((m) => (
               <ModuleCard key={m.to} {...m} />
             ))}
           </div>

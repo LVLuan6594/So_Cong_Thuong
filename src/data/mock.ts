@@ -646,3 +646,46 @@ export const OCR_EXTRACTION = [
   { field: "Kim ngạch nhập khẩu", value: "151 triệu USD", confidence: 91 },
   { field: "Sản lượng điện thương phẩm", value: "531 triệu kWh", confidence: 89 },
 ];
+
+export const ARCHITECTURE_LAYERS = [
+  {
+    name: "Lớp thu nhận dữ liệu",
+    desc: "Số hóa hồ sơ giấy, nhập liệu trực tuyến, biểu mẫu điều tra, tiếp nhận từ hệ thống ngoài.",
+    items: ["OCR/AI bóc tách", "Form nhập liệu", "Điều tra hiện trường", "API/ETL"],
+  },
+  {
+    name: "Lớp chuẩn hóa & quản trị dữ liệu",
+    desc: "Chuẩn hóa danh mục dùng chung, đối soát trùng lặp, kiểm tra chất lượng, gán phiên bản dữ liệu.",
+    items: ["Master Data", "Data Quality", "Mapping danh mục", "Versioning"],
+  },
+  {
+    name: "Lớp phê duyệt & bảo mật",
+    desc: "Workflow trình – duyệt – khóa kỳ, phân quyền theo vai trò và địa bàn, lưu vết toàn bộ thao tác.",
+    items: ["Workflow", "RBAC theo địa bàn", "Audit log", "Khóa kỳ báo cáo"],
+  },
+  {
+    name: "Lớp CSDL ngành dùng chung",
+    desc: "Hồ sơ số cốt lõi về doanh nghiệp, cơ sở SXKD, sản phẩm, giấy phép, dự án, cụm công nghiệp, năng lượng.",
+    items: ["Doanh nghiệp", "Cụm công nghiệp", "Giấy phép", "Năng lượng", "Sản phẩm"],
+  },
+  {
+    name: "Lớp khai thác & điều hành",
+    desc: "Dashboard lãnh đạo, BI drill-down, GIS, kho báo cáo tự động và cổng tra cứu công khai.",
+    items: ["Dashboard", "BI/Drill-down", "GIS", "Kho báo cáo", "Cổng công khai"],
+  },
+];
+
+export const PLATFORM_PRINCIPLES = [
+  {
+    title: "Nhập một lần – dùng nhiều nơi",
+    desc: "Mỗi dữ liệu chỉ được nhập và chuẩn hóa một lần tại phân hệ chủ quản, sau đó chia sẻ cho toàn bộ phân hệ nghiệp vụ và báo cáo, tránh trùng lặp và số liệu lệch nhau.",
+  },
+  {
+    title: "Chỉ số liệu đã phê duyệt mới lên báo cáo",
+    desc: "Dữ liệu phải đi qua vòng đời Nhập – Chuẩn hóa – Trình duyệt – Phê duyệt – Khóa kỳ. Báo cáo điều hành chỉ lấy dữ liệu ở trạng thái đã phê duyệt hoặc đã khóa kỳ.",
+  },
+  {
+    title: "Phân quyền theo vai trò và địa bàn",
+    desc: "Mỗi vai trò chỉ thấy đúng phân hệ và phạm vi địa bàn được giao. Mọi thao tác thêm, sửa, duyệt đều được lưu vết phục vụ kiểm tra, thanh tra.",
+  },
+];
