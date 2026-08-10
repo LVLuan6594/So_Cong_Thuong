@@ -41,6 +41,7 @@ import type { Enterprise } from "@/lib/types";
 import {
   CLUSTERS,
   DATA_STATE_CHART,
+  DRILLDOWN,
   ENTERPRISES,
   EXPORT_MARKET_CHART,
   IIP_CHART,
@@ -83,6 +84,66 @@ const MARKET_COLORS = [
 
 const DATA_STATES = ["Tất cả trạng thái", "Đã phê duyệt", "Đã khóa kỳ", "Chờ duyệt", "Cần bổ sung"];
 
+// ===== Bộ lọc thay đổi dữ liệu (mock engine) =====
+const PROVINCE_ENTERPRISES = 2486;
+
+const PERIOD_FACTORS: Record<string, number> = {
+  "Quý II/2026": 1,
+  "Quý I/2026": 0.985,
+  "Năm 2025": 0.96,
+  "Năm 2024": 0.9,
+};
+
+const PREV_PERIOD_FACTOR: Record<string, number> = {
+  "Quý II/2026": 0.985,
+  "Quý I/2026": 0.96,
+  "Năm 2025": 0.9,
+  "Năm 2024": 1,
+};
+
+const KPI_BASE: Record<string, number> = {
+  ent: 2486,
+  fac: 3174,
+  ccn: 26,
+  energy: 48,
+  lic: 1827,
+  exp: 37,
+};
+
+const KPI_DELTA_WEIGHT: Record<string, number> = {
+  ent: 1,
+  fac: 0.9,
+  ccn: 0.5,
+  energy: 1.1,
+  lic: 0.7,
+  exp: 0.8,
+};
+
+function hashSeed(seed: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0) / 4294967296;
+}
+
+function vary(seed: string, amount: number, isDefault: boolean): number {
+  if (isDefault) return 1;
+  return 1 + (hashSeed(seed) - 0.5) * 2 * amount;
+}
+
+function fmtNumber(n: number): string {
+  return Math.round(n)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function fmtDelta(d: number): string {
+  const sign = d >= 0 ? "+" : "";
+  return `${sign}${d.toFixed(1).replace(".", ",")}%`;
+}
+
 function DashboardPage() {
   const [period, setPeriod] = useState(PERIODS[0]!);
   const [district, setDistrict] = useState(DISTRICTS[0]!);
@@ -92,6 +153,115 @@ function DashboardPage() {
   const [alertId, setAlertId] = useState<string | null>(null);
 
   const alert = OPERATION_ALERTS.find((a) => a.id === alertId) ?? null;
+
+  const isDefault =
+    period === PERIODS[0] &&
+    district === DISTRICTS[0] &&
+    sector === SECTORS[0] &&
+    dataState === DATA_STATES[0];
+
+  const periodFactor = PERIOD_FACTORS[period] ?? 1;
+  const districtRow =
+    district === DISTRICTS[0] ? null : DRILLDOWN.districts.find((d) => d.name === district);
+  const districtFactor = districtRow ? districtRow.enterprises / PROVINCE_ENTERPRISES : 1;
+  const sectorRow =
+    sector === SECTORS[0]
+      ? null
+      : SECTOR_CHART.find((s) => s.name === sector || sector.startsWith(s.name.slice(0, 6)));
+  const sectorFactor = sectorRow ? sectorRow.value / PROVINCE_ENTERPRISES : 1;
+
+  const isSectorSelected = (name: string) =>
+    sector !== SECTORS[0] && (sector === name || sector.startsWith(name.slice(0, 6)));
+
+  const kpis = useMemo(
+    () =>
+      OVERVIEW_KPI.map((k) => {
+        const base = KPI_BASE[k.id] ?? 0;
+        let factor = periodFactor * districtFactor;
+        if (k.id === "ent" || k.id === "fac" || k.id === "lic" || k.id === "exp") {
+          factor *= sectorFactor;
+        }
+        const value = Math.round(
+          base * factor * vary(`${k.id}|${district}|${period}|${sector}`, 0.05, isDefault),
+        );
+        const delta = isDefault
+          ? k.delta
+          : (() => {
+              const prev = PREV_PERIOD_FACTOR[period] ?? 1;
+              const growth =
+                ((periodFactor - prev) / prev) *
+                100 *
+                (KPI_DELTA_WEIGHT[k.id] ?? 1) *
+                (0.7 + 0.3 * districtFactor + 0.3 * sectorFactor);
+              return fmtDelta(growth);
+            })();
+        return { ...k, value: fmtNumber(value), delta };
+      }),
+    [period, district, sector, isDefault, periodFactor, districtFactor, sectorFactor],
+  );
+
+  const sectorChart = useMemo(
+    () =>
+      SECTOR_CHART.map((s) => ({
+        ...s,
+        value: Math.round(s.value * (isDefault ? 1 : periodFactor * districtFactor)),
+      })),
+    [isDefault, periodFactor, districtFactor],
+  );
+
+  const iipChart = useMemo(
+    () =>
+      IIP_CHART.map((r) => ({
+        ...r,
+        output: Math.round(r.output * (isDefault ? 1 : periodFactor * districtFactor)),
+        iip: isDefault
+          ? r.iip
+          : Math.round(r.iip * (0.88 + 0.12 * periodFactor) * (0.94 + 0.06 * districtFactor) * 10) /
+            10,
+      })),
+    [isDefault, periodFactor, districtFactor],
+  );
+
+  const exportChart = useMemo(
+    () =>
+      EXPORT_MARKET_CHART.map((m) => ({
+        ...m,
+        value: Math.round(
+          m.value *
+            (isDefault
+              ? 1
+              : periodFactor *
+                districtFactor *
+                vary(`${m.name}|${district}|${period}|${sector}`, 0.18, isDefault)),
+        ),
+      })),
+    [period, district, sector, isDefault, periodFactor, districtFactor],
+  );
+
+  const dataStateChart = useMemo(
+    () =>
+      DATA_STATE_CHART.map((d) => ({
+        ...d,
+        value: Math.round(d.value * (isDefault ? 1 : periodFactor * districtFactor)),
+        highlight: dataState !== DATA_STATES[0] && d.name === dataState,
+      })),
+    [dataState, isDefault, periodFactor, districtFactor],
+  );
+
+  const alerts = useMemo(
+    () =>
+      OPERATION_ALERTS.map((a) => {
+        const districtSensitive = a.id === "al-1" || a.id === "al-2";
+        const value = isDefault
+          ? a.value
+          : Math.max(
+              1,
+              Math.round(a.value * periodFactor * (districtSensitive ? districtFactor : 1)),
+            );
+        return { ...a, value };
+      }),
+    [isDefault, periodFactor, districtFactor],
+  );
 
   const rows = useMemo(() => {
     return ENTERPRISES.filter((e) => {
@@ -110,7 +280,11 @@ function DashboardPage() {
       header: "Doanh nghiệp",
       sortable: true,
       render: (r) => (
-        <Link to="/enterprises/$id" params={{ id: r.id }} className="font-medium text-gov hover:underline">
+        <Link
+          to="/enterprises/$id"
+          params={{ id: r.id }}
+          className="font-medium text-gov hover:underline"
+        >
           {r.name}
         </Link>
       ),
@@ -150,7 +324,10 @@ function DashboardPage() {
         crumbs={[{ label: "Điều hành" }, { label: "Dashboard lãnh đạo" }]}
         actions={
           <>
-            <Button variant="outline" onClick={() => toast.success("Đã xuất báo cáo tổng quan (DOCX)")}>
+            <Button
+              variant="outline"
+              onClick={() => toast.success("Đã xuất báo cáo tổng quan (DOCX)")}
+            >
               <Download className="size-4" /> Xuất báo cáo
             </Button>
             <Button asChild>
@@ -188,7 +365,7 @@ function DashboardPage() {
         </FilterBar>
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-          {OVERVIEW_KPI.map((k, i) => (
+          {kpis.map((k, i) => (
             <StatCard
               key={k.id}
               label={k.label}
@@ -203,10 +380,13 @@ function DashboardPage() {
         </section>
 
         <section className="grid gap-4 xl:grid-cols-2">
-          <ChartCard title="Doanh nghiệp theo lĩnh vực" subtitle="Nhấn cột để drill-down theo lĩnh vực">
+          <ChartCard
+            title="Doanh nghiệp theo lĩnh vực"
+            subtitle="Nhấn cột để drill-down theo lĩnh vực"
+          >
             <ResponsiveContainer width="100%" height={280}>
               <BarChart
-                data={SECTOR_CHART}
+                data={sectorChart}
                 onClick={(e) => {
                   const name = e?.activeLabel;
                   if (typeof name === "string") {
@@ -220,21 +400,44 @@ function DashboardPage() {
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
                 <YAxis tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
                 <Tooltip />
-                <Bar dataKey="value" name="Doanh nghiệp" fill="var(--gov)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" name="Doanh nghiệp" radius={[4, 4, 0, 0]}>
+                  {sectorChart.map((s, i) => (
+                    <Cell
+                      key={i}
+                      fill="var(--gov)"
+                      fillOpacity={sector === SECTORS[0] || isSectorSelected(s.name) ? 1 : 0.3}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          <ChartCard title="Tình hình sản xuất công nghiệp" subtitle="IIP (%) và giá trị sản xuất (tỷ đồng)">
+          <ChartCard
+            title="Tình hình sản xuất công nghiệp"
+            subtitle="IIP (%) và giá trị sản xuất (tỷ đồng)"
+          >
             <ResponsiveContainer width="100%" height={280}>
-              <LineChart data={IIP_CHART}>
+              <LineChart data={iipChart}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
                 <YAxis yAxisId="l" tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
-                <YAxis yAxisId="r" orientation="right" tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
+                <YAxis
+                  yAxisId="r"
+                  orientation="right"
+                  tick={{ fontSize: 12 }}
+                  stroke="var(--muted-foreground)"
+                />
                 <Tooltip />
                 <Legend />
-                <Line yAxisId="l" type="monotone" dataKey="iip" name="IIP (%)" stroke="var(--gov)" strokeWidth={2} />
+                <Line
+                  yAxisId="l"
+                  type="monotone"
+                  dataKey="iip"
+                  name="IIP (%)"
+                  stroke="var(--gov)"
+                  strokeWidth={2}
+                />
                 <Line
                   yAxisId="r"
                   type="monotone"
@@ -250,8 +453,14 @@ function DashboardPage() {
           <ChartCard title="Cơ cấu thị trường xuất khẩu" subtitle="Tỷ trọng kim ngạch (%)">
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={EXPORT_MARKET_CHART} dataKey="value" nameKey="name" innerRadius={62} outerRadius={100}>
-                  {EXPORT_MARKET_CHART.map((_, i) => (
+                <Pie
+                  data={exportChart}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={62}
+                  outerRadius={100}
+                >
+                  {exportChart.map((_, i) => (
                     <Cell key={i} fill={MARKET_COLORS[i % MARKET_COLORS.length]} />
                   ))}
                 </Pie>
@@ -264,9 +473,19 @@ function DashboardPage() {
           <ChartCard title="Tình trạng dữ liệu" subtitle="Phân bố theo trạng thái phê duyệt">
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={DATA_STATE_CHART} dataKey="value" nameKey="name" innerRadius={62} outerRadius={100}>
-                  {DATA_STATE_CHART.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                <Pie
+                  data={dataStateChart}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={62}
+                  outerRadius={100}
+                >
+                  {dataStateChart.map((d, i) => (
+                    <Cell
+                      key={i}
+                      fill={PIE_COLORS[i % PIE_COLORS.length]}
+                      fillOpacity={dataState === DATA_STATES[0] || d.highlight ? 1 : 0.3}
+                    />
                   ))}
                 </Pie>
                 <Legend />
@@ -281,7 +500,7 @@ function DashboardPage() {
             Cảnh báo điều hành
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-            {OPERATION_ALERTS.map((a, i) => (
+            {alerts.map((a, i) => (
               <AlertCard
                 key={a.id}
                 value={a.value}

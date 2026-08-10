@@ -2,14 +2,7 @@
 // MOCK DATA: các cấu trúc này được thiết kế để map 1-1 với REST API sau này.
 
 export type DataStatus =
-  | "draft"
-  | "checking"
-  | "need_more"
-  | "pending"
-  | "approved"
-  | "locked"
-  | "published"
-  | "error";
+  "draft" | "checking" | "need_more" | "pending" | "approved" | "locked" | "published" | "error";
 
 export interface Enterprise {
   id: string;
@@ -47,8 +40,8 @@ export interface Cluster {
   sectors: string;
   occupancy: number;
   status: DataStatus;
-  x: number; // toạ độ tương đối trên bản đồ mock (%)
-  y: number;
+  lat: number; // toạ độ GPS thực tế
+  lng: number;
   infrastructure: { name: string; level: number; note: string }[];
 }
 

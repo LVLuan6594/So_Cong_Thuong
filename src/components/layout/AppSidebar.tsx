@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft, Landmark } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { NAV_GROUPS } from "@/lib/nav";
 import { useRole } from "@/lib/role-context";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,7 @@ export function AppSidebar({
   collapsed: boolean;
   onToggle: () => void;
 }) {
-  const { navItems, role } = useRole();
+  const { navItems } = useRole();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -21,18 +21,6 @@ export function AppSidebar({
         collapsed ? "w-16" : "w-64",
       )}
     >
-      <div className="flex h-14 items-center gap-2 border-b border-white/10 px-3">
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/10">
-          <Landmark className="size-4.5" strokeWidth={1.8} />
-        </span>
-        {!collapsed ? (
-          <div className="min-w-0">
-            <p className="truncate text-xs font-semibold uppercase tracking-wide">Phân hệ hệ thống</p>
-            <p className="truncate text-[11px] text-white/60">{role.name}</p>
-          </div>
-        ) : null}
-      </div>
-
       <nav className="flex-1 overflow-y-auto px-2 py-3">
         {NAV_GROUPS.map((group) => {
           const items = navItems.filter((i) => i.group === group);
@@ -64,12 +52,7 @@ export function AppSidebar({
                       >
                         <item.icon className="size-4.5 shrink-0" strokeWidth={1.7} />
                         {!collapsed ? (
-                          <span className="truncate">
-                            <span className="mr-1.5 text-[11px] tabular-nums text-white/45">
-                              {item.code}
-                            </span>
-                            {item.label}
-                          </span>
+                          <span className="truncate">{item.label}</span>
                         ) : null}
                       </Link>
                     </li>

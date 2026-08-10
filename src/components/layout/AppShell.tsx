@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { ChatBot } from "@/components/common/ChatBot";
 import { AppHeader } from "./AppHeader";
 import { AppSidebar } from "./AppSidebar";
 import { NAV_GROUPS } from "@/lib/nav";
@@ -20,6 +21,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         <AppSidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
         <main className="min-w-0 flex-1">{children}</main>
       </div>
+
+      <ChatBot />
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="w-72 bg-navy p-0 text-navy-foreground">

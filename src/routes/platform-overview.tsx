@@ -41,6 +41,17 @@ function PlatformOverview() {
           <h2 className="text-sm font-semibold uppercase tracking-wide text-navy">
             Kiến trúc tổng thể
           </h2>
+          <div className="mt-4 overflow-hidden rounded-md border border-border bg-white">
+            <img
+              src="/img/Nen tang tong the chi tiet.png"
+              alt="Sơ đồ kiến trúc tổng thể nền tảng số hóa dữ liệu ngành Công Thương"
+              className="h-auto w-full"
+              loading="lazy"
+            />
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Sơ đồ kiến trúc tổng thể 5 lớp. Chi tiết từng lớp mô tả bên dưới:
+          </p>
           <div className="mt-4 space-y-2">
             {ARCHITECTURE_LAYERS.map((l, i) => {
               const Icon = LAYER_ICONS[i]!;
