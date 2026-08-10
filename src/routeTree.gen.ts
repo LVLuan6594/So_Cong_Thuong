@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DataManagementRouteImport } from './routes/data-management'
 import { Route as PlatformOverviewRouteImport } from './routes/platform-overview'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DataManagementRoute = DataManagementRouteImport.update({
+  id: '/data-management',
+  path: '/data-management',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlatformOverviewRoute = PlatformOverviewRouteImport.update({
   id: '/platform-overview',
   path: '/platform-overview',
@@ -32,30 +38,35 @@ const PlatformOverviewRoute = PlatformOverviewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/data-management': typeof DataManagementRoute
   '/platform-overview': typeof PlatformOverviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/data-management': typeof DataManagementRoute
   '/platform-overview': typeof PlatformOverviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/data-management': typeof DataManagementRoute
   '/platform-overview': typeof PlatformOverviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/platform-overview'
+  fullPaths: '/' | '/dashboard' | '/data-management' | '/platform-overview'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/platform-overview'
-  id: '__root__' | '/' | '/dashboard' | '/platform-overview'
+  to: '/' | '/dashboard' | '/data-management' | '/platform-overview'
+  id:
+    '__root__' | '/' | '/dashboard' | '/data-management' | '/platform-overview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  DataManagementRoute: typeof DataManagementRoute
   PlatformOverviewRoute: typeof PlatformOverviewRoute
 }
 
@@ -75,6 +86,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/data-management': {
+      id: '/data-management'
+      path: '/data-management'
+      fullPath: '/data-management'
+      preLoaderRoute: typeof DataManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/platform-overview': {
       id: '/platform-overview'
       path: '/platform-overview'
@@ -88,6 +106,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  DataManagementRoute: DataManagementRoute,
   PlatformOverviewRoute: PlatformOverviewRoute,
 }
 export const routeTree = rootRouteImport
