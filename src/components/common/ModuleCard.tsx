@@ -63,7 +63,7 @@ export function ModuleCard({
     );
   }
   return (
-    <Link to={to ?? "/"} className={cls}>
+    <Link to={(to ?? "/") as "/"} className={cls}>
       {body}
     </Link>
   );
