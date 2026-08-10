@@ -17,7 +17,7 @@ export function DetailDrawer({
   open: boolean;
   onOpenChange: (v: boolean) => void;
   title: string;
-  description?: string;
+  description?: string | undefined;
   children: ReactNode;
 }) {
   return (
