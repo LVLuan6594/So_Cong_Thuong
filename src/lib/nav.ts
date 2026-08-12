@@ -53,6 +53,8 @@ export interface NavItem {
   icon: LucideIcon;
   group: string;
   roles: RoleId[];
+  /** Mở trong tab mới (dùng cho trang public portal). */
+  external?: boolean;
 }
 
 const ALL: RoleId[] = [
@@ -83,6 +85,7 @@ export const NAV_ITEMS: NavItem[] = [
   { code: "10", label: "Báo cáo & BI", to: "/analytics", icon: FileBarChart, group: "BÁO CÁO", roles: ["leader", "dept", "specialist", "investor", "admin"] },
   { code: "11", label: "Tích hợp dữ liệu", to: "/integration", icon: Plug, group: "HỆ THỐNG", roles: ["admin", "dept"] },
   { code: "12", label: "Quản trị hệ thống", to: "/admin", icon: ShieldCheck, group: "HỆ THỐNG", roles: ["admin"] },
+  { code: "15", label: "Trang thông tin", to: "/trang-thong-tin", icon: Globe2, group: "ĐIỀU HÀNH", roles: ALL, external: true },
 ];
 
 export const QUICK_ACTIONS = [

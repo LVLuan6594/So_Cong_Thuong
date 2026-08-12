@@ -1,16 +1,14 @@
+import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
-import { NAV_GROUPS } from "@/lib/nav";
+import { ChevronDown, ChevronLeft, ExternalLink, Layers } from "lucide-react";
+import { NAV_GROUPS, type NavItem } from "@/lib/nav";
+import { CLUSTERS } from "@/data/mock";
+import { useGisLayer } from "@/lib/gis-layer-context";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useRole } from "@/lib/role-context";
 import { cn } from "@/lib/utils";
 
-export function AppSidebar({
-  collapsed,
-  onToggle,
-}: {
-  collapsed: boolean;
-  onToggle: () => void;
-}) {
+export function AppSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const { navItems } = useRole();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -40,21 +38,39 @@ export function AppSidebar({
                     item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
                   return (
                     <li key={item.to}>
-                      <Link
-                        to={item.to}
-                        title={item.label}
-                        className={cn(
-                          "flex items-center gap-2.5 rounded-md px-2 py-2 text-sm transition-colors",
-                          activeItem
-                            ? "bg-white/15 font-medium text-white"
-                            : "text-white/75 hover:bg-white/10 hover:text-white",
-                        )}
-                      >
-                        <item.icon className="size-4.5 shrink-0" strokeWidth={1.7} />
-                        {!collapsed ? (
-                          <span className="truncate">{item.label}</span>
-                        ) : null}
-                      </Link>
+                      {item.code === "05" && !collapsed ? (
+                        <GisNavItem item={item} active={activeItem} />
+                      ) : item.external ? (
+                        <a
+                          href={item.to}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={item.label}
+                          className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm transition-colors hover:bg-white/10 hover:text-white text-white/75"
+                        >
+                          <item.icon className="size-4.5 shrink-0" strokeWidth={1.7} />
+                          {!collapsed ? (
+                            <span className="flex flex-1 items-center justify-between truncate">
+                              {item.label}
+                              <ExternalLink className="size-3.5 opacity-60" />
+                            </span>
+                          ) : null}
+                        </a>
+                      ) : (
+                        <Link
+                          to={item.to}
+                          title={item.label}
+                          className={cn(
+                            "flex items-center gap-2.5 rounded-md px-2 py-2 text-sm transition-colors",
+                            activeItem
+                              ? "bg-white/15 font-medium text-white"
+                              : "text-white/75 hover:bg-white/10 hover:text-white",
+                          )}
+                        >
+                          <item.icon className="size-4.5 shrink-0" strokeWidth={1.7} />
+                          {!collapsed ? <span className="truncate">{item.label}</span> : null}
+                        </Link>
+                      )}
                     </li>
                   );
                 })}
@@ -72,5 +88,123 @@ export function AppSidebar({
         {!collapsed ? "Thu gọn menu" : null}
       </button>
     </aside>
+  );
+}
+
+function GisNavItem({ item, active }: { item: NavItem; active: boolean }) {
+  const [open, setOpen] = useState(active);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    if (item.to === "/industrial-clusters" && pathname.startsWith(item.to)) setOpen(true);
+  }, [pathname, item.to]);
+
+  return (
+    <>
+      <div
+        className={cn(
+          "flex items-center rounded-md transition-colors",
+          active ? "bg-white/15" : "hover:bg-white/10",
+        )}
+      >
+        <Link
+          to={item.to}
+          className={cn(
+            "flex min-w-0 flex-1 items-center gap-2.5 px-2 py-2 text-sm transition-colors",
+            active ? "font-medium text-white" : "text-white/75 hover:text-white",
+          )}
+        >
+          <item.icon className="size-4.5 shrink-0" strokeWidth={1.7} />
+          <span className="truncate">{item.label}</span>
+        </Link>
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Thu gọn phân lớp bản đồ" : "Mở rộng phân lớp bản đồ"}
+          aria-expanded={open}
+          className="mr-1 grid size-7 shrink-0 place-items-center rounded-md text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+        >
+          <ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} />
+        </button>
+      </div>
+      {open ? <GisLayerSubmenu /> : null}
+    </>
+  );
+}
+
+function GisLayerSubmenu() {
+  const { selectedClusterIds, toggleCluster, setSelectedClusterIds } = useGisLayer();
+
+  const allClusters = selectedClusterIds.length === CLUSTERS.length;
+
+  return (
+    <div className="mb-2 ml-3 mt-1 space-y-3 rounded-md border border-white/10 bg-white/[0.04] p-2.5">
+      <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gov">
+        <Layers className="size-3.5" /> Bộ lọc GIS
+      </p>
+
+      <section>
+        <div className="mb-1 flex items-center justify-between gap-1">
+          <h4 className="text-[10px] font-bold uppercase tracking-wider text-white/50">
+            Khu/Cụm công nghiệp
+          </h4>
+          <button
+            type="button"
+            onClick={() => setSelectedClusterIds(allClusters ? [] : CLUSTERS.map((c) => c.id))}
+            className="text-[10px] font-medium text-gov hover:underline"
+          >
+            {allClusters ? "Bỏ chọn" : "Chọn tất cả"}
+          </button>
+        </div>
+        <ul className="max-h-52 space-y-0.5 overflow-y-auto pr-0.5">
+          {CLUSTERS.map((c) => {
+            const checked = selectedClusterIds.includes(c.id);
+            return (
+              <li
+                key={c.id}
+                role="checkbox"
+                aria-checked={checked}
+                onClick={() => toggleCluster(c.id)}
+                className={cn(
+                  "flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 text-xs transition-colors hover:bg-white/10",
+                  checked ? "text-white" : "text-white/65",
+                )}
+              >
+                <Checkbox
+                  checked={checked}
+                  className="size-3.5 border-gov/60 bg-transparent data-[state=checked]:bg-gov data-[state=checked]:text-white"
+                />
+                <span className="min-w-0 flex-1 truncate">{c.name}</span>
+                <span className="rounded-full bg-white/10 px-1.5 py-px text-[10px] tabular-nums text-white/45">
+                  {c.enterprises}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section>
+        <h4 className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-white/50">
+          Chú giải màu
+        </h4>
+        <div className="space-y-1 text-[11px] text-white/65">
+          <LegendItem dot="bg-success" label="Lấp đầy ≥ 75%" />
+          <LegendItem dot="bg-gov" label="Lấp đầy 50 – 74%" />
+          <LegendItem dot="bg-warning" label="Lấp đầy < 50%" />
+        </div>
+        <p className="mt-1.5 text-[10px] leading-relaxed text-white/40">
+          Polygon là ranh giới KCN/CCN. Nhấn vào Polygon để xem doanh nghiệp trong khu.
+        </p>
+      </section>
+    </div>
+  );
+}
+
+function LegendItem({ dot, label }: { dot: string; label: string }) {
+  return (
+    <p className="flex items-center gap-1.5">
+      <span className={cn("size-2 rounded-full", dot)} /> {label}
+    </p>
   );
 }

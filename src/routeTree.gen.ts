@@ -22,8 +22,13 @@ import { Route as IntegrationRouteImport } from './routes/integration'
 import { Route as MarketRouteImport } from './routes/market'
 import { Route as PlatformOverviewRouteImport } from './routes/platform-overview'
 import { Route as TradePromotionRouteImport } from './routes/trade-promotion'
+import { Route as TrangThongTinRouteImport } from './routes/trang-thong-tin'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as EnterprisesIdRouteImport } from './routes/enterprises/$id'
+import { Route as TrangThongTinLanhDaoDonViRouteImport } from './routes/trang-thong-tin/lanh-dao-don-vi'
+import { Route as TrangThongTinDauTuSlugRouteImport } from './routes/trang-thong-tin/dau-tu.$slug'
+import { Route as TrangThongTinSuKienSlugRouteImport } from './routes/trang-thong-tin/su-kien.$slug'
+import { Route as TrangThongTinTinSlugRouteImport } from './routes/trang-thong-tin/tin.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -90,6 +95,11 @@ const TradePromotionRoute = TradePromotionRouteImport.update({
   path: '/trade-promotion',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrangThongTinRoute = TrangThongTinRouteImport.update({
+  id: '/trang-thong-tin',
+  path: '/trang-thong-tin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkflowRoute = WorkflowRouteImport.update({
   id: '/workflow',
   path: '/workflow',
@@ -99,6 +109,27 @@ const EnterprisesIdRoute = EnterprisesIdRouteImport.update({
   id: '/enterprises/$id',
   path: '/enterprises/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TrangThongTinLanhDaoDonViRoute =
+  TrangThongTinLanhDaoDonViRouteImport.update({
+    id: '/lanh-dao-don-vi',
+    path: '/lanh-dao-don-vi',
+    getParentRoute: () => TrangThongTinRoute,
+  } as any)
+const TrangThongTinDauTuSlugRoute = TrangThongTinDauTuSlugRouteImport.update({
+  id: '/dau-tu/$slug',
+  path: '/dau-tu/$slug',
+  getParentRoute: () => TrangThongTinRoute,
+} as any)
+const TrangThongTinSuKienSlugRoute = TrangThongTinSuKienSlugRouteImport.update({
+  id: '/su-kien/$slug',
+  path: '/su-kien/$slug',
+  getParentRoute: () => TrangThongTinRoute,
+} as any)
+const TrangThongTinTinSlugRoute = TrangThongTinTinSlugRouteImport.update({
+  id: '/tin/$slug',
+  path: '/tin/$slug',
+  getParentRoute: () => TrangThongTinRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -115,8 +146,13 @@ export interface FileRoutesByFullPath {
   '/market': typeof MarketRoute
   '/platform-overview': typeof PlatformOverviewRoute
   '/trade-promotion': typeof TradePromotionRoute
+  '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
   '/workflow': typeof WorkflowRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
+  '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
+  '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
+  '/trang-thong-tin/su-kien/$slug': typeof TrangThongTinSuKienSlugRoute
+  '/trang-thong-tin/tin/$slug': typeof TrangThongTinTinSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -132,8 +168,13 @@ export interface FileRoutesByTo {
   '/market': typeof MarketRoute
   '/platform-overview': typeof PlatformOverviewRoute
   '/trade-promotion': typeof TradePromotionRoute
+  '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
   '/workflow': typeof WorkflowRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
+  '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
+  '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
+  '/trang-thong-tin/su-kien/$slug': typeof TrangThongTinSuKienSlugRoute
+  '/trang-thong-tin/tin/$slug': typeof TrangThongTinTinSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -150,8 +191,13 @@ export interface FileRoutesById {
   '/market': typeof MarketRoute
   '/platform-overview': typeof PlatformOverviewRoute
   '/trade-promotion': typeof TradePromotionRoute
+  '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
   '/workflow': typeof WorkflowRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
+  '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
+  '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
+  '/trang-thong-tin/su-kien/$slug': typeof TrangThongTinSuKienSlugRoute
+  '/trang-thong-tin/tin/$slug': typeof TrangThongTinTinSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,8 +215,13 @@ export interface FileRouteTypes {
     | '/market'
     | '/platform-overview'
     | '/trade-promotion'
+    | '/trang-thong-tin'
     | '/workflow'
     | '/enterprises/$id'
+    | '/trang-thong-tin/lanh-dao-don-vi'
+    | '/trang-thong-tin/dau-tu/$slug'
+    | '/trang-thong-tin/su-kien/$slug'
+    | '/trang-thong-tin/tin/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,8 +237,13 @@ export interface FileRouteTypes {
     | '/market'
     | '/platform-overview'
     | '/trade-promotion'
+    | '/trang-thong-tin'
     | '/workflow'
     | '/enterprises/$id'
+    | '/trang-thong-tin/lanh-dao-don-vi'
+    | '/trang-thong-tin/dau-tu/$slug'
+    | '/trang-thong-tin/su-kien/$slug'
+    | '/trang-thong-tin/tin/$slug'
   id:
     | '__root__'
     | '/'
@@ -203,8 +259,13 @@ export interface FileRouteTypes {
     | '/market'
     | '/platform-overview'
     | '/trade-promotion'
+    | '/trang-thong-tin'
     | '/workflow'
     | '/enterprises/$id'
+    | '/trang-thong-tin/lanh-dao-don-vi'
+    | '/trang-thong-tin/dau-tu/$slug'
+    | '/trang-thong-tin/su-kien/$slug'
+    | '/trang-thong-tin/tin/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -221,6 +282,7 @@ export interface RootRouteChildren {
   MarketRoute: typeof MarketRoute
   PlatformOverviewRoute: typeof PlatformOverviewRoute
   TradePromotionRoute: typeof TradePromotionRoute
+  TrangThongTinRoute: typeof TrangThongTinRouteWithChildren
   WorkflowRoute: typeof WorkflowRoute
   EnterprisesIdRoute: typeof EnterprisesIdRoute
 }
@@ -318,6 +380,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TradePromotionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trang-thong-tin': {
+      id: '/trang-thong-tin'
+      path: '/trang-thong-tin'
+      fullPath: '/trang-thong-tin'
+      preLoaderRoute: typeof TrangThongTinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workflow': {
       id: '/workflow'
       path: '/workflow'
@@ -332,8 +401,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnterprisesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trang-thong-tin/lanh-dao-don-vi': {
+      id: '/trang-thong-tin/lanh-dao-don-vi'
+      path: '/lanh-dao-don-vi'
+      fullPath: '/trang-thong-tin/lanh-dao-don-vi'
+      preLoaderRoute: typeof TrangThongTinLanhDaoDonViRouteImport
+      parentRoute: typeof TrangThongTinRoute
+    }
+    '/trang-thong-tin/dau-tu/$slug': {
+      id: '/trang-thong-tin/dau-tu/$slug'
+      path: '/dau-tu/$slug'
+      fullPath: '/trang-thong-tin/dau-tu/$slug'
+      preLoaderRoute: typeof TrangThongTinDauTuSlugRouteImport
+      parentRoute: typeof TrangThongTinRoute
+    }
+    '/trang-thong-tin/su-kien/$slug': {
+      id: '/trang-thong-tin/su-kien/$slug'
+      path: '/su-kien/$slug'
+      fullPath: '/trang-thong-tin/su-kien/$slug'
+      preLoaderRoute: typeof TrangThongTinSuKienSlugRouteImport
+      parentRoute: typeof TrangThongTinRoute
+    }
+    '/trang-thong-tin/tin/$slug': {
+      id: '/trang-thong-tin/tin/$slug'
+      path: '/tin/$slug'
+      fullPath: '/trang-thong-tin/tin/$slug'
+      preLoaderRoute: typeof TrangThongTinTinSlugRouteImport
+      parentRoute: typeof TrangThongTinRoute
+    }
   }
 }
+
+interface TrangThongTinRouteChildren {
+  TrangThongTinLanhDaoDonViRoute: typeof TrangThongTinLanhDaoDonViRoute
+  TrangThongTinDauTuSlugRoute: typeof TrangThongTinDauTuSlugRoute
+  TrangThongTinSuKienSlugRoute: typeof TrangThongTinSuKienSlugRoute
+  TrangThongTinTinSlugRoute: typeof TrangThongTinTinSlugRoute
+}
+
+const TrangThongTinRouteChildren: TrangThongTinRouteChildren = {
+  TrangThongTinLanhDaoDonViRoute: TrangThongTinLanhDaoDonViRoute,
+  TrangThongTinDauTuSlugRoute: TrangThongTinDauTuSlugRoute,
+  TrangThongTinSuKienSlugRoute: TrangThongTinSuKienSlugRoute,
+  TrangThongTinTinSlugRoute: TrangThongTinTinSlugRoute,
+}
+
+const TrangThongTinRouteWithChildren = TrangThongTinRoute._addFileChildren(
+  TrangThongTinRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -349,6 +464,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketRoute: MarketRoute,
   PlatformOverviewRoute: PlatformOverviewRoute,
   TradePromotionRoute: TradePromotionRoute,
+  TrangThongTinRoute: TrangThongTinRouteWithChildren,
   WorkflowRoute: WorkflowRoute,
   EnterprisesIdRoute: EnterprisesIdRoute,
 }

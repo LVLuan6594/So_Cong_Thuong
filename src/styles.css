@@ -180,3 +180,44 @@
   border: 2px solid var(--color-gov);
   animation: chatbot-ring 1.8s ease-out infinite;
 }
+
+/* ─────────── GIS: Polygon KCN/CCN display enhancement ─────────── */
+.gis-zone-path {
+  filter: drop-shadow(0 0 1px rgba(15, 42, 74, 0.55));
+}
+
+.gis-zone-glow {
+  filter: drop-shadow(0 0 3px rgba(21, 101, 192, 0.65))
+    drop-shadow(0 0 1px rgba(21, 101, 192, 0.4));
+}
+
+.gis-zone-glow-strong {
+  filter: drop-shadow(0 0 5px rgba(21, 101, 192, 0.9))
+    drop-shadow(0 0 2px rgba(255, 255, 255, 0.9));
+}
+
+.gis-zone-enhance {
+  filter: drop-shadow(0 0 2px rgba(15, 42, 74, 0.6));
+}
+
+.gis-zone-label {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f2a4a;
+  border: 1px solid rgba(21, 101, 192, 0.45);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(15, 42, 74, 0.25);
+  pointer-events: none;
+}
+
+.leaflet-tooltip.gis-zone-label::before {
+  display: none;
+}
+
+.gis-zone-tooltip {
+  font-family: inherit;
+}

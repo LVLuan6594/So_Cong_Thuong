@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { ExternalLink } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { ChatBot } from "@/components/common/ChatBot";
 import { AppHeader } from "./AppHeader";
@@ -38,19 +39,35 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <ul className="space-y-0.5">
                     {items.map((item) => (
                       <li key={item.to}>
-                        <Link
-                          to={item.to}
-                          onClick={() => setMobileOpen(false)}
-                          className={cn(
-                            "flex items-center gap-2.5 rounded-md px-2 py-2 text-sm",
-                            pathname === item.to
-                              ? "bg-white/15 font-medium text-white"
-                              : "text-white/75",
-                          )}
-                        >
-                          <item.icon className="size-4.5" strokeWidth={1.7} />
-                          {item.label}
-                        </Link>
+                        {item.external ? (
+                          <a
+                            href={item.to}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setMobileOpen(false)}
+                            className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm text-white/75"
+                          >
+                            <item.icon className="size-4.5" strokeWidth={1.7} />
+                            <span className="flex flex-1 items-center justify-between">
+                              {item.label}
+                              <ExternalLink className="size-3.5 opacity-60" />
+                            </span>
+                          </a>
+                        ) : (
+                          <Link
+                            to={item.to}
+                            onClick={() => setMobileOpen(false)}
+                            className={cn(
+                              "flex items-center gap-2.5 rounded-md px-2 py-2 text-sm",
+                              pathname === item.to
+                                ? "bg-white/15 font-medium text-white"
+                                : "text-white/75",
+                            )}
+                          >
+                            <item.icon className="size-4.5" strokeWidth={1.7} />
+                            {item.label}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>

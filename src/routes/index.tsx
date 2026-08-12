@@ -9,6 +9,7 @@ import {
   FileCheck2,
   Gauge,
   Globe2,
+  LayoutDashboard,
   ListChecks,
   Map as MapIcon,
   RefreshCw,
@@ -104,34 +105,39 @@ function OverviewPage() {
         title="Tổng quan ngành Công Thương"
         description="Trung tâm điều hành dữ liệu ngành Công Thương · Toàn cảnh các phân hệ trên một màn hình."
         crumbs={[{ label: "Điều hành" }, { label: "Tổng quan" }]}
+        variant="panel"
+        icon={LayoutDashboard}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="h-9 gap-2 bg-surface">
-                <CalendarRange className="size-3.5 text-muted-foreground" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PERIODS.map((p) => (
-                  <SelectItem key={p} value={p}>
-                    {p}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={unit} onValueChange={setUnit}>
-              <SelectTrigger className="h-9 gap-2 bg-surface">
-                <Building2 className="size-3.5 text-muted-foreground" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {DISTRICTS.map((d) => (
-                  <SelectItem key={d} value={d}>
-                    {d}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex items-center rounded-lg border border-border bg-surface p-1">
+              <Select value={period} onValueChange={setPeriod}>
+                <SelectTrigger className="h-8 gap-2 border-transparent bg-transparent shadow-none hover:bg-surface-strong">
+                  <CalendarRange className="size-3.5 text-gov" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PERIODS.map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {p}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="mx-1 h-5 w-px bg-border" />
+              <Select value={unit} onValueChange={setUnit}>
+                <SelectTrigger className="h-8 gap-2 border-transparent bg-transparent shadow-none hover:bg-surface-strong">
+                  <Building2 className="size-3.5 text-gov" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DISTRICTS.map((d) => (
+                    <SelectItem key={d} value={d}>
+                      {d}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Button variant="outline" onClick={() => toast.success("Đã làm mới dữ liệu tổng quan")}>
               <RefreshCw className="size-4" /> Làm mới dữ liệu
             </Button>

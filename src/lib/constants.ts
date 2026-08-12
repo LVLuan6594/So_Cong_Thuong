@@ -1,4 +1,10 @@
-import type { DataStatus } from "./types";
+import type { DataStatus, Factory } from "./types";
+
+export const FACTORY_STATUS_LABEL: Record<Factory["status"], string> = {
+  active: "Đang hoạt động",
+  expanding: "Đang mở rộng",
+  suspended: "Tạm ngừng",
+};
 
 // Nhãn + màu trạng thái theo vòng đời dữ liệu (VI. quy tắc demo)
 export const STATUS_LABEL: Record<DataStatus, string> = {
@@ -51,3 +57,13 @@ export const SECTORS = [
 ];
 
 export const PERIODS = ["Quý II/2026", "Quý I/2026", "Năm 2025", "Năm 2024"];
+
+export const INDUSTRIES = [
+  "Dệt may",
+  "Cao su",
+  "Cơ khí",
+  "Điện tử",
+  "Chế biến nông sản",
+  "Năng lượng",
+  "Thương mại",
+];
