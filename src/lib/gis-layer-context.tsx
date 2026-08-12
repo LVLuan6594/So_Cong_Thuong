@@ -3,12 +3,39 @@ import { CLUSTERS } from "@/data/mock";
 import { INDUSTRIES } from "@/lib/constants";
 import type { Cluster } from "@/lib/types";
 
+// Chuẩn hóa chuỗi ngành nghề để so khớp ổn định (bỏ dấu tiếng Việt, lowercase).
+export function normalizeIndustry(sector: string): string {
+  return sector
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function containsWord(haystack: string, needle: string): boolean {
+  if (!needle || !haystack) return false;
+  const esc = needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`(?:^|[\\s(),.,:\\-/–—_])${esc}(?=[\\s(),.,:\\-/–—_]|$)`);
+  return re.test(haystack);
+}
+
+// Một ngành (thuộc danh mục INDUSTRIES) được xem là khớp với sector đã khai
+// (của cụm hoặc nhà máy) khi giống hệt hoặc trùng/bao đúng từ — tránh khớp chuỗi con ngẫu nhiên.
+export function industryBelongsTo(sector: string, industry: string): boolean {
+  const s = normalizeIndustry(sector);
+  const i = normalizeIndustry(industry);
+  if (!s || !i) return false;
+  if (s === i) return true;
+  return containsWord(s, i) || containsWord(i, s);
+}
+
 export function clusterMatches(c: Cluster, industry: string): boolean {
   const tokens = c.sectors
     .split(/[–\-/]/)
     .map((s) => s.trim())
     .filter(Boolean);
-  return tokens.some((t) => t === industry || t.includes(industry) || industry.includes(t));
+  return tokens.some((t) => industryBelongsTo(t, industry));
 }
 
 export function clusterHasIndustry(c: Cluster, industry: string): boolean {

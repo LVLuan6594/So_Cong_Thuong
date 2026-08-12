@@ -3,7 +3,8 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { ChevronDown, ChevronLeft, ExternalLink, Layers } from "lucide-react";
 import { NAV_GROUPS, type NavItem } from "@/lib/nav";
 import { CLUSTERS } from "@/data/mock";
-import { useGisLayer } from "@/lib/gis-layer-context";
+import { clusterCountByIndustry, useGisLayer } from "@/lib/gis-layer-context";
+import { INDUSTRIES } from "@/lib/constants";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRole } from "@/lib/role-context";
 import { cn } from "@/lib/utils";
@@ -133,15 +134,68 @@ function GisNavItem({ item, active }: { item: NavItem; active: boolean }) {
 }
 
 function GisLayerSubmenu() {
-  const { selectedClusterIds, toggleCluster, setSelectedClusterIds } = useGisLayer();
+  const {
+    selectedClusterIds,
+    toggleCluster,
+    setSelectedClusterIds,
+    selectedIndustries,
+    toggleIndustry,
+    setSelectedIndustries,
+  } = useGisLayer();
 
   const allClusters = selectedClusterIds.length === CLUSTERS.length;
+  const allIndustries = selectedIndustries.length === INDUSTRIES.length;
 
   return (
     <div className="mb-2 ml-3 mt-1 space-y-3 rounded-md border border-white/10 bg-white/[0.04] p-2.5">
       <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gov">
         <Layers className="size-3.5" /> Bộ lọc GIS
       </p>
+
+      <section>
+        <div className="mb-1 flex items-center justify-between gap-1">
+          <h4 className="text-[10px] font-bold uppercase tracking-wider text-white/50">
+            Ngành nghề
+          </h4>
+          <button
+            type="button"
+            onClick={() => setSelectedIndustries(allIndustries ? [] : INDUSTRIES)}
+            className="text-[10px] font-medium text-gov hover:underline"
+          >
+            {allIndustries ? "Bỏ chọn" : "Chọn tất cả"}
+          </button>
+        </div>
+        <ul className="max-h-44 space-y-0.5 overflow-y-auto pr-0.5">
+          {INDUSTRIES.map((ind) => {
+            const checked = selectedIndustries.includes(ind);
+            const count = clusterCountByIndustry(ind);
+            return (
+              <li
+                key={ind}
+                role="checkbox"
+                aria-checked={checked}
+                onClick={() => toggleIndustry(ind)}
+                className={cn(
+                  "flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 text-xs transition-colors hover:bg-white/10",
+                  checked ? "text-white" : "text-white/65",
+                )}
+              >
+                <Checkbox
+                  checked={checked}
+                  className="size-3.5 border-teal/60 bg-transparent data-[state=checked]:bg-teal data-[state=checked]:text-white"
+                />
+                <span className="min-w-0 flex-1 truncate">{ind}</span>
+                <span className="rounded-full bg-white/10 px-1.5 py-px text-[10px] tabular-nums text-white/45">
+                  {count} KCN
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        <p className="mt-1 text-[10px] leading-relaxed text-white/40">
+          Chọn ngành để bản đồ chỉ hiển thị KCN có ngành đó và nhà máy tương ứng.
+        </p>
+      </section>
 
       <section>
         <div className="mb-1 flex items-center justify-between gap-1">

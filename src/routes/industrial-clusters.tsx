@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CLUSTERS, CLUSTER_FACTORIES } from "@/data/mock";
 import { FACTORY_STATUS_LABEL } from "@/lib/constants";
-import { clusterHasIndustry, useGisLayer } from "@/lib/gis-layer-context";
+import { clusterHasIndustry, industryBelongsTo, useGisLayer } from "@/lib/gis-layer-context";
 import type { Cluster, Factory } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -108,7 +108,9 @@ function Page() {
     () =>
       selectedIndustries.length === 0
         ? zoneFactories
-        : zoneFactories.filter((f) => selectedIndustries.includes(f.sector)),
+        : zoneFactories.filter((f) =>
+            selectedIndustries.some((ind) => industryBelongsTo(f.sector, ind)),
+          ),
     [zoneFactories, selectedIndustries],
   );
 
@@ -161,7 +163,10 @@ function Page() {
           f.sector.toLowerCase().includes(q),
       );
       if (hit) {
-        if (selectedIndustries.length > 0 && !selectedIndustries.includes(hit.sector)) {
+        if (
+          selectedIndustries.length > 0 &&
+          !selectedIndustries.some((ind) => industryBelongsTo(hit.sector, ind))
+        ) {
           setSelectedIndustries([...selectedIndustries, hit.sector]);
         }
         setSelectedZoneId(cid);

@@ -55,6 +55,7 @@ export interface NavItem {
   roles: RoleId[];
   /** Mở trong tab mới (dùng cho trang public portal). */
   external?: boolean;
+  children?: { label: string; to: string }[];
 }
 
 const ALL: RoleId[] = [

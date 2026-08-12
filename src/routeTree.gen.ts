@@ -24,6 +24,14 @@ import { Route as PlatformOverviewRouteImport } from './routes/platform-overview
 import { Route as TradePromotionRouteImport } from './routes/trade-promotion'
 import { Route as TrangThongTinRouteImport } from './routes/trang-thong-tin'
 import { Route as WorkflowRouteImport } from './routes/workflow'
+import { Route as EnergyCarbonRouteImport } from './routes/energy.carbon'
+import { Route as EnergyChargingStationsRouteImport } from './routes/energy.charging-stations'
+import { Route as EnergyConsumptionRouteImport } from './routes/energy.consumption'
+import { Route as EnergyGisRouteImport } from './routes/energy.gis'
+import { Route as EnergyGridRouteImport } from './routes/energy.grid'
+import { Route as EnergyGridSafetyRouteImport } from './routes/energy.grid-safety'
+import { Route as EnergyProjectsRouteImport } from './routes/energy.projects'
+import { Route as EnergyRooftopSolarRouteImport } from './routes/energy.rooftop-solar'
 import { Route as EnterprisesIdRouteImport } from './routes/enterprises/$id'
 import { Route as TrangThongTinLanhDaoDonViRouteImport } from './routes/trang-thong-tin/lanh-dao-don-vi'
 import { Route as TrangThongTinDauTuSlugRouteImport } from './routes/trang-thong-tin/dau-tu.$slug'
@@ -105,6 +113,46 @@ const WorkflowRoute = WorkflowRouteImport.update({
   path: '/workflow',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnergyCarbonRoute = EnergyCarbonRouteImport.update({
+  id: '/carbon',
+  path: '/carbon',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyChargingStationsRoute = EnergyChargingStationsRouteImport.update({
+  id: '/charging-stations',
+  path: '/charging-stations',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyConsumptionRoute = EnergyConsumptionRouteImport.update({
+  id: '/consumption',
+  path: '/consumption',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyGisRoute = EnergyGisRouteImport.update({
+  id: '/gis',
+  path: '/gis',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyGridRoute = EnergyGridRouteImport.update({
+  id: '/grid',
+  path: '/grid',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyGridSafetyRoute = EnergyGridSafetyRouteImport.update({
+  id: '/grid-safety',
+  path: '/grid-safety',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyProjectsRoute = EnergyProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyRooftopSolarRoute = EnergyRooftopSolarRouteImport.update({
+  id: '/rooftop-solar',
+  path: '/rooftop-solar',
+  getParentRoute: () => EnergyRoute,
+} as any)
 const EnterprisesIdRoute = EnterprisesIdRouteImport.update({
   id: '/enterprises/$id',
   path: '/enterprises/$id',
@@ -138,7 +186,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/data-management': typeof DataManagementRoute
-  '/energy': typeof EnergyRoute
+  '/energy': typeof EnergyRouteWithChildren
   '/import-export': typeof ImportExportRoute
   '/industrial-clusters': typeof IndustrialClustersRoute
   '/industry-database': typeof IndustryDatabaseRoute
@@ -148,6 +196,14 @@ export interface FileRoutesByFullPath {
   '/trade-promotion': typeof TradePromotionRoute
   '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
   '/workflow': typeof WorkflowRoute
+  '/energy/carbon': typeof EnergyCarbonRoute
+  '/energy/charging-stations': typeof EnergyChargingStationsRoute
+  '/energy/consumption': typeof EnergyConsumptionRoute
+  '/energy/gis': typeof EnergyGisRoute
+  '/energy/grid': typeof EnergyGridRoute
+  '/energy/grid-safety': typeof EnergyGridSafetyRoute
+  '/energy/projects': typeof EnergyProjectsRoute
+  '/energy/rooftop-solar': typeof EnergyRooftopSolarRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
   '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
   '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
@@ -160,7 +216,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/data-management': typeof DataManagementRoute
-  '/energy': typeof EnergyRoute
+  '/energy': typeof EnergyRouteWithChildren
   '/import-export': typeof ImportExportRoute
   '/industrial-clusters': typeof IndustrialClustersRoute
   '/industry-database': typeof IndustryDatabaseRoute
@@ -170,6 +226,14 @@ export interface FileRoutesByTo {
   '/trade-promotion': typeof TradePromotionRoute
   '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
   '/workflow': typeof WorkflowRoute
+  '/energy/carbon': typeof EnergyCarbonRoute
+  '/energy/charging-stations': typeof EnergyChargingStationsRoute
+  '/energy/consumption': typeof EnergyConsumptionRoute
+  '/energy/gis': typeof EnergyGisRoute
+  '/energy/grid': typeof EnergyGridRoute
+  '/energy/grid-safety': typeof EnergyGridSafetyRoute
+  '/energy/projects': typeof EnergyProjectsRoute
+  '/energy/rooftop-solar': typeof EnergyRooftopSolarRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
   '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
   '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
@@ -183,7 +247,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/data-management': typeof DataManagementRoute
-  '/energy': typeof EnergyRoute
+  '/energy': typeof EnergyRouteWithChildren
   '/import-export': typeof ImportExportRoute
   '/industrial-clusters': typeof IndustrialClustersRoute
   '/industry-database': typeof IndustryDatabaseRoute
@@ -193,6 +257,14 @@ export interface FileRoutesById {
   '/trade-promotion': typeof TradePromotionRoute
   '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
   '/workflow': typeof WorkflowRoute
+  '/energy/carbon': typeof EnergyCarbonRoute
+  '/energy/charging-stations': typeof EnergyChargingStationsRoute
+  '/energy/consumption': typeof EnergyConsumptionRoute
+  '/energy/gis': typeof EnergyGisRoute
+  '/energy/grid': typeof EnergyGridRoute
+  '/energy/grid-safety': typeof EnergyGridSafetyRoute
+  '/energy/projects': typeof EnergyProjectsRoute
+  '/energy/rooftop-solar': typeof EnergyRooftopSolarRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
   '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
   '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
@@ -217,6 +289,14 @@ export interface FileRouteTypes {
     | '/trade-promotion'
     | '/trang-thong-tin'
     | '/workflow'
+    | '/energy/carbon'
+    | '/energy/charging-stations'
+    | '/energy/consumption'
+    | '/energy/gis'
+    | '/energy/grid'
+    | '/energy/grid-safety'
+    | '/energy/projects'
+    | '/energy/rooftop-solar'
     | '/enterprises/$id'
     | '/trang-thong-tin/lanh-dao-don-vi'
     | '/trang-thong-tin/dau-tu/$slug'
@@ -239,6 +319,14 @@ export interface FileRouteTypes {
     | '/trade-promotion'
     | '/trang-thong-tin'
     | '/workflow'
+    | '/energy/carbon'
+    | '/energy/charging-stations'
+    | '/energy/consumption'
+    | '/energy/gis'
+    | '/energy/grid'
+    | '/energy/grid-safety'
+    | '/energy/projects'
+    | '/energy/rooftop-solar'
     | '/enterprises/$id'
     | '/trang-thong-tin/lanh-dao-don-vi'
     | '/trang-thong-tin/dau-tu/$slug'
@@ -261,6 +349,14 @@ export interface FileRouteTypes {
     | '/trade-promotion'
     | '/trang-thong-tin'
     | '/workflow'
+    | '/energy/carbon'
+    | '/energy/charging-stations'
+    | '/energy/consumption'
+    | '/energy/gis'
+    | '/energy/grid'
+    | '/energy/grid-safety'
+    | '/energy/projects'
+    | '/energy/rooftop-solar'
     | '/enterprises/$id'
     | '/trang-thong-tin/lanh-dao-don-vi'
     | '/trang-thong-tin/dau-tu/$slug'
@@ -274,7 +370,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   DashboardRoute: typeof DashboardRoute
   DataManagementRoute: typeof DataManagementRoute
-  EnergyRoute: typeof EnergyRoute
+  EnergyRoute: typeof EnergyRouteWithChildren
   ImportExportRoute: typeof ImportExportRoute
   IndustrialClustersRoute: typeof IndustrialClustersRoute
   IndustryDatabaseRoute: typeof IndustryDatabaseRoute
@@ -394,6 +490,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkflowRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/energy/carbon': {
+      id: '/energy/carbon'
+      path: '/carbon'
+      fullPath: '/energy/carbon'
+      preLoaderRoute: typeof EnergyCarbonRouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/charging-stations': {
+      id: '/energy/charging-stations'
+      path: '/charging-stations'
+      fullPath: '/energy/charging-stations'
+      preLoaderRoute: typeof EnergyChargingStationsRouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/consumption': {
+      id: '/energy/consumption'
+      path: '/consumption'
+      fullPath: '/energy/consumption'
+      preLoaderRoute: typeof EnergyConsumptionRouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/gis': {
+      id: '/energy/gis'
+      path: '/gis'
+      fullPath: '/energy/gis'
+      preLoaderRoute: typeof EnergyGisRouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/grid': {
+      id: '/energy/grid'
+      path: '/grid'
+      fullPath: '/energy/grid'
+      preLoaderRoute: typeof EnergyGridRouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/grid-safety': {
+      id: '/energy/grid-safety'
+      path: '/grid-safety'
+      fullPath: '/energy/grid-safety'
+      preLoaderRoute: typeof EnergyGridSafetyRouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/projects': {
+      id: '/energy/projects'
+      path: '/projects'
+      fullPath: '/energy/projects'
+      preLoaderRoute: typeof EnergyProjectsRouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/rooftop-solar': {
+      id: '/energy/rooftop-solar'
+      path: '/rooftop-solar'
+      fullPath: '/energy/rooftop-solar'
+      preLoaderRoute: typeof EnergyRooftopSolarRouteImport
+      parentRoute: typeof EnergyRoute
+    }
     '/enterprises/$id': {
       id: '/enterprises/$id'
       path: '/enterprises/$id'
@@ -432,6 +584,31 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface EnergyRouteChildren {
+  EnergyCarbonRoute: typeof EnergyCarbonRoute
+  EnergyChargingStationsRoute: typeof EnergyChargingStationsRoute
+  EnergyConsumptionRoute: typeof EnergyConsumptionRoute
+  EnergyGisRoute: typeof EnergyGisRoute
+  EnergyGridRoute: typeof EnergyGridRoute
+  EnergyGridSafetyRoute: typeof EnergyGridSafetyRoute
+  EnergyProjectsRoute: typeof EnergyProjectsRoute
+  EnergyRooftopSolarRoute: typeof EnergyRooftopSolarRoute
+}
+
+const EnergyRouteChildren: EnergyRouteChildren = {
+  EnergyCarbonRoute: EnergyCarbonRoute,
+  EnergyChargingStationsRoute: EnergyChargingStationsRoute,
+  EnergyConsumptionRoute: EnergyConsumptionRoute,
+  EnergyGisRoute: EnergyGisRoute,
+  EnergyGridRoute: EnergyGridRoute,
+  EnergyGridSafetyRoute: EnergyGridSafetyRoute,
+  EnergyProjectsRoute: EnergyProjectsRoute,
+  EnergyRooftopSolarRoute: EnergyRooftopSolarRoute,
+}
+
+const EnergyRouteWithChildren =
+  EnergyRoute._addFileChildren(EnergyRouteChildren)
+
 interface TrangThongTinRouteChildren {
   TrangThongTinLanhDaoDonViRoute: typeof TrangThongTinLanhDaoDonViRoute
   TrangThongTinDauTuSlugRoute: typeof TrangThongTinDauTuSlugRoute
@@ -456,7 +633,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   DashboardRoute: DashboardRoute,
   DataManagementRoute: DataManagementRoute,
-  EnergyRoute: EnergyRoute,
+  EnergyRoute: EnergyRouteWithChildren,
   ImportExportRoute: ImportExportRoute,
   IndustrialClustersRoute: IndustrialClustersRoute,
   IndustryDatabaseRoute: IndustryDatabaseRoute,
