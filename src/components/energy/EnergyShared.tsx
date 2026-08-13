@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
+  ArrowRight,
   BarChart3,
   BatteryCharging,
   Cable,
@@ -116,9 +117,9 @@ export function EnergyFilterBar({
   onRefresh: () => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
       <Select value={period} onValueChange={onPeriodChange}>
-        <SelectTrigger className="h-8 w-[140px] bg-card">
+        <SelectTrigger className="h-8 w-full min-w-[136px] bg-card sm:w-[140px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -130,7 +131,7 @@ export function EnergyFilterBar({
         </SelectContent>
       </Select>
       <Select value={district} onValueChange={onDistrictChange}>
-        <SelectTrigger className="h-8 w-[138px] bg-card">
+        <SelectTrigger className="h-8 w-full min-w-[132px] bg-card sm:w-[138px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -141,7 +142,7 @@ export function EnergyFilterBar({
           ))}
         </SelectContent>
       </Select>
-      <Button variant="outline" size="sm" onClick={onRefresh}>
+      <Button variant="outline" size="sm" onClick={onRefresh} className="shrink-0">
         <RefreshCw className="size-4" /> Làm mới
       </Button>
     </div>
@@ -266,24 +267,75 @@ export function ModulePreviewGrid() {
       <h2 className="mb-3 text-center text-sm font-semibold uppercase tracking-wide text-navy">
         Một số màn hình chi tiết
       </h2>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
-        {ENERGY_MODULES.slice(1).map((item) => (
-          <Link
-            key={item.to}
-            to={item.to as never}
-            className="gov-card flex min-h-36 flex-col gap-2 p-3 transition-colors hover:border-gov/50 hover:bg-surface"
-          >
-            <span className="flex size-9 items-center justify-center rounded-md bg-gov/10 text-gov">
-              <item.icon className="size-4.5" />
-            </span>
-            <span className="text-sm font-semibold leading-snug text-navy">{item.label}</span>
-            <span className="line-clamp-2 text-xs text-muted-foreground">{item.description}</span>
-          </Link>
-        ))}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {ENERGY_MODULES.slice(1).map((item) => {
+          const detail = MODULE_VIEW_DETAILS[item.to] ?? {
+            scope: item.description,
+            output: "Màn hình dữ liệu chi tiết theo lớp nghiệp vụ.",
+          };
+          return (
+            <Link
+              key={item.to}
+              to={item.to as never}
+              preload="intent"
+              className="gov-card group flex min-h-44 flex-col gap-2 p-3 transition-colors hover:border-gov/50 hover:bg-surface"
+            >
+              <span className="flex size-9 items-center justify-center rounded-md bg-gov/10 text-gov">
+                <item.icon className="size-4.5" />
+              </span>
+              <span className="text-sm font-semibold leading-snug text-navy">{item.label}</span>
+              <span className="line-clamp-2 text-xs leading-5 text-muted-foreground">
+                {detail.scope}
+              </span>
+              <span className="mt-auto rounded-md bg-surface px-2 py-1.5 text-xs leading-5 text-muted-foreground">
+                {detail.output}
+              </span>
+              <span className="flex items-center gap-1 text-xs font-semibold text-gov">
+                Mở màn hình
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
 }
+
+const MODULE_VIEW_DETAILS: Record<string, { scope: string; output: string }> = {
+  "/energy/gis": {
+    scope: "Bản đồ lớp lưới, trạm, nguồn điện, ĐMT mái nhà, phụ tải, sự cố, carbon và trạm sạc.",
+    output: "Đã có dashboard GIS và hồ sơ đối tượng.",
+  },
+  "/energy/grid": {
+    scope: "Trạm 500/220/110/22kV, tuyến điện, trụ điện, quy hoạch, khả năng mang tải.",
+    output: "Đã có danh sách trạm, KPI và drawer hồ sơ.",
+  },
+  "/energy/projects": {
+    scope: "Dự án mặt trời, gió, sinh khối, thủy điện, điện rác, LNG hiện hữu và quy hoạch.",
+    output: "Đã có danh sách dự án, công suất, đấu nối.",
+  },
+  "/energy/rooftop-solar": {
+    scope: "Hệ thống ĐMT mái nhà, điểm đấu nối, tự tiêu thụ, hòa lưới và khả năng tiếp nhận.",
+    output: "Đã có danh sách hệ thống và hồ sơ kỹ thuật.",
+  },
+  "/energy/consumption": {
+    scope: "Phụ tải, điện năng theo kỳ, cơ sở sử dụng năng lượng trọng điểm và tiết kiệm điện.",
+    output: "Đã có danh sách tiêu thụ và KPI phụ tải.",
+  },
+  "/energy/grid-safety": {
+    scope: "Sự cố lưới điện, hành lang an toàn, phạm vi ảnh hưởng và tiến độ khôi phục.",
+    output: "Đã có danh sách sự cố và hồ sơ xử lý.",
+  },
+  "/energy/carbon": {
+    scope: "Nguồn phát thải, CO2e, cường độ carbon, dự án giảm phát thải và tín chỉ carbon.",
+    output: "Đã có danh sách nguồn phát thải và KPI carbon.",
+  },
+  "/energy/charging-stations": {
+    scope: "Trạm sạc điện thông minh, công suất, chuẩn sạc, cổng trống và vùng cấp điện.",
+    output: "Đã có danh sách trạm sạc và hồ sơ kỹ thuật.",
+  },
+};
 
 export function SearchShell({
   value,

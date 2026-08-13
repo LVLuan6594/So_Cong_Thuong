@@ -91,8 +91,14 @@ function Page() {
   const [selectedProject, setSelectedProject] = useState<PowerProject | null>(null);
   const [selectedMapEntity, setSelectedMapEntity] = useState<EnergyMapEntity | null>(null);
 
-  const overviewQuery = useQuery({ queryKey: ["energy", "overview", period, district], queryFn: getEnergyOverview });
-  const substationsQuery = useQuery({ queryKey: ["energy", "substations"], queryFn: getSubstations });
+  const overviewQuery = useQuery({
+    queryKey: ["energy", "overview", period, district],
+    queryFn: getEnergyOverview,
+  });
+  const substationsQuery = useQuery({
+    queryKey: ["energy", "substations"],
+    queryFn: getSubstations,
+  });
   const projectsQuery = useQuery({ queryKey: ["energy", "projects"], queryFn: getPowerProjects });
   const incidentsQuery = useQuery({ queryKey: ["energy", "incidents"], queryFn: getGridIncidents });
   const gisQuery = useQuery({ queryKey: ["energy", "gis"], queryFn: getEnergyGisData });
@@ -128,12 +134,18 @@ function Page() {
   const gisData = gisQuery.data;
 
   const scopedSubstations = useMemo(
-    () => filterByDistrict(substations, district).sort((a, b) => (b.loadFactor ?? 0) - (a.loadFactor ?? 0)),
+    () =>
+      filterByDistrict(substations, district).sort(
+        (a, b) => (b.loadFactor ?? 0) - (a.loadFactor ?? 0),
+      ),
     [district, substations],
   );
   const scopedProjects = useMemo(() => filterByDistrict(projects, district), [district, projects]);
   const activeIncidents = useMemo(
-    () => filterByDistrict(incidents, district).filter((i) => !["Hoàn thành", "Đã xử lý"].includes(i.progress ?? "")),
+    () =>
+      filterByDistrict(incidents, district).filter(
+        (i) => !["Hoàn thành", "Đã xử lý"].includes(i.progress ?? ""),
+      ),
     [district, incidents],
   );
 
@@ -181,17 +193,65 @@ function Page() {
         }
       />
 
-      <div className="grid grid-cols-1 gap-4 p-6 2xl:grid-cols-[minmax(0,1fr)_290px]">
+      <div className="grid grid-cols-1 gap-4 p-4 sm:p-6 2xl:grid-cols-[minmax(0,1fr)_290px]">
         <div className="space-y-4">
-          <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8">
-            <StatCard label="Tổng công suất nguồn" value={`${fmt(overview.kpis.totalCapacityMw)} MW`} delta="▲ 8,2% so với Q1/2026" icon={Factory} tone="gov" />
-            <StatCard label="Sản lượng điện" value={`${fmt(overview.kpis.electricityOutputGwh)} GWh`} delta="▲ 6,7%" icon={Zap} tone="gov" />
-            <StatCard label="Tỷ lệ NLTT" value={`${overview.kpis.renewableRatioPct}%`} delta="▲ 5,3%" icon={Leaf} tone="success" />
-            <StatCard label="Trạm biến áp" value={overview.kpis.substations} delta="▲ 4 trạm mới" icon={Cable} tone="teal" />
-            <StatCard label="Trạm quá tải" value={overview.kpis.overloadedSubstations} delta="▼ 3 trạm" icon={AlertTriangle} tone="danger" />
-            <StatCard label="Sự cố đang xử lý" value={overview.kpis.incidentsActive} delta="▼ 2 sự cố" icon={ShieldAlert} tone="danger" />
-            <StatCard label="Phát thải CO2e" value={`${overview.kpis.co2eKilotons} tấn`} delta="▼ 2,1%" icon={Cloud} tone="analytics" />
-            <StatCard label="Trạm sạc điện" value={overview.kpis.chargingStations} delta="▲ 12 trạm mới" icon={PlugZap} tone="success" />
+          <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              label="Tổng công suất nguồn"
+              value={`${fmt(overview.kpis.totalCapacityMw)} MW`}
+              delta="▲ 8,2% so với Q1/2026"
+              icon={Factory}
+              tone="gov"
+            />
+            <StatCard
+              label="Sản lượng điện"
+              value={`${fmt(overview.kpis.electricityOutputGwh)} GWh`}
+              delta="▲ 6,7%"
+              icon={Zap}
+              tone="gov"
+            />
+            <StatCard
+              label="Tỷ lệ NLTT"
+              value={`${overview.kpis.renewableRatioPct}%`}
+              delta="▲ 5,3%"
+              icon={Leaf}
+              tone="success"
+            />
+            <StatCard
+              label="Trạm biến áp"
+              value={overview.kpis.substations}
+              delta="▲ 4 trạm mới"
+              icon={Cable}
+              tone="teal"
+            />
+            <StatCard
+              label="Trạm quá tải"
+              value={overview.kpis.overloadedSubstations}
+              delta="▼ 3 trạm"
+              icon={AlertTriangle}
+              tone="danger"
+            />
+            <StatCard
+              label="Sự cố đang xử lý"
+              value={overview.kpis.incidentsActive}
+              delta="▼ 2 sự cố"
+              icon={ShieldAlert}
+              tone="danger"
+            />
+            <StatCard
+              label="Phát thải CO2e"
+              value={`${overview.kpis.co2eKilotons} tấn`}
+              delta="▼ 2,1%"
+              icon={Cloud}
+              tone="analytics"
+            />
+            <StatCard
+              label="Trạm sạc điện"
+              value={overview.kpis.chargingStations}
+              delta="▲ 12 trạm mới"
+              icon={PlugZap}
+              tone="success"
+            />
           </section>
 
           <section className="grid grid-cols-1 gap-4 xl:grid-cols-3">
@@ -200,7 +260,13 @@ function Page() {
                 <div className="relative min-h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={overview.sourceMix} dataKey="capacityMw" innerRadius={58} outerRadius={92} paddingAngle={2}>
+                      <Pie
+                        data={overview.sourceMix}
+                        dataKey="capacityMw"
+                        innerRadius={58}
+                        outerRadius={92}
+                        paddingAngle={2}
+                      >
                         {overview.sourceMix.map((item, index) => (
                           <Cell key={item.name} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                         ))}
@@ -210,7 +276,9 @@ function Page() {
                   </ResponsiveContainer>
                   <div className="pointer-events-none absolute inset-0 grid place-items-center text-center">
                     <div>
-                      <p className="text-2xl font-bold text-navy">{fmt(overview.kpis.totalCapacityMw)}</p>
+                      <p className="text-2xl font-bold text-navy">
+                        {fmt(overview.kpis.totalCapacityMw)}
+                      </p>
                       <p className="text-xs font-semibold uppercase text-muted-foreground">MW</p>
                     </div>
                   </div>
@@ -219,9 +287,15 @@ function Page() {
                   {overview.sourceMix.map((item, index) => {
                     const pct = (item.capacityMw / overview.kpis.totalCapacityMw) * 100;
                     return (
-                      <p key={item.name} className="flex items-center justify-between gap-2 text-xs">
+                      <p
+                        key={item.name}
+                        className="flex items-center justify-between gap-2 text-xs"
+                      >
                         <span className="flex min-w-0 items-center gap-2">
-                          <span className="size-2.5 rounded-sm" style={{ background: CHART_COLORS[index % CHART_COLORS.length] }} />
+                          <span
+                            className="size-2.5 rounded-sm"
+                            style={{ background: CHART_COLORS[index % CHART_COLORS.length] }}
+                          />
                           <span className="truncate text-navy">{item.name}</span>
                         </span>
                         <span className="shrink-0 tabular-nums text-muted-foreground">
@@ -255,8 +329,22 @@ function Page() {
                   <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={11} />
                   <YAxis tickLine={false} axisLine={false} fontSize={11} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="previous" name="Năm trước" stroke="#1565C0" strokeWidth={2} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="current" name="Năm hiện tại" stroke="#00897B" strokeWidth={2} dot={{ r: 3 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="previous"
+                    name="Năm trước"
+                    stroke="#1565C0"
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="current"
+                    name="Năm hiện tại"
+                    stroke="#00897B"
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -276,9 +364,18 @@ function Page() {
               }
             >
               <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={overview.consumptionBySector} margin={{ left: -18, right: 12, top: 8 }}>
+                <BarChart
+                  data={overview.consumptionBySector}
+                  margin={{ left: -18, right: 12, top: 8 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="sector" tickLine={false} axisLine={false} fontSize={10} interval={0} />
+                  <XAxis
+                    dataKey="sector"
+                    tickLine={false}
+                    axisLine={false}
+                    fontSize={10}
+                    interval={0}
+                  />
                   <YAxis tickLine={false} axisLine={false} fontSize={11} />
                   <Tooltip />
                   <Bar dataKey="value" name="Tiêu thụ" fill="#1565C0" radius={[5, 5, 0, 0]} />
@@ -287,18 +384,19 @@ function Page() {
             </ChartCard>
           </section>
 
-          <section className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_1.15fr_.68fr_1.1fr]">
+          <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
             <ChartCard title="Top 5 trạm biến áp tải cao">
-              <SimpleSubstationTable rows={scopedSubstations.slice(0, 5)} onSelect={setSelectedSubstation} />
+              <SimpleSubstationTable
+                rows={scopedSubstations.slice(0, 5)}
+                onSelect={setSelectedSubstation}
+              />
             </ChartCard>
 
             <ChartCard
               title="Dự án nổi bật"
               actions={
                 <Button asChild variant="ghost" size="sm" className="text-gov">
-                  <Link to={"/energy/projects" as never}>
-                    Xem chi tiết
-                  </Link>
+                  <Link to={"/energy/projects" as never}>Xem chi tiết</Link>
                 </Button>
               }
             >
@@ -309,7 +407,12 @@ function Page() {
               <div className="relative h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={overview.incidentBreakdown} dataKey="value" innerRadius={46} outerRadius={72}>
+                    <Pie
+                      data={overview.incidentBreakdown}
+                      dataKey="value"
+                      innerRadius={46}
+                      outerRadius={72}
+                    >
                       {overview.incidentBreakdown.map((item) => (
                         <Cell key={item.severity} fill={INCIDENT_COLORS[item.severity]} />
                       ))}
@@ -341,11 +444,10 @@ function Page() {
 
             <ChartCard
               title="Bản đồ tổng hợp năng lượng"
+              className="xl:col-span-2"
               actions={
                 <Button asChild variant="ghost" size="sm" className="text-gov">
-                  <Link to={"/energy/gis" as never}>
-                    Xem GIS
-                  </Link>
+                  <Link to={"/energy/gis" as never}>Xem GIS</Link>
                 </Button>
               }
             >
@@ -354,7 +456,11 @@ function Page() {
                   data={gisData}
                   compact
                   height={292}
-                  selectedKey={selectedMapEntity ? `${selectedMapEntity.kind}:${selectedMapEntity.item.id}` : null}
+                  selectedKey={
+                    selectedMapEntity
+                      ? `${selectedMapEntity.kind}:${selectedMapEntity.item.id}`
+                      : null
+                  }
                   onSelectEntity={setSelectedMapEntity}
                 />
               </div>
@@ -375,7 +481,10 @@ function Page() {
                 "Thúc đẩy phát triển năng lượng tái tạo, giảm phát thải carbon",
                 "Minh bạch thông tin, phục vụ quản lý điều hành hiệu quả",
               ].map((item) => (
-                <p key={item} className="rounded-md bg-surface px-3 py-2 text-center text-xs font-medium text-navy">
+                <p
+                  key={item}
+                  className="rounded-md bg-surface px-3 py-2 text-center text-xs font-medium text-navy"
+                >
                   {item}
                 </p>
               ))}
@@ -438,7 +547,13 @@ function Page() {
         open={!!selectedMapEntity}
         onOpenChange={(value) => !value && setSelectedMapEntity(null)}
         title="Hồ sơ GIS năng lượng"
-        description={selectedMapEntity ? ("name" in selectedMapEntity.item ? selectedMapEntity.item.name : selectedMapEntity.item.code) : undefined}
+        description={
+          selectedMapEntity
+            ? "name" in selectedMapEntity.item
+              ? selectedMapEntity.item.name
+              : selectedMapEntity.item.code
+            : undefined
+        }
       >
         {selectedMapEntity ? <MapEntityDetail entity={selectedMapEntity} /> : null}
       </EntityDetailDrawer>
@@ -482,11 +597,19 @@ function SimpleSubstationTable({
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.id} onClick={() => onSelect(row)} className="cursor-pointer border-t border-border hover:bg-surface">
+            <tr
+              key={row.id}
+              onClick={() => onSelect(row)}
+              className="cursor-pointer border-t border-border hover:bg-surface"
+            >
               <td className="py-2 pr-3 font-medium text-navy">{row.name}</td>
               <td className="py-2 pr-3 text-muted-foreground">{row.voltageLevel}</td>
-              <td className={cn("py-2 pr-3 font-semibold tabular-nums", loadColor(row.loadFactor))}>{row.loadFactor ?? 0}%</td>
-              <td className={cn("py-2 font-semibold tabular-nums", loadColor(row.loadFactor))}>{((row.loadFactor ?? 0) / 100).toFixed(2)}</td>
+              <td className={cn("py-2 pr-3 font-semibold tabular-nums", loadColor(row.loadFactor))}>
+                {row.loadFactor ?? 0}%
+              </td>
+              <td className={cn("py-2 font-semibold tabular-nums", loadColor(row.loadFactor))}>
+                {((row.loadFactor ?? 0) / 100).toFixed(2)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -495,7 +618,13 @@ function SimpleSubstationTable({
   );
 }
 
-function ProjectTable({ rows, onSelect }: { rows: PowerProject[]; onSelect: (row: PowerProject) => void }) {
+function ProjectTable({
+  rows,
+  onSelect,
+}: {
+  rows: PowerProject[];
+  onSelect: (row: PowerProject) => void;
+}) {
   if (!rows.length) return <EnergyEmpty title="Chưa có dữ liệu dự án" />;
   return (
     <div className="overflow-x-auto">
@@ -510,11 +639,19 @@ function ProjectTable({ rows, onSelect }: { rows: PowerProject[]; onSelect: (row
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.id} onClick={() => onSelect(row)} className="cursor-pointer border-t border-border hover:bg-surface">
+            <tr
+              key={row.id}
+              onClick={() => onSelect(row)}
+              className="cursor-pointer border-t border-border hover:bg-surface"
+            >
               <td className="py-2 pr-3 font-medium text-navy">{row.name}</td>
               <td className="py-2 pr-3 text-muted-foreground">{row.type}</td>
-              <td className="py-2 pr-3 font-semibold tabular-nums text-navy">{row.designCapacityMw ?? 0} MW</td>
-              <td className="py-2"><EnergyStatusBadge status={row.status} /></td>
+              <td className="py-2 pr-3 font-semibold tabular-nums text-navy">
+                {row.designCapacityMw ?? 0} MW
+              </td>
+              <td className="py-2">
+                <EnergyStatusBadge status={row.status} />
+              </td>
             </tr>
           ))}
         </tbody>
@@ -541,7 +678,11 @@ function SubstationDetail({ item }: { item: Substation }) {
           { label: "Số MBA", value: item.transformerCount },
           { label: "Loại MBA", value: item.transformerType },
           { label: "Khu vực cấp điện", value: item.supplyArea },
-          { label: "Tọa độ", value: item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined },
+          {
+            label: "Tọa độ",
+            value:
+              item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined,
+          },
         ]}
       />
     </div>
@@ -563,7 +704,11 @@ function ProjectDetail({ item }: { item: PowerProject }) {
           { label: "Trạm đấu nối", value: item.substationCode },
           { label: "Điện áp", value: item.gridVoltage },
           { label: "Địa bàn", value: item.district },
-          { label: "Tọa độ", value: item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined },
+          {
+            label: "Tọa độ",
+            value:
+              item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined,
+          },
         ]}
       />
     </div>

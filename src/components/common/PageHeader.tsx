@@ -26,7 +26,7 @@ export function PageHeader({
   if (variant === "panel") {
     const Icon = icon;
     return (
-      <div className="mx-6 mt-6 mb-4 overflow-hidden rounded-xl border border-border bg-card shadow-panel">
+      <div className="mx-4 mt-4 mb-4 overflow-hidden rounded-xl border border-border bg-card shadow-panel sm:mx-6 sm:mt-6">
         <div className="h-1 bg-gradient-to-r from-navy via-gov to-teal" />
         <div className="px-6 py-4">
           <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -48,13 +48,13 @@ export function PageHeader({
             ))}
           </nav>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-3">
               {Icon ? (
                 <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gov to-info text-white shadow-sm">
                   <Icon className="size-5" />
                 </div>
               ) : null}
-              <div>
+              <div className="min-w-0">
                 <h1 className="text-xl font-semibold tracking-tight text-navy uppercase">
                   {title}
                 </h1>

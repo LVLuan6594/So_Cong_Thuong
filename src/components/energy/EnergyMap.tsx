@@ -5,7 +5,9 @@ import type {
   EmissionSource,
   EnergyGisData,
   GridIncident,
+  KeyEnergyConsumer,
   PowerProject,
+  RooftopSolar,
   Substation,
 } from "@/lib/energy-types";
 import { cn } from "@/lib/utils";
@@ -24,7 +26,8 @@ export type EnergyMapLayerKey =
   | "rooftopSolar"
   | "incidents"
   | "emissions"
-  | "chargingStations";
+  | "chargingStations"
+  | "keyConsumers";
 
 const DEFAULT_LAYERS: EnergyMapLayerKey[] = [
   "substations",
@@ -37,6 +40,7 @@ const DEFAULT_LAYERS: EnergyMapLayerKey[] = [
   "incidents",
   "emissions",
   "chargingStations",
+  "keyConsumers",
 ];
 
 const LAYER_LABEL: Record<EnergyMapLayerKey, string> = {
@@ -51,14 +55,17 @@ const LAYER_LABEL: Record<EnergyMapLayerKey, string> = {
   incidents: "Sự cố",
   emissions: "Phát thải Carbon",
   chargingStations: "Trạm sạc",
+  keyConsumers: "Phụ tải trọng điểm",
 };
 
 type EnergyMapEntity =
   | { kind: "substation"; item: Substation }
   | { kind: "project"; item: PowerProject }
+  | { kind: "rooftop"; item: RooftopSolar }
   | { kind: "incident"; item: GridIncident }
   | { kind: "emission"; item: EmissionSource }
-  | { kind: "charging"; item: ChargingStation };
+  | { kind: "charging"; item: ChargingStation }
+  | { kind: "consumer"; item: KeyEnergyConsumer };
 
 function pointKey(entity: EnergyMapEntity) {
   return `${entity.kind}:${entity.item.id}`;
@@ -71,7 +78,9 @@ function rowHtml(label: string, value: string | number | undefined) {
 function markerColor(kind: EnergyMapEntity["kind"], item: EnergyMapEntity["item"]) {
   if (kind === "incident") return "#C62828";
   if (kind === "charging") return "#7C3AED";
+  if (kind === "consumer") return "#0F766E";
   if (kind === "emission") return "#2E7D32";
+  if (kind === "rooftop") return "#F59E0B";
   if (kind === "project") return "#E59A23";
   if ("loadFactor" in item && (item.loadFactor ?? 0) >= 100) return "#C62828";
   return "#1565C0";
@@ -83,11 +92,15 @@ function iconHtml(kind: EnergyMapEntity["kind"], color: string, selected: boolea
       ? "⚡"
       : kind === "project"
         ? "✦"
-        : kind === "incident"
-          ? "!"
-          : kind === "emission"
-            ? "CO₂"
-            : "EV";
+        : kind === "rooftop"
+          ? "☀"
+          : kind === "incident"
+            ? "!"
+            : kind === "emission"
+              ? "CO₂"
+              : kind === "consumer"
+                ? "kW"
+                : "EV";
   const ring = selected ? "box-shadow:0 0 0 4px rgba(21,101,192,.25);" : "";
   return `<div style="width:28px;height:28px;border-radius:999px;background:${color};border:2px solid #fff;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:800;${ring}">${glyph}</div>`;
 }
@@ -114,6 +127,16 @@ function buildPopup(entity: EnergyMapEntity, onOpen: () => void): HTMLElement {
       ${rowHtml("Địa bàn", p.district)}
       ${rowHtml("Trạng thái", p.status)}
       <button class="energy-open-profile" style="margin-top:10px;width:100%;padding:7px 10px;border:0;border-radius:7px;background:#1565C0;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Xem hồ sơ</button>`;
+  } else if (entity.kind === "rooftop") {
+    const r = entity.item;
+    el.innerHTML = `<div style="font-weight:700;color:#0f2a4a;margin-bottom:8px">${r.owner}</div>
+      ${rowHtml("Mã hệ thống", r.code)}
+      ${rowHtml("Loại hình", r.customerType)}
+      ${rowHtml("Công suất", `${r.installedCapacityKw ?? 0} kWp`)}
+      ${rowHtml("Điểm đấu nối", r.connection.point)}
+      ${rowHtml("Tiếp nhận còn lại", `${r.connection.hostingCapacityKw} kW`)}
+      ${rowHtml("Trạng thái", r.status)}
+      <button class="energy-open-profile" style="margin-top:10px;width:100%;padding:7px 10px;border:0;border-radius:7px;background:#1565C0;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Xem hồ sơ</button>`;
   } else if (entity.kind === "incident") {
     const i = entity.item;
     el.innerHTML = `<div style="font-weight:700;color:#0f2a4a;margin-bottom:8px">${i.code}</div>
@@ -128,6 +151,15 @@ function buildPopup(entity: EnergyMapEntity, onOpen: () => void): HTMLElement {
       ${rowHtml("Nguồn", e.sourceType)}
       ${rowHtml("CO2e", `${e.co2e.toLocaleString("vi-VN")} tấn`)}
       ${rowHtml("Cường độ", `${e.intensity} gCO2e/kWh`)}
+      <button class="energy-open-profile" style="margin-top:10px;width:100%;padding:7px 10px;border:0;border-radius:7px;background:#1565C0;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Xem hồ sơ</button>`;
+  } else if (entity.kind === "consumer") {
+    const k = entity.item;
+    el.innerHTML = `<div style="font-weight:700;color:#0f2a4a;margin-bottom:8px">${k.name}</div>
+      ${rowHtml("Loại đơn vị", k.type)}
+      ${rowHtml("Lĩnh vực", k.sector)}
+      ${rowHtml("Tiêu thụ", `${k.consumptionKwh.toLocaleString("vi-VN")} kWh`)}
+      ${rowHtml("Cực đại", `${k.maxDemandKw.toLocaleString("vi-VN")} kW`)}
+      ${rowHtml("Đánh giá", k.savingAssessment)}
       <button class="energy-open-profile" style="margin-top:10px;width:100%;padding:7px 10px;border:0;border-radius:7px;background:#1565C0;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Xem hồ sơ</button>`;
   } else {
     const c = entity.item;
@@ -174,6 +206,9 @@ export function EnergyMap({
       ...data.projects
         .filter((item) => item.latitude && item.longitude)
         .map((item) => ({ kind: "project" as const, item })),
+      ...data.rooftopSolar
+        .filter((item) => item.latitude && item.longitude)
+        .map((item) => ({ kind: "rooftop" as const, item })),
       ...data.incidents
         .filter((item) => item.latitude && item.longitude)
         .map((item) => ({ kind: "incident" as const, item })),
@@ -183,12 +218,16 @@ export function EnergyMap({
       ...data.chargingStations
         .filter((item) => item.latitude && item.longitude)
         .map((item) => ({ kind: "charging" as const, item })),
+      ...data.keyConsumers
+        .filter((item) => item.latitude && item.longitude)
+        .map((item) => ({ kind: "consumer" as const, item })),
     ],
     [data],
   );
 
   useEffect(() => {
     let cancelled = false;
+    const markers = markerByKeyRef.current;
     (async () => {
       const L = await import("leaflet");
       if (cancelled || !containerRef.current) return;
@@ -207,7 +246,7 @@ export function EnergyMap({
       mapRef.current?.remove();
       mapRef.current = null;
       layerRef.current = null;
-      markerByKeyRef.current.clear();
+      markers.clear();
       setReady(false);
     };
   }, [compact]);
@@ -288,9 +327,11 @@ export function EnergyMap({
         const show =
           (entity.kind === "substation" && visibleLayers.includes("substations")) ||
           (entity.kind === "project" && visibleLayers.includes("projects")) ||
+          (entity.kind === "rooftop" && visibleLayers.includes("rooftopSolar")) ||
           (entity.kind === "incident" && visibleLayers.includes("incidents")) ||
           (entity.kind === "emission" && visibleLayers.includes("emissions")) ||
-          (entity.kind === "charging" && visibleLayers.includes("chargingStations"));
+          (entity.kind === "charging" && visibleLayers.includes("chargingStations")) ||
+          (entity.kind === "consumer" && visibleLayers.includes("keyConsumers"));
         if (!show) return;
         const lat = entity.item.latitude;
         const lng = entity.item.longitude;
@@ -380,6 +421,8 @@ export function EnergyMap({
       <div className="absolute bottom-3 right-3 z-[500] rounded-md border border-border bg-card/95 p-2 text-xs shadow-panel backdrop-blur">
         <Legend color="bg-gov" label="Trạm biến áp" />
         <Legend color="bg-warning" label="Dự án nguồn điện" />
+        <Legend color="bg-amber-500" label="ĐMT mái nhà" />
+        <Legend color="bg-teal" label="Phụ tải trọng điểm" />
         <Legend color="bg-destructive" label="Sự cố" />
         <Legend color="bg-analytics" label="Trạm sạc" />
       </div>
