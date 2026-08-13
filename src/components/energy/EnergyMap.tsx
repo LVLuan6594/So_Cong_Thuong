@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { LayerGroup, Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
+import type {
+  LayerGroup,
+  Map as LeafletMap,
+  Marker as LeafletMarker,
+  Polyline as LeafletPolyline,
+} from "leaflet";
 import type {
   ChargingStation,
   EmissionSource,
@@ -57,6 +62,17 @@ const LAYER_LABEL: Record<EnergyMapLayerKey, string> = {
   chargingStations: "Trạm sạc",
   keyConsumers: "Phụ tải trọng điểm",
 };
+
+/** Nhóm các layer con thành một ô tích trong bảng điều khiển (vd "Lưới điện" gộp 4 cấp điện áp). */
+export interface EnergyMapLayerOption {
+  label: string;
+  keys: EnergyMapLayerKey[];
+}
+
+// Mặc định: mỗi lớp một ô tích riêng — giữ nguyên hành vi cũ khi không truyền layerOptions.
+const DEFAULT_LAYER_OPTIONS: EnergyMapLayerOption[] = (
+  Object.keys(LAYER_LABEL) as EnergyMapLayerKey[]
+).map((key) => ({ label: LAYER_LABEL[key], keys: [key] }));
 
 type EnergyMapEntity =
   | { kind: "substation"; item: Substation }
@@ -178,25 +194,49 @@ function buildPopup(entity: EnergyMapEntity, onOpen: () => void): HTMLElement {
 export function EnergyMap({
   data,
   selectedKey,
+  selectedLineKey,
   onSelectEntity,
   height = 560,
   compact = false,
+  fill = false,
+  layerOptions,
+  initialLayers,
 }: {
   data: EnergyGisData;
   selectedKey?: string | null;
+  selectedLineKey?: string | null;
   onSelectEntity?: (entity: EnergyMapEntity) => void;
   height?: number;
   compact?: boolean;
+  /** Toàn màn hình: dùng đúng chiều cao pixel (bỏ giới hạn 70vh). */
+  fill?: boolean;
+  layerOptions?: EnergyMapLayerOption[];
+  initialLayers?: EnergyMapLayerKey[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const layerRef = useRef<LayerGroup | null>(null);
   const markerByKeyRef = useRef<Map<string, LeafletMarker>>(new Map());
+  const lineRefsRef = useRef<Map<string, LeafletPolyline>>(new Map());
   const [ready, setReady] = useState(false);
   const [layersOpen, setLayersOpen] = useState(!compact);
-  const [visibleLayers, setVisibleLayers] = useState<EnergyMapLayerKey[]>(
-    compact ? ["substations", "projects", "incidents", "chargingStations"] : DEFAULT_LAYERS,
+  const [visibleLayers, setVisibleLayers] = useState<EnergyMapLayerKey[]>(() =>
+    initialLayers
+      ? initialLayers
+      : layerOptions
+        ? layerOptions.flatMap((option) => option.keys)
+        : compact
+          ? ["substations", "projects", "incidents", "chargingStations"]
+          : DEFAULT_LAYERS,
   );
+  const optionList = layerOptions ?? DEFAULT_LAYER_OPTIONS;
+
+  // Khi đổi kích thước (fullscreen / resize), ép Leaflet đo lại container ngay sau khi layout xong.
+  useEffect(() => {
+    if (!ready) return;
+    const id = requestAnimationFrame(() => mapRef.current?.invalidateSize({ animate: false }));
+    return () => cancelAnimationFrame(id);
+  }, [fill, height, ready]);
 
   const points = useMemo<EnergyMapEntity[]>(
     () => [
@@ -229,6 +269,7 @@ export function EnergyMap({
     let cancelled = false;
     let observer: ResizeObserver | undefined;
     const markers = markerByKeyRef.current;
+    const lineRefs = lineRefsRef.current;
     const onResize = () => {
       if (mapRef.current && containerRef.current) mapRef.current.invalidateSize();
     };
@@ -260,6 +301,7 @@ export function EnergyMap({
       mapRef.current = null;
       layerRef.current = null;
       markers.clear();
+      lineRefs.clear();
       setReady(false);
     };
   }, [compact]);
@@ -274,6 +316,7 @@ export function EnergyMap({
       if (cancelled) return;
       layer.clearLayers();
       markerByKeyRef.current.clear();
+      lineRefsRef.current.clear();
 
       data.lines.forEach((line) => {
         if (!line.route?.length) return;
@@ -294,7 +337,7 @@ export function EnergyMap({
               : line.voltageLevel === "110kV"
                 ? "#1565C0"
                 : "#00897B";
-        L.polyline(line.route, { color, weight: compact ? 2 : 3, opacity: 0.82 })
+        const polyline = L.polyline(line.route, { color, weight: compact ? 2 : 3, opacity: 0.82 })
           .addTo(layer)
           .bindPopup(
             `<div style="min-width:230px;font-family:Inter,system-ui,sans-serif">
@@ -310,6 +353,7 @@ export function EnergyMap({
               ${rowHtml("Trạng thái", line.status)}
             </div>`,
           );
+        lineRefsRef.current.set(line.id, polyline);
       });
 
       if (visibleLayers.includes("poles") && !compact) {
@@ -362,16 +406,37 @@ export function EnergyMap({
         })
           .addTo(layer)
           .bindPopup(buildPopup(entity, () => onSelectEntity?.(entity)));
-        marker.on("click", () => onSelectEntity?.(entity));
+        marker.on("click", () => {
+          marker.openPopup();
+          onSelectEntity?.(entity);
+        });
         markerByKeyRef.current.set(key, marker);
       });
 
-      if (selectedKey) markerByKeyRef.current.get(selectedKey)?.openPopup();
+      if (selectedKey) {
+        const selectedMarker = markerByKeyRef.current.get(selectedKey);
+        if (selectedMarker) {
+          selectedMarker.openPopup();
+          // Nếu map đang bay/zoom, mở lại popup sau khi hoàn tất để popup không bị mất.
+          mapRef.current?.once("moveend", () => {
+            markerByKeyRef.current.get(selectedKey)?.openPopup();
+          });
+        }
+      }
+
+      // Làm nổi bật tuyến điện đang được chọn (từ AI hoặc bảng đối tượng cần quan tâm).
+      if (selectedLineKey) {
+        const focusLine = lineRefsRef.current.get(selectedLineKey);
+        if (focusLine) {
+          focusLine.setStyle({ weight: 6, color: "#1565C0", opacity: 1 });
+          focusLine.bringToFront();
+        }
+      }
     })();
     return () => {
       cancelled = true;
     };
-  }, [compact, data, onSelectEntity, points, ready, selectedKey, visibleLayers]);
+  }, [compact, data, onSelectEntity, points, ready, selectedKey, selectedLineKey, visibleLayers]);
 
   useEffect(() => {
     if (!ready || !selectedKey) return;
@@ -379,21 +444,41 @@ export function EnergyMap({
     const map = mapRef.current;
     if (!marker || !map) return;
     map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), compact ? 10 : 12), { duration: 0.5 });
-    marker.openPopup();
+    // Mở popup sau khi bay xong: mở ngay trong lúc animation dễ bị Leaflet bỏ qua/mất popup.
+    map.once("moveend", () => {
+      markerByKeyRef.current.get(selectedKey)?.openPopup();
+    });
   }, [compact, ready, selectedKey]);
 
-  const toggleLayer = (key: EnergyMapLayerKey) => {
-    setVisibleLayers((current) =>
-      current.includes(key) ? current.filter((item) => item !== key) : [...current, key],
-    );
+  // Zoom đến tuyến điện được chọn (mở rộng vừa đủ để thấy toàn tuyến).
+  useEffect(() => {
+    if (!ready || !selectedLineKey) return;
+    const line = lineRefsRef.current.get(selectedLineKey);
+    const map = mapRef.current;
+    if (!line || !map) return;
+    map.flyToBounds(line.getBounds(), { padding: [50, 50], maxZoom: 12, duration: 0.5 });
+    map.once("moveend", () => {
+      lineRefsRef.current.get(selectedLineKey)?.openPopup();
+    });
+  }, [compact, ready, selectedLineKey, visibleLayers]);
+
+  const toggleLayerGroup = (option: EnergyMapLayerOption) => {
+    setVisibleLayers((current) => {
+      const allOn = option.keys.every((key) => current.includes(key));
+      return allOn
+        ? current.filter((key) => !option.keys.includes(key))
+        : Array.from(new Set([...current, ...option.keys]));
+    });
   };
 
+  const boxStyle = { height: fill ? `${height}px` : `min(${height}px, 70vh)` } as const;
+
   return (
-    <div className="relative bg-surface" style={{ height: `min(${height}px, 70vh)` }}>
+    <div className="relative bg-surface" style={boxStyle}>
       <div
         ref={containerRef}
         className="energy-map z-0 w-full"
-        style={{ height: `min(${height}px, 70vh)` }}
+        style={boxStyle}
         aria-label="Bản đồ GIS năng lượng tỉnh Tây Ninh"
       />
 
@@ -404,28 +489,31 @@ export function EnergyMap({
             onClick={() => setLayersOpen((value) => !value)}
             className="flex w-full items-center justify-between px-3 py-2 text-xs font-bold uppercase tracking-wide text-navy"
           >
-            Lớp bản đồ
+            Lớp dữ liệu
             <span className="text-muted-foreground">{layersOpen ? "Thu gọn" : "Mở"}</span>
           </button>
           {layersOpen ? (
             <div className="max-h-72 space-y-1 overflow-y-auto border-t border-border p-2">
-              {(Object.keys(LAYER_LABEL) as EnergyMapLayerKey[]).map((key) => (
-                <label
-                  key={key}
-                  className={cn(
-                    "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-surface",
-                    visibleLayers.includes(key) ? "text-navy" : "text-muted-foreground",
-                  )}
-                >
-                  <input
-                    type="checkbox"
-                    checked={visibleLayers.includes(key)}
-                    onChange={() => toggleLayer(key)}
-                    className="size-3.5 accent-blue-700"
-                  />
-                  <span className="truncate">{LAYER_LABEL[key]}</span>
-                </label>
-              ))}
+              {optionList.map((option) => {
+                const checked = option.keys.every((key) => visibleLayers.includes(key));
+                return (
+                  <label
+                    key={option.label}
+                    className={cn(
+                      "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-surface",
+                      checked ? "text-navy" : "text-muted-foreground",
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleLayerGroup(option)}
+                      className="size-3.5 accent-blue-700"
+                    />
+                    <span className="truncate">{option.label}</span>
+                  </label>
+                );
+              })}
             </div>
           ) : null}
         </div>

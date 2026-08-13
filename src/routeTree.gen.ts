@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DataManagementRouteImport } from './routes/data-management'
 import { Route as EnergyRouteImport } from './routes/energy'
 import { Route as ImportExportRouteImport } from './routes/import-export'
@@ -30,9 +29,17 @@ import { Route as EnergyConsumptionRouteImport } from './routes/energy.consumpti
 import { Route as EnergyGisRouteImport } from './routes/energy.gis'
 import { Route as EnergyGridRouteImport } from './routes/energy.grid'
 import { Route as EnergyGridSafetyRouteImport } from './routes/energy.grid-safety'
+import { Route as EnergyNhiemVu1RouteImport } from './routes/energy.nhiem-vu-1'
+import { Route as EnergyNhiemVu2RouteImport } from './routes/energy.nhiem-vu-2'
+import { Route as EnergyNhiemVu3RouteImport } from './routes/energy.nhiem-vu-3'
+import { Route as EnergyNhiemVu4RouteImport } from './routes/energy.nhiem-vu-4'
+import { Route as EnergyNhiemVu5RouteImport } from './routes/energy.nhiem-vu-5'
+import { Route as EnergyNhiemVu6RouteImport } from './routes/energy.nhiem-vu-6'
+import { Route as EnergyNhiemVu7RouteImport } from './routes/energy.nhiem-vu-7'
 import { Route as EnergyProjectsRouteImport } from './routes/energy.projects'
 import { Route as EnergyRooftopSolarRouteImport } from './routes/energy.rooftop-solar'
 import { Route as EnterprisesIdRouteImport } from './routes/enterprises/$id'
+import { Route as GisMapRouteImport } from './routes/gis.map'
 import { Route as TrangThongTinLanhDaoDonViRouteImport } from './routes/trang-thong-tin/lanh-dao-don-vi'
 import { Route as TrangThongTinDauTuSlugRouteImport } from './routes/trang-thong-tin/dau-tu.$slug'
 import { Route as TrangThongTinSuKienSlugRouteImport } from './routes/trang-thong-tin/su-kien.$slug'
@@ -51,11 +58,6 @@ const AdminRoute = AdminRouteImport.update({
 const AnalyticsRoute = AnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DataManagementRoute = DataManagementRouteImport.update({
@@ -143,6 +145,41 @@ const EnergyGridSafetyRoute = EnergyGridSafetyRouteImport.update({
   path: '/grid-safety',
   getParentRoute: () => EnergyRoute,
 } as any)
+const EnergyNhiemVu1Route = EnergyNhiemVu1RouteImport.update({
+  id: '/nhiem-vu-1',
+  path: '/nhiem-vu-1',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyNhiemVu2Route = EnergyNhiemVu2RouteImport.update({
+  id: '/nhiem-vu-2',
+  path: '/nhiem-vu-2',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyNhiemVu3Route = EnergyNhiemVu3RouteImport.update({
+  id: '/nhiem-vu-3',
+  path: '/nhiem-vu-3',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyNhiemVu4Route = EnergyNhiemVu4RouteImport.update({
+  id: '/nhiem-vu-4',
+  path: '/nhiem-vu-4',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyNhiemVu5Route = EnergyNhiemVu5RouteImport.update({
+  id: '/nhiem-vu-5',
+  path: '/nhiem-vu-5',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyNhiemVu6Route = EnergyNhiemVu6RouteImport.update({
+  id: '/nhiem-vu-6',
+  path: '/nhiem-vu-6',
+  getParentRoute: () => EnergyRoute,
+} as any)
+const EnergyNhiemVu7Route = EnergyNhiemVu7RouteImport.update({
+  id: '/nhiem-vu-7',
+  path: '/nhiem-vu-7',
+  getParentRoute: () => EnergyRoute,
+} as any)
 const EnergyProjectsRoute = EnergyProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -156,6 +193,11 @@ const EnergyRooftopSolarRoute = EnergyRooftopSolarRouteImport.update({
 const EnterprisesIdRoute = EnterprisesIdRouteImport.update({
   id: '/enterprises/$id',
   path: '/enterprises/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GisMapRoute = GisMapRouteImport.update({
+  id: '/gis/map',
+  path: '/gis/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrangThongTinLanhDaoDonViRoute =
@@ -184,7 +226,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/analytics': typeof AnalyticsRoute
-  '/dashboard': typeof DashboardRoute
   '/data-management': typeof DataManagementRoute
   '/energy': typeof EnergyRouteWithChildren
   '/import-export': typeof ImportExportRoute
@@ -202,9 +243,17 @@ export interface FileRoutesByFullPath {
   '/energy/gis': typeof EnergyGisRoute
   '/energy/grid': typeof EnergyGridRoute
   '/energy/grid-safety': typeof EnergyGridSafetyRoute
+  '/energy/nhiem-vu-1': typeof EnergyNhiemVu1Route
+  '/energy/nhiem-vu-2': typeof EnergyNhiemVu2Route
+  '/energy/nhiem-vu-3': typeof EnergyNhiemVu3Route
+  '/energy/nhiem-vu-4': typeof EnergyNhiemVu4Route
+  '/energy/nhiem-vu-5': typeof EnergyNhiemVu5Route
+  '/energy/nhiem-vu-6': typeof EnergyNhiemVu6Route
+  '/energy/nhiem-vu-7': typeof EnergyNhiemVu7Route
   '/energy/projects': typeof EnergyProjectsRoute
   '/energy/rooftop-solar': typeof EnergyRooftopSolarRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
+  '/gis/map': typeof GisMapRoute
   '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
   '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
   '/trang-thong-tin/su-kien/$slug': typeof TrangThongTinSuKienSlugRoute
@@ -214,7 +263,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/analytics': typeof AnalyticsRoute
-  '/dashboard': typeof DashboardRoute
   '/data-management': typeof DataManagementRoute
   '/energy': typeof EnergyRouteWithChildren
   '/import-export': typeof ImportExportRoute
@@ -232,9 +280,17 @@ export interface FileRoutesByTo {
   '/energy/gis': typeof EnergyGisRoute
   '/energy/grid': typeof EnergyGridRoute
   '/energy/grid-safety': typeof EnergyGridSafetyRoute
+  '/energy/nhiem-vu-1': typeof EnergyNhiemVu1Route
+  '/energy/nhiem-vu-2': typeof EnergyNhiemVu2Route
+  '/energy/nhiem-vu-3': typeof EnergyNhiemVu3Route
+  '/energy/nhiem-vu-4': typeof EnergyNhiemVu4Route
+  '/energy/nhiem-vu-5': typeof EnergyNhiemVu5Route
+  '/energy/nhiem-vu-6': typeof EnergyNhiemVu6Route
+  '/energy/nhiem-vu-7': typeof EnergyNhiemVu7Route
   '/energy/projects': typeof EnergyProjectsRoute
   '/energy/rooftop-solar': typeof EnergyRooftopSolarRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
+  '/gis/map': typeof GisMapRoute
   '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
   '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
   '/trang-thong-tin/su-kien/$slug': typeof TrangThongTinSuKienSlugRoute
@@ -245,7 +301,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/analytics': typeof AnalyticsRoute
-  '/dashboard': typeof DashboardRoute
   '/data-management': typeof DataManagementRoute
   '/energy': typeof EnergyRouteWithChildren
   '/import-export': typeof ImportExportRoute
@@ -263,9 +318,17 @@ export interface FileRoutesById {
   '/energy/gis': typeof EnergyGisRoute
   '/energy/grid': typeof EnergyGridRoute
   '/energy/grid-safety': typeof EnergyGridSafetyRoute
+  '/energy/nhiem-vu-1': typeof EnergyNhiemVu1Route
+  '/energy/nhiem-vu-2': typeof EnergyNhiemVu2Route
+  '/energy/nhiem-vu-3': typeof EnergyNhiemVu3Route
+  '/energy/nhiem-vu-4': typeof EnergyNhiemVu4Route
+  '/energy/nhiem-vu-5': typeof EnergyNhiemVu5Route
+  '/energy/nhiem-vu-6': typeof EnergyNhiemVu6Route
+  '/energy/nhiem-vu-7': typeof EnergyNhiemVu7Route
   '/energy/projects': typeof EnergyProjectsRoute
   '/energy/rooftop-solar': typeof EnergyRooftopSolarRoute
   '/enterprises/$id': typeof EnterprisesIdRoute
+  '/gis/map': typeof GisMapRoute
   '/trang-thong-tin/lanh-dao-don-vi': typeof TrangThongTinLanhDaoDonViRoute
   '/trang-thong-tin/dau-tu/$slug': typeof TrangThongTinDauTuSlugRoute
   '/trang-thong-tin/su-kien/$slug': typeof TrangThongTinSuKienSlugRoute
@@ -277,7 +340,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/analytics'
-    | '/dashboard'
     | '/data-management'
     | '/energy'
     | '/import-export'
@@ -295,9 +357,17 @@ export interface FileRouteTypes {
     | '/energy/gis'
     | '/energy/grid'
     | '/energy/grid-safety'
+    | '/energy/nhiem-vu-1'
+    | '/energy/nhiem-vu-2'
+    | '/energy/nhiem-vu-3'
+    | '/energy/nhiem-vu-4'
+    | '/energy/nhiem-vu-5'
+    | '/energy/nhiem-vu-6'
+    | '/energy/nhiem-vu-7'
     | '/energy/projects'
     | '/energy/rooftop-solar'
     | '/enterprises/$id'
+    | '/gis/map'
     | '/trang-thong-tin/lanh-dao-don-vi'
     | '/trang-thong-tin/dau-tu/$slug'
     | '/trang-thong-tin/su-kien/$slug'
@@ -307,7 +377,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/analytics'
-    | '/dashboard'
     | '/data-management'
     | '/energy'
     | '/import-export'
@@ -325,9 +394,17 @@ export interface FileRouteTypes {
     | '/energy/gis'
     | '/energy/grid'
     | '/energy/grid-safety'
+    | '/energy/nhiem-vu-1'
+    | '/energy/nhiem-vu-2'
+    | '/energy/nhiem-vu-3'
+    | '/energy/nhiem-vu-4'
+    | '/energy/nhiem-vu-5'
+    | '/energy/nhiem-vu-6'
+    | '/energy/nhiem-vu-7'
     | '/energy/projects'
     | '/energy/rooftop-solar'
     | '/enterprises/$id'
+    | '/gis/map'
     | '/trang-thong-tin/lanh-dao-don-vi'
     | '/trang-thong-tin/dau-tu/$slug'
     | '/trang-thong-tin/su-kien/$slug'
@@ -337,7 +414,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/analytics'
-    | '/dashboard'
     | '/data-management'
     | '/energy'
     | '/import-export'
@@ -355,9 +431,17 @@ export interface FileRouteTypes {
     | '/energy/gis'
     | '/energy/grid'
     | '/energy/grid-safety'
+    | '/energy/nhiem-vu-1'
+    | '/energy/nhiem-vu-2'
+    | '/energy/nhiem-vu-3'
+    | '/energy/nhiem-vu-4'
+    | '/energy/nhiem-vu-5'
+    | '/energy/nhiem-vu-6'
+    | '/energy/nhiem-vu-7'
     | '/energy/projects'
     | '/energy/rooftop-solar'
     | '/enterprises/$id'
+    | '/gis/map'
     | '/trang-thong-tin/lanh-dao-don-vi'
     | '/trang-thong-tin/dau-tu/$slug'
     | '/trang-thong-tin/su-kien/$slug'
@@ -368,7 +452,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AnalyticsRoute: typeof AnalyticsRoute
-  DashboardRoute: typeof DashboardRoute
   DataManagementRoute: typeof DataManagementRoute
   EnergyRoute: typeof EnergyRouteWithChildren
   ImportExportRoute: typeof ImportExportRoute
@@ -381,6 +464,7 @@ export interface RootRouteChildren {
   TrangThongTinRoute: typeof TrangThongTinRouteWithChildren
   WorkflowRoute: typeof WorkflowRoute
   EnterprisesIdRoute: typeof EnterprisesIdRoute
+  GisMapRoute: typeof GisMapRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -404,13 +488,6 @@ declare module '@tanstack/react-router' {
       path: '/analytics'
       fullPath: '/analytics'
       preLoaderRoute: typeof AnalyticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/data-management': {
@@ -532,6 +609,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnergyGridSafetyRouteImport
       parentRoute: typeof EnergyRoute
     }
+    '/energy/nhiem-vu-1': {
+      id: '/energy/nhiem-vu-1'
+      path: '/nhiem-vu-1'
+      fullPath: '/energy/nhiem-vu-1'
+      preLoaderRoute: typeof EnergyNhiemVu1RouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/nhiem-vu-2': {
+      id: '/energy/nhiem-vu-2'
+      path: '/nhiem-vu-2'
+      fullPath: '/energy/nhiem-vu-2'
+      preLoaderRoute: typeof EnergyNhiemVu2RouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/nhiem-vu-3': {
+      id: '/energy/nhiem-vu-3'
+      path: '/nhiem-vu-3'
+      fullPath: '/energy/nhiem-vu-3'
+      preLoaderRoute: typeof EnergyNhiemVu3RouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/nhiem-vu-4': {
+      id: '/energy/nhiem-vu-4'
+      path: '/nhiem-vu-4'
+      fullPath: '/energy/nhiem-vu-4'
+      preLoaderRoute: typeof EnergyNhiemVu4RouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/nhiem-vu-5': {
+      id: '/energy/nhiem-vu-5'
+      path: '/nhiem-vu-5'
+      fullPath: '/energy/nhiem-vu-5'
+      preLoaderRoute: typeof EnergyNhiemVu5RouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/nhiem-vu-6': {
+      id: '/energy/nhiem-vu-6'
+      path: '/nhiem-vu-6'
+      fullPath: '/energy/nhiem-vu-6'
+      preLoaderRoute: typeof EnergyNhiemVu6RouteImport
+      parentRoute: typeof EnergyRoute
+    }
+    '/energy/nhiem-vu-7': {
+      id: '/energy/nhiem-vu-7'
+      path: '/nhiem-vu-7'
+      fullPath: '/energy/nhiem-vu-7'
+      preLoaderRoute: typeof EnergyNhiemVu7RouteImport
+      parentRoute: typeof EnergyRoute
+    }
     '/energy/projects': {
       id: '/energy/projects'
       path: '/projects'
@@ -551,6 +677,13 @@ declare module '@tanstack/react-router' {
       path: '/enterprises/$id'
       fullPath: '/enterprises/$id'
       preLoaderRoute: typeof EnterprisesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gis/map': {
+      id: '/gis/map'
+      path: '/gis/map'
+      fullPath: '/gis/map'
+      preLoaderRoute: typeof GisMapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/trang-thong-tin/lanh-dao-don-vi': {
@@ -591,6 +724,13 @@ interface EnergyRouteChildren {
   EnergyGisRoute: typeof EnergyGisRoute
   EnergyGridRoute: typeof EnergyGridRoute
   EnergyGridSafetyRoute: typeof EnergyGridSafetyRoute
+  EnergyNhiemVu1Route: typeof EnergyNhiemVu1Route
+  EnergyNhiemVu2Route: typeof EnergyNhiemVu2Route
+  EnergyNhiemVu3Route: typeof EnergyNhiemVu3Route
+  EnergyNhiemVu4Route: typeof EnergyNhiemVu4Route
+  EnergyNhiemVu5Route: typeof EnergyNhiemVu5Route
+  EnergyNhiemVu6Route: typeof EnergyNhiemVu6Route
+  EnergyNhiemVu7Route: typeof EnergyNhiemVu7Route
   EnergyProjectsRoute: typeof EnergyProjectsRoute
   EnergyRooftopSolarRoute: typeof EnergyRooftopSolarRoute
 }
@@ -602,6 +742,13 @@ const EnergyRouteChildren: EnergyRouteChildren = {
   EnergyGisRoute: EnergyGisRoute,
   EnergyGridRoute: EnergyGridRoute,
   EnergyGridSafetyRoute: EnergyGridSafetyRoute,
+  EnergyNhiemVu1Route: EnergyNhiemVu1Route,
+  EnergyNhiemVu2Route: EnergyNhiemVu2Route,
+  EnergyNhiemVu3Route: EnergyNhiemVu3Route,
+  EnergyNhiemVu4Route: EnergyNhiemVu4Route,
+  EnergyNhiemVu5Route: EnergyNhiemVu5Route,
+  EnergyNhiemVu6Route: EnergyNhiemVu6Route,
+  EnergyNhiemVu7Route: EnergyNhiemVu7Route,
   EnergyProjectsRoute: EnergyProjectsRoute,
   EnergyRooftopSolarRoute: EnergyRooftopSolarRoute,
 }
@@ -631,7 +778,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AnalyticsRoute: AnalyticsRoute,
-  DashboardRoute: DashboardRoute,
   DataManagementRoute: DataManagementRoute,
   EnergyRoute: EnergyRouteWithChildren,
   ImportExportRoute: ImportExportRoute,
@@ -644,6 +790,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrangThongTinRoute: TrangThongTinRouteWithChildren,
   WorkflowRoute: WorkflowRoute,
   EnterprisesIdRoute: EnterprisesIdRoute,
+  GisMapRoute: GisMapRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

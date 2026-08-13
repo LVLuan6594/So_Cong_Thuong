@@ -17,7 +17,10 @@ export const Route = createFileRoute("/enterprises/$id")({
           "Hồ sơ số 360 độ của doanh nghiệp: thông tin pháp lý, cơ sở sản xuất, sản phẩm, giấy phép, năng lượng và xuất nhập khẩu.",
       },
       { property: "og:title", content: "Hồ sơ doanh nghiệp 360 độ" },
-      { property: "og:description", content: "Hồ sơ số tổng hợp của doanh nghiệp ngành Công Thương." },
+      {
+        property: "og:description",
+        content: "Hồ sơ số tổng hợp của doanh nghiệp ngành Công Thương.",
+      },
     ],
   }),
   component: EnterpriseDetail,
@@ -70,8 +73,8 @@ function EnterpriseDetail() {
           <ChartCard title="Trạng thái dữ liệu" subtitle="Vòng đời phê duyệt của hồ sơ">
             <StatusBadge status={e.dataStatus} />
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Hồ sơ được tổng hợp từ nhiều phân hệ nghiệp vụ. Chỉ các trường đã phê duyệt hoặc đã khóa kỳ
-              được sử dụng cho báo cáo điều hành và cổng tra cứu công khai.
+              Hồ sơ được tổng hợp từ nhiều phân hệ nghiệp vụ. Chỉ các trường đã phê duyệt hoặc đã
+              khóa kỳ được sử dụng cho báo cáo điều hành và cổng tra cứu công khai.
             </p>
           </ChartCard>
         </section>

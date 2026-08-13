@@ -100,7 +100,9 @@ export function EnergyCollectionPage<T extends { id: string }>({
         open={!!selected}
         onOpenChange={(value) => !value && setSelected(null)}
         title={drawerTitle}
-        description={selected ? ("name" in selected ? String(selected.name) : selected.id) : undefined}
+        description={
+          selected ? ("name" in selected ? String(selected.name) : selected.id) : undefined
+        }
       >
         {selected ? renderDetail(selected) : null}
       </EntityDetailDrawer>

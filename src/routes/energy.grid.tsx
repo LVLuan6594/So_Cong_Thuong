@@ -16,13 +16,23 @@ export const Route = createFileRoute("/energy/grid")({
 const columns: Column<Substation>[] = [
   { key: "name", header: "Tên trạm", sortable: true },
   { key: "voltageLevel", header: "Cấp điện áp", sortable: true },
-  { key: "designCapacity", header: "Công suất", sortable: true, value: (r) => r.designCapacity ?? 0 },
+  {
+    key: "designCapacity",
+    header: "Công suất",
+    sortable: true,
+    value: (r) => r.designCapacity ?? 0,
+  },
   {
     key: "loadFactor",
     header: "Mức tải",
     sortable: true,
     render: (r) => (
-      <span className={cn("font-semibold tabular-nums", (r.loadFactor ?? 0) >= 100 ? "text-destructive" : "text-success")}>
+      <span
+        className={cn(
+          "font-semibold tabular-nums",
+          (r.loadFactor ?? 0) >= 100 ? "text-destructive" : "text-success",
+        )}
+      >
         {r.loadFactor ?? 0}%
       </span>
     ),
@@ -45,10 +55,30 @@ function Page() {
       drawerTitle="Hồ sơ trạm biến áp"
       kpis={(rows) => [
         { label: "Tổng trạm", value: rows.length, icon: Cable, tone: "gov" },
-        { label: "Trạm quá tải", value: rows.filter((r) => (r.loadFactor ?? 0) >= 100).length, icon: Zap, tone: "danger" },
-        { label: "Tổng công suất", value: `${rows.reduce((s, r) => s + (r.designCapacity ?? 0), 0)} MVA`, icon: Grid3X3, tone: "teal" },
-        { label: "Đang vận hành", value: rows.filter((r) => r.status.includes("Vận hành")).length, icon: Network, tone: "success" },
-        { label: "Có tọa độ GIS", value: rows.filter((r) => r.latitude && r.longitude).length, icon: MapIcon, tone: "analytics" },
+        {
+          label: "Trạm quá tải",
+          value: rows.filter((r) => (r.loadFactor ?? 0) >= 100).length,
+          icon: Zap,
+          tone: "danger",
+        },
+        {
+          label: "Tổng công suất",
+          value: `${rows.reduce((s, r) => s + (r.designCapacity ?? 0), 0)} MVA`,
+          icon: Grid3X3,
+          tone: "teal",
+        },
+        {
+          label: "Đang vận hành",
+          value: rows.filter((r) => r.status.includes("Vận hành")).length,
+          icon: Network,
+          tone: "success",
+        },
+        {
+          label: "Có tọa độ GIS",
+          value: rows.filter((r) => r.latitude && r.longitude).length,
+          icon: MapIcon,
+          tone: "analytics",
+        },
       ]}
       renderDetail={(item) => (
         <FieldGrid
@@ -62,7 +92,11 @@ function Page() {
             { label: "Công suất vận hành", value: `${item.operatingCapacity ?? 0} MVA` },
             { label: "Hệ số tải", value: `${item.loadFactor ?? 0}%` },
             { label: "Số MBA", value: item.transformerCount },
-            { label: "GIS", value: item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined },
+            {
+              label: "GIS",
+              value:
+                item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined,
+            },
           ]}
         />
       )}

@@ -245,7 +245,7 @@ export function EntityDetailDrawer({
   open: boolean;
   onOpenChange: (value: boolean) => void;
   title: string;
-  description?: string;
+  description?: string | undefined;
   children: ReactNode;
 }) {
   return (

@@ -87,10 +87,9 @@ export function DashboardModule({
   children: ReactNode;
 }) {
   const t = MODULE_TONE[tone];
-  return (
-    <div
-      className={cn("gov-card flex flex-col overflow-hidden transition-shadow", t.hover, className)}
-    >
+
+  const content = (
+    <>
       <header className={cn("flex items-center gap-2 border-b px-4 py-2.5", t.header, t.border)}>
         <Icon className="size-4 shrink-0" strokeWidth={1.9} />
         <div className="min-w-0">
@@ -103,20 +102,35 @@ export function DashboardModule({
       <div className="flex flex-1 flex-col gap-3 p-4">{children}</div>
 
       {to && actionLabel ? (
-        <Link
-          to={to as never}
+        <div
           className={cn(
-            "flex items-center justify-between border-t px-4 py-2 text-xs font-semibold transition-colors",
+            "flex items-center justify-between border-t px-4 py-2 text-xs font-semibold",
             t.border,
             t.action,
           )}
         >
           {actionLabel}
           <ArrowRight className="size-3.5" />
-        </Link>
+        </div>
       ) : null}
-    </div>
+    </>
   );
+
+  const cardClass = cn(
+    "gov-card flex flex-col overflow-hidden transition-shadow",
+    t.hover,
+    className,
+  );
+
+  if (to) {
+    return (
+      <Link to={to as never} className={cardClass}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={cardClass}>{content}</div>;
 }
 
 export function KpiMiniCard({

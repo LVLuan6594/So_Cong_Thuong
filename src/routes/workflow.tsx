@@ -8,9 +8,15 @@ export const Route = createFileRoute("/workflow")({
   head: () => ({
     meta: [
       { title: "Workflow & phê duyệt | Nền tảng ngành Công Thương" },
-      { name: "description", content: "Trình – kiểm duyệt – phê duyệt – khóa kỳ cho các bộ dữ liệu ngành Công Thương." },
+      {
+        name: "description",
+        content: "Trình – kiểm duyệt – phê duyệt – khóa kỳ cho các bộ dữ liệu ngành Công Thương.",
+      },
       { property: "og:title", content: "Workflow & phê duyệt" },
-      { property: "og:description", content: "Trình – kiểm duyệt – phê duyệt – khóa kỳ cho các bộ dữ liệu ngành Công Thương." },
+      {
+        property: "og:description",
+        content: "Trình – kiểm duyệt – phê duyệt – khóa kỳ cho các bộ dữ liệu ngành Công Thương.",
+      },
     ],
   }),
   component: Page,
@@ -30,7 +36,9 @@ const columns: Column<Row>[] = [
     key: "status",
     header: "Trạng thái",
     render: (r) =>
-      "status" in r && typeof r.status === "string" ? <StatusBadge status={r.status as never} /> : null,
+      "status" in r && typeof r.status === "string" ? (
+        <StatusBadge status={r.status as never} />
+      ) : null,
   },
 ];
 
@@ -43,7 +51,11 @@ function Page() {
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Workflow & phê duyệt" }]}
       />
       <div className="p-4 sm:p-6">
-        <DataTable columns={columns} rows={WORKFLOW_ITEMS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
+        <DataTable
+          columns={columns}
+          rows={WORKFLOW_ITEMS as Row[]}
+          searchPlaceholder="Tìm kiếm trong danh sách..."
+        />
       </div>
     </>
   );

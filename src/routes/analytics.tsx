@@ -8,9 +8,15 @@ export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
       { title: "Báo cáo & BI | Nền tảng ngành Công Thương" },
-      { name: "description", content: "Kho báo cáo theo kỳ, drill-down tỉnh – huyện và xuất báo cáo DOCX/XLSX/PDF." },
+      {
+        name: "description",
+        content: "Kho báo cáo theo kỳ, drill-down tỉnh – huyện và xuất báo cáo DOCX/XLSX/PDF.",
+      },
       { property: "og:title", content: "Báo cáo & BI" },
-      { property: "og:description", content: "Kho báo cáo theo kỳ, drill-down tỉnh – huyện và xuất báo cáo DOCX/XLSX/PDF." },
+      {
+        property: "og:description",
+        content: "Kho báo cáo theo kỳ, drill-down tỉnh – huyện và xuất báo cáo DOCX/XLSX/PDF.",
+      },
     ],
   }),
   component: Page,
@@ -28,7 +34,9 @@ const columns: Column<Row>[] = [
     key: "status",
     header: "Trạng thái",
     render: (r) =>
-      "status" in r && typeof r.status === "string" ? <StatusBadge status={r.status as never} /> : null,
+      "status" in r && typeof r.status === "string" ? (
+        <StatusBadge status={r.status as never} />
+      ) : null,
   },
 ];
 
@@ -41,7 +49,11 @@ function Page() {
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Báo cáo & BI" }]}
       />
       <div className="p-4 sm:p-6">
-        <DataTable columns={columns} rows={REPORTS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
+        <DataTable
+          columns={columns}
+          rows={REPORTS as Row[]}
+          searchPlaceholder="Tìm kiếm trong danh sách..."
+        />
       </div>
     </>
   );

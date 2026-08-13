@@ -74,19 +74,10 @@ export interface PowerPole {
 
 // ─────────────────────────── Dự án nguồn điện ───────────────────────────
 export type PowerProjectType =
-  | "Điện mặt trời"
-  | "Điện gió"
-  | "Sinh khối"
-  | "Thủy điện"
-  | "Điện rác"
-  | "LNG";
+  "Điện mặt trời" | "Điện gió" | "Sinh khối" | "Thủy điện" | "Điện rác" | "LNG";
 
 export type PowerProjectStatus =
-  | "Đang vận hành"
-  | "Đang đầu tư"
-  | "Đang quy hoạch"
-  | "Hoàn thành"
-  | "Tạm dừng";
+  "Đang vận hành" | "Đang đầu tư" | "Đang quy hoạch" | "Hoàn thành" | "Tạm dừng";
 
 export interface PowerProject {
   id: string;
@@ -171,11 +162,7 @@ export interface RooftopSolar {
 
 // ─────────────────────────── Tiêu thụ năng lượng ───────────────────────────
 export type ConsumerGroup =
-  | "Sinh hoạt"
-  | "Công nghiệp"
-  | "Thương mại dịch vụ"
-  | "Nông nghiệp"
-  | "Cơ quan nhà nước";
+  "Sinh hoạt" | "Công nghiệp" | "Thương mại dịch vụ" | "Nông nghiệp" | "Cơ quan nhà nước";
 
 export interface EnergyConsumer {
   id: string;
@@ -218,7 +205,8 @@ export interface KeyEnergyConsumer {
   id: string;
   code: string;
   name: string;
-  type: "Doanh nghiệp tiêu thụ lớn" | "Nhà máy" | "Trung tâm thương mại" | "Bệnh viện" | "Trường học";
+  type:
+    "Doanh nghiệp tiêu thụ lớn" | "Nhà máy" | "Trung tâm thương mại" | "Bệnh viện" | "Trường học";
   address: string;
   district: string;
   sector: string;
@@ -307,11 +295,7 @@ export interface CarbonCredit {
 
 // ─────────────────────────── Trạm sạc điện ───────────────────────────
 export type ChargingStationType =
-  | "Công cộng"
-  | "Trung tâm thương mại"
-  | "Bãi đỗ xe"
-  | "Doanh nghiệp"
-  | "Chung cư";
+  "Công cộng" | "Trung tâm thương mại" | "Bãi đỗ xe" | "Doanh nghiệp" | "Chung cư";
 
 export interface ChargingStation {
   id: string;

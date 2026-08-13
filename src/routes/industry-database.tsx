@@ -8,9 +8,15 @@ export const Route = createFileRoute("/industry-database")({
   head: () => ({
     meta: [
       { title: "CSDL ngành Công Thương | Nền tảng ngành Công Thương" },
-      { name: "description", content: "Tra cứu hồ sơ số doanh nghiệp trong cơ sở dữ liệu dùng chung của ngành." },
+      {
+        name: "description",
+        content: "Tra cứu hồ sơ số doanh nghiệp trong cơ sở dữ liệu dùng chung của ngành.",
+      },
       { property: "og:title", content: "CSDL ngành Công Thương" },
-      { property: "og:description", content: "Tra cứu hồ sơ số doanh nghiệp trong cơ sở dữ liệu dùng chung của ngành." },
+      {
+        property: "og:description",
+        content: "Tra cứu hồ sơ số doanh nghiệp trong cơ sở dữ liệu dùng chung của ngành.",
+      },
     ],
   }),
   component: Page,
@@ -29,7 +35,9 @@ const columns: Column<Row>[] = [
     key: "status",
     header: "Trạng thái",
     render: (r) =>
-      "status" in r && typeof r.status === "string" ? <StatusBadge status={r.status as never} /> : null,
+      "status" in r && typeof r.status === "string" ? (
+        <StatusBadge status={r.status as never} />
+      ) : null,
   },
 ];
 
@@ -42,7 +50,11 @@ function Page() {
         crumbs={[{ label: "Nghiệp vụ" }, { label: "CSDL ngành Công Thương" }]}
       />
       <div className="p-4 sm:p-6">
-        <DataTable columns={columns} rows={ENTERPRISES as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
+        <DataTable
+          columns={columns}
+          rows={ENTERPRISES as Row[]}
+          searchPlaceholder="Tìm kiếm trong danh sách..."
+        />
       </div>
     </>
   );

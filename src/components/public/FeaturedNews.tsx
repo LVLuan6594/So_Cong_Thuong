@@ -31,9 +31,7 @@ export function FeaturedNews({ main, sidebar }: { main: PortalPost; sidebar: Por
                 {formatPortalDate(main.publishedAt)}
               </span>
             </div>
-            <h3 className="text-xl font-bold leading-snug drop-shadow sm:text-2xl">
-              {main.title}
-            </h3>
+            <h3 className="text-xl font-bold leading-snug drop-shadow sm:text-2xl">{main.title}</h3>
             <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-white/80 sm:text-[15px]">
               {main.summary}
             </p>

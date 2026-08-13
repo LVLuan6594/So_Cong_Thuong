@@ -13,12 +13,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { useRole } from "@/lib/role-context";
+import type { NavChild } from "@/lib/nav";
 
 export function AppHeader({ onMenu }: { onMenu: () => void }) {
   const { navItems } = useRole();
   const [query, setQuery] = useState("");
   const results = query
-    ? navItems.filter((i) => i.label.toLowerCase().includes(query.toLowerCase()))
+    ? navItems
+        .flatMap((i) => [
+          { label: i.label, to: i.to },
+          ...flattenNavChildren(i.label, i.children ?? []),
+        ])
+        .filter((r) => r.label.toLowerCase().includes(query.toLowerCase()))
     : [];
 
   return (
@@ -73,7 +79,11 @@ export function AppHeader({ onMenu }: { onMenu: () => void }) {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="relative ml-auto text-white hover:bg-white/10 md:ml-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative ml-auto text-white hover:bg-white/10 md:ml-0"
+          >
             <Bell className="size-5" />
             <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-warning" />
           </Button>
@@ -103,4 +113,11 @@ export function AppHeader({ onMenu }: { onMenu: () => void }) {
       <RoleSwitcher />
     </header>
   );
+}
+
+function flattenNavChildren(prefix: string, children: NavChild[]): { label: string; to: string }[] {
+  return children.flatMap((c) => [
+    { label: `${prefix} / ${c.label}`, to: c.to },
+    ...flattenNavChildren(`${prefix} / ${c.label}`, c.children ?? []),
+  ]);
 }

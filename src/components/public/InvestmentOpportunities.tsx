@@ -25,7 +25,7 @@ export function InvestmentOpportunities() {
             >
               <div className="relative h-36 overflow-hidden bg-gradient-to-br from-slate-800 via-navy to-teal-600">
                 <span className="absolute left-4 top-4 z-10 rounded-full bg-white/90 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-navy shadow">
-                  {c.district}
+                  {c.ward}
                 </span>
                 <span className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.18),transparent_45%)]" />
                 <p className="absolute inset-0 flex items-end p-4 text-2xl font-extrabold uppercase tracking-wide text-white/90">
@@ -34,7 +34,7 @@ export function InvestmentOpportunities() {
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <MapPin className="size-3.5 text-gov" /> Tây Ninh · {c.district}
+                  <MapPin className="size-3.5 text-gov" /> Tây Ninh · {c.ward}
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
                   <div className="rounded-xl bg-surface px-3 py-2">

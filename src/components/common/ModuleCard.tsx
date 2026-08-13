@@ -46,7 +46,9 @@ export function ModuleCard({
           ))}
         </ul>
       ) : null}
-      <span className={cn("mt-4 inline-flex items-center gap-1 text-sm font-medium", TONE_TEXT[tone])}>
+      <span
+        className={cn("mt-4 inline-flex items-center gap-1 text-sm font-medium", TONE_TEXT[tone])}
+      >
         Xem chi tiết <ArrowRight className="size-4" />
       </span>
     </>

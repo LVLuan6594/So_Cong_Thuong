@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { DashboardModule, KpiMiniCard } from "@/components/dashboard/DashboardModule";
 import { MiniBarChart, MiniDonutChart, MiniTrendChart } from "@/components/dashboard/MiniCharts";
-import { AlertItem, ProgressMetric, TaskItem } from "@/components/dashboard/Metrics";
+import { ProgressMetric, TaskItem } from "@/components/dashboard/Metrics";
 import { cn } from "@/lib/utils";
 import { DISTRICTS, LIFECYCLE_STEPS, PERIODS } from "@/lib/constants";
 import {
@@ -78,14 +78,6 @@ const LICENSE_STATUS = [
   { label: "Hiệu lực", v: "1.827", cls: "text-success" },
   { label: "Sắp hết hạn", v: "37", cls: "text-warning" },
   { label: "Hết hạn", v: "96", cls: "text-muted-foreground" },
-];
-
-const OPERATION_ALERTS = [
-  { count: 37, label: "Giấy phép sắp hết hạn", tone: "warning" as const },
-  { count: 12, label: "Hồ sơ chờ phê duyệt", tone: "gov" as const },
-  { count: 8, label: "Bộ dữ liệu có lỗi", tone: "danger" as const },
-  { count: 4, label: "Nhiệm vụ chậm tiến độ", tone: "orange" as const },
-  { count: 3, label: "API tích hợp bất thường", tone: "danger" as const },
 ];
 
 const DIGITIZATION = [
@@ -174,10 +166,10 @@ function OverviewPage() {
           actionLabel="Mở bản đồ GIS"
         >
           <div className="grid grid-cols-2 gap-2">
-            <KpiMiniCard label="Cụm công nghiệp" value="26" />
-            <KpiMiniCard label="Đang hoạt động" value="18" />
-            <KpiMiniCard label="Đang đầu tư" value="8" />
-            <KpiMiniCard label="Lấp đầy TB" value="68%" />
+            <KpiMiniCard label="CCN quy hoạch" value="108" />
+            <KpiMiniCard label="Đang hoạt động" value="24" />
+            <KpiMiniCard label="Đang đầu tư hạ tầng" value="30" />
+            <KpiMiniCard label="Lấp đầy TB" value="84%" />
           </div>
           <ClusterMap clusters={CLUSTERS} height={190} />
         </DashboardModule>
@@ -339,28 +331,6 @@ function OverviewPage() {
           <div className="flex items-center justify-between rounded-md border border-success/30 bg-success/5 px-2.5 py-2 text-xs">
             <span className="text-muted-foreground">Tỷ lệ dữ liệu đạt yêu cầu</span>
             <span className="font-semibold tabular-nums text-success">81%</span>
-          </div>
-        </DashboardModule>
-
-        {/* Module 10 – CẢNH BÁO ĐIỀU HÀNH */}
-        <DashboardModule
-          title="Cảnh báo điều hành"
-          subtitle="Nhấn để xem chi tiết"
-          icon={AlertTriangle}
-          tone="slate"
-          to="/dashboard"
-          actionLabel="Xem dashboard điều hành"
-        >
-          <div className="grid grid-cols-1 gap-1.5">
-            {OPERATION_ALERTS.map((a) => (
-              <AlertItem
-                key={a.label}
-                count={a.count}
-                label={a.label}
-                tone={a.tone}
-                to="/dashboard"
-              />
-            ))}
           </div>
         </DashboardModule>
 

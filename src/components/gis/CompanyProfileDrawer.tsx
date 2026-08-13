@@ -67,10 +67,7 @@ export function CompanyProfileDrawer({
             <Field label="Khu/Cụm công nghiệp" value={cluster?.name ?? MISSING} />
             <Field label="Địa chỉ" value={f.address} />
             <Field label="Xã/Phường" value={v(f.ward)} />
-            <Field
-              label="Tỉnh/Thành"
-              value={cluster ? `${cluster.district} – Tây Ninh` : "Tây Ninh"}
-            />
+            <Field label="Tỉnh/Thành" value={cluster ? `${cluster.ward} – Tây Ninh` : "Tây Ninh"} />
           </ProfileSection>
 
           <ProfileSection icon={Tag} title="Ngành nghề">

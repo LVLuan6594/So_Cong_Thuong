@@ -36,10 +36,19 @@ export interface ClusterGeometry {
   coordinates: number[][][];
 }
 
+// Chuỗi lịch sử đất công nghiệp toàn tỉnh (theo quý) — đầu vào cho AI dự báo nhu cầu.
+export interface IndustryTrendRow {
+  period: string; // ví dụ "Q1/2022"
+  leasedHa: number; // đất CN đã cho thuê toàn tỉnh (ha)
+  occupancy: number; // tỷ lệ lấp đầy bình quân (%)
+  enterprises: number; // số doanh nghiệp/dự án trong các CCN hoạt động
+}
+
 export interface Cluster {
   id: string;
   name: string;
-  district: string;
+  district: string; // huyện/thị xã cũ (trước hợp nhất 1/7/2025) — để đối chiếu lịch sử
+  ward: string; // xã/phường mới — cấp hành chính cơ sở trực thuộc tỉnh (chính quyền 2 cấp)
   area: number;
   leased: number;
   enterprises: number;
@@ -49,7 +58,22 @@ export interface Cluster {
   lat: number; // toạ độ GPS thực tế (tâm KCN/CCN)
   lng: number;
   geometry?: ClusterGeometry; // backend cần bổ sung – nhưng thiếu vẫn vẽ được từ lat/lng + area
+  investor?: string; // chủ đầu tư hạ tầng (nếu có)
   infrastructure: { name: string; level: number; note: string }[];
+}
+
+// Vùng hành chính cấp xã/phường (chính quyền 2 cấp, NQ 1682/NQ-UBTVQH15) —
+// lớp ngoài cùng của bản đồ GIS. Ranh giới là ước lượng (không có GeoJSON chính thức),
+// vẽ polygon tượng trưng quanh tâm địa danh.
+export interface WardZone {
+  id: string;
+  name: string;
+  type: "xa" | "phuong";
+  lat: number;
+  lng: number;
+  approxRadiusM: number; // bán kính ước lượng (m) — quy đổi từ diện tích tự nhiên
+  clusters: string[]; // id các KCN/CCN thuộc vùng
+  note?: string; // nguồn ghi chú
 }
 
 export interface Factory {

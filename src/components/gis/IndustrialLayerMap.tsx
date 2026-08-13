@@ -8,18 +8,26 @@ import type {
   PathOptions,
   Polygon as LeafletPolygon,
 } from "leaflet";
-import type { Cluster, Factory } from "@/lib/types";
+import type { Cluster, Factory, WardZone } from "@/lib/types";
 import { FACTORY_STATUS_LABEL } from "@/lib/constants";
-import { clusterGeometry, zoneBorderColor, zoneFillColor } from "@/lib/gis-geometry";
+import {
+  clusterGeometry,
+  wardZoneLatLngs,
+  zoneBorderColor,
+  zoneFillColor,
+} from "@/lib/gis-geometry";
 import "leaflet/dist/leaflet.css";
 
-const TAY_NINH_CENTER: [number, number] = [11.3066, 106.15];
-const TAY_NINH_ZOOM = 10;
-const ZONE_FIT_MAX_ZOOM = 13.2;
-const ZONE_NEAR_ZOOM = 11.8; // zoom >= này hiển thị sát ranh giới thật
-const MIN_ONSCREEN_DIM = 22; // px tối thiểu trên màn hình trước khi cần "display enhancement"
-const ENHANCE_RADIUS = 15; // px vòng tròn hiển thị/hit area cho polygon quá nhỏ
-const LABEL_MIN_DIM = 72; // px để hiện label tên KCN trên polygon đủ diện tích
+// Phạm vi tỉnh Tây Ninh mới (sau hợp nhất Tây Ninh + Long An, 1/7/2025):
+// trải dài từ Cần Giuộc/Long An (106.68) tới biên giới Tây Ninh (105.9).
+export const TAY_NINH_CENTER: [number, number] = [10.95, 106.25];
+export const TAY_NINH_ZOOM = 9;
+export const ZONE_FIT_MAX_ZOOM = 13.2;
+export const WARD_FIT_MAX_ZOOM = 12.6;
+export const ZONE_NEAR_ZOOM = 11.8; // zoom >= này hiển thị sát ranh giới thật
+export const MIN_ONSCREEN_DIM = 22; // px tối thiểu trên màn hình trước khi cần "display enhancement"
+export const ENHANCE_RADIUS = 15; // px vòng tròn hiển thị/hit area cho polygon quá nhỏ
+export const LABEL_MIN_DIM = 72; // px để hiện label tên KCN trên polygon đủ diện tích
 
 const FACTORY_STATUS_COLOR: Record<Factory["status"], string> = {
   active: "#2E7D32",
@@ -36,7 +44,7 @@ function factoryIconHtml(f: Factory, selected: boolean): string {
   return `<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">${ring}<path d="M13 2.8c-3.6 4-6 7-6 9.9a6 6 0 0 0 12 0c0-2.9-2.4-5.9-6-9.9z" fill="${color}" stroke="#ffffff" stroke-width="2"/><circle cx="13" cy="12.6" r="2.6" fill="#ffffff" fill-opacity="0.92"/></svg>`;
 }
 
-function makeFactoryIcon(L: typeof import("leaflet"), f: Factory, selected: boolean) {
+export function makeFactoryIcon(L: typeof import("leaflet"), f: Factory, selected: boolean) {
   return L.divIcon({
     className: "gis-pin gis-pin-factory",
     html: factoryIconHtml(f, selected),
@@ -52,7 +60,7 @@ function rowHtml(k: string, v: string | number): string {
 }
 
 // Tooltip nhanh khi hover Polygon KCN/CCN
-function buildZoneTooltip(c: Cluster): string {
+export function buildZoneTooltip(c: Cluster): string {
   return `<div style="min-width:180px">
     <div style="font-weight:600;font-size:12px;color:#0F2A4A;margin-bottom:6px">${c.name}</div>
     ${rowHtml("Diện tích", `${c.area} ha`)}
@@ -61,8 +69,19 @@ function buildZoneTooltip(c: Cluster): string {
   </div>`;
 }
 
+// Tooltip nhanh khi hover Polygon xã/phường (lớp ngoài cùng)
+export function buildWardTooltip(w: WardZone): string {
+  const type = w.type === "phuong" ? "Phường" : "Xã";
+  return `<div style="min-width:200px">
+    <div style="font-weight:600;font-size:12px;color:#0F2A4A;margin-bottom:4px">${w.name}</div>
+    <div style="font-size:11px;color:#64748B;margin-bottom:6px">${type} · trực thuộc tỉnh (chính quyền 2 cấp)</div>
+    ${rowHtml("KCN/CCN trong vùng", w.clusters.length)}
+    ${rowHtml("Bấm để", "xem tổng quan địa bàn")}
+  </div>`;
+}
+
 // Popup nhỏ gọn khi click Marker doanh nghiệp
-function buildFactoryPopup(
+export function buildFactoryPopup(
   f: Factory,
   zoneName: string | undefined,
   onOpen: () => void,
@@ -86,9 +105,75 @@ function buildFactoryPopup(
 }
 
 // ─────────────────────────── Style Polygon theo state ───────────────────────────
-type ZoomMode = "far" | "near";
+export type ZoomMode = "far" | "near";
 
-function zoneStyle(c: Cluster, selected: boolean, hover: boolean, mode: ZoomMode): PathOptions {
+// Trạng thái vùng xã/phường theo bộ lọc ngành + lựa chọn drill-down
+export type WardState = "selected" | "highlight" | "dim" | "base";
+
+export function wardStyle(state: WardState, mode: ZoomMode): PathOptions {
+  const far = mode === "far";
+  switch (state) {
+    case "selected":
+      return {
+        pane: "wardPane",
+        color: "#1565C0",
+        weight: far ? 3.5 : 3,
+        opacity: 1,
+        fillColor: "#1565C0",
+        fillOpacity: 0.28,
+        dashArray: "7 4",
+        lineCap: "round",
+        lineJoin: "round",
+        className: "gis-ward-path",
+      };
+    case "highlight":
+      return {
+        pane: "wardPane",
+        color: "#1565C0",
+        weight: far ? 2.5 : 2,
+        opacity: 0.95,
+        fillColor: "#1565C0",
+        fillOpacity: 0.15,
+        dashArray: "6 4",
+        lineCap: "round",
+        lineJoin: "round",
+        className: "gis-ward-path",
+      };
+    case "dim":
+      return {
+        pane: "wardPane",
+        color: "#94A3B8",
+        weight: 1.2,
+        opacity: 0.45,
+        fillColor: "#64748B",
+        fillOpacity: 0.04,
+        dashArray: "4 4",
+        lineCap: "round",
+        lineJoin: "round",
+        className: "gis-ward-path",
+      };
+    default:
+      return {
+        pane: "wardPane",
+        color: "#64748B",
+        weight: far ? 2 : 1.5,
+        opacity: 0.6,
+        fillColor: "#64748B",
+        fillOpacity: 0.05,
+        dashArray: "4 4",
+        lineCap: "round",
+        lineJoin: "round",
+        className: "gis-ward-path",
+      };
+  }
+}
+
+export function zoneStyle(
+  c: Cluster,
+  selected: boolean,
+  hover: boolean,
+  mode: ZoomMode,
+): PathOptions {
   const far = mode === "far";
   return {
     pane: "zonePane",
@@ -103,7 +188,7 @@ function zoneStyle(c: Cluster, selected: boolean, hover: boolean, mode: ZoomMode
   };
 }
 
-function dimZoneStyle(c: Cluster, mode: ZoomMode): PathOptions {
+export function dimZoneStyle(c: Cluster, mode: ZoomMode): PathOptions {
   const far = mode === "far";
   return {
     pane: "zonePane",
@@ -119,7 +204,7 @@ function dimZoneStyle(c: Cluster, mode: ZoomMode): PathOptions {
 }
 
 // Lớp hiển thị/hit area hỗ trợ cho polygon nhỏ ở mức zoom xa — chỉ phục vụ UX.
-function enhanceStyle(c: Cluster, selected: boolean, hover: boolean): CircleMarkerOptions {
+export function enhanceStyle(c: Cluster, selected: boolean, hover: boolean): CircleMarkerOptions {
   return {
     pane: "zoneEnhancePane",
     radius: ENHANCE_RADIUS,
@@ -139,7 +224,14 @@ export function IndustrialLayerMap({
   companies,
   selectedCompanyId,
   zoneName,
+  wards,
+  selectedWardId,
+  highlightWardIds,
+  wardFilterActive,
+  wardClusterIds,
+  zoneNameById,
   onSelectZone,
+  onSelectWard,
   onSelectCompany,
   onOpenProfile,
   height = 560,
@@ -149,18 +241,27 @@ export function IndustrialLayerMap({
   companies: Factory[];
   selectedCompanyId?: string | null;
   zoneName?: string | null;
+  wards?: WardZone[];
+  selectedWardId?: string | null;
+  highlightWardIds?: string[];
+  wardFilterActive?: boolean;
+  wardClusterIds?: string[];
+  zoneNameById?: Record<string, string>;
   onSelectZone?: ((c: Cluster) => void) | undefined;
+  onSelectWard?: ((w: WardZone) => void) | undefined;
   onSelectCompany?: ((f: Factory) => void) | undefined;
   onOpenProfile?: ((f: Factory) => void) | undefined;
   height?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
+  const wardLayerRef = useRef<LayerGroup | null>(null);
   const zoneLayerRef = useRef<LayerGroup | null>(null);
   const enhanceLayerRef = useRef<LayerGroup | null>(null);
   const companyLayerRef = useRef<LayerGroup | null>(null);
   const markerByIdRef = useRef<Map<string, LeafletMarker>>(new Map());
   const lastZoneIdRef = useRef<string | null>(null);
+  const lastWardIdRef = useRef<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [zoom, setZoom] = useState(TAY_NINH_ZOOM);
 
@@ -177,15 +278,20 @@ export function IndustrialLayerMap({
       const map = L.map(containerRef.current, {
         center: TAY_NINH_CENTER,
         zoom: TAY_NINH_ZOOM,
-        zoomControl: true,
+        zoomControl: false,
       });
+      // Nút phóng to/thu nhỏ kiểu chuẩn Leaflet (giống trang Nguồn năng lượng),
+      // đặt góc phải trên — góc trái trên đã có breadcrumb đường dẫn.
+      L.control.zoom({ position: "topright" }).addTo(map);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
-      // Phân lớp z-index: Base Map < Polygon KCN < Enhancement (hit area) < Marker doanh nghiệp < Popup
+      // Phân lớp z-index: Base Map < Xã/Phường < Polygon KCN < Enhancement (hit area) < Marker doanh nghiệp < Popup
+      const wardPane = map.createPane("wardPane");
+      wardPane.style.zIndex = "440";
       const zonePane = map.createPane("zonePane");
       zonePane.style.zIndex = "450";
       const enhancePane = map.createPane("zoneEnhancePane");
@@ -193,6 +299,7 @@ export function IndustrialLayerMap({
       const companyPane = map.createPane("companyPane");
       companyPane.style.zIndex = "620";
 
+      wardLayerRef.current = L.layerGroup().addTo(map);
       zoneLayerRef.current = L.layerGroup().addTo(map);
       enhanceLayerRef.current = L.layerGroup().addTo(map);
       companyLayerRef.current = L.layerGroup().addTo(map);
@@ -215,12 +322,91 @@ export function IndustrialLayerMap({
       observer?.disconnect();
       mapRef.current?.remove();
       mapRef.current = null;
+      wardLayerRef.current = null;
       zoneLayerRef.current = null;
       enhanceLayerRef.current = null;
       companyLayerRef.current = null;
       setMapReady(false);
     };
   }, []);
+
+  // Lớp Polygon xã/phường (lớp ngoài cùng) — render lại khi bộ lọc ngành,
+  // vùng được chọn hoặc mức zoom thay đổi.
+  useEffect(() => {
+    if (!mapReady) return;
+    const layer = wardLayerRef.current;
+    if (!layer) return;
+    let cancelled = false;
+    (async () => {
+      const L = await import("leaflet");
+      if (cancelled) return;
+      layer.clearLayers();
+      const map = mapRef.current;
+      if (!map) return;
+      const currentZoom = map.getZoom();
+      const mode: ZoomMode = currentZoom < ZONE_NEAR_ZOOM ? "far" : "near";
+
+      (wards ?? []).forEach((w) => {
+        const latlngs = wardZoneLatLngs(w);
+        const bounds = L.latLngBounds(latlngs);
+        const ne = map.project(bounds.getNorthEast(), currentZoom);
+        const sw = map.project(bounds.getSouthWest(), currentZoom);
+        const pixelSize = Math.max(Math.abs(ne.x - sw.x), Math.abs(ne.y - sw.y));
+        const center = bounds.getCenter();
+        const selected = w.id === selectedWardId;
+        const highlighted = wardFilterActive && (highlightWardIds ?? []).includes(w.id);
+        const dimmed = wardFilterActive && !highlighted && !selected;
+        const state: WardState = selected
+          ? "selected"
+          : highlighted
+            ? "highlight"
+            : dimmed
+              ? "dim"
+              : "base";
+
+        const poly = L.polygon(latlngs, wardStyle(state, mode))
+          .addTo(layer)
+          .bindTooltip(buildWardTooltip(w), { direction: "top", className: "gis-zone-tooltip" });
+
+        poly.on("click", () => onSelectWard?.(w));
+        poly.on("mouseover", () => {
+          if (state !== "selected") {
+            poly.setStyle({
+              ...wardStyle(state, mode),
+              weight: (wardStyle(state, mode).weight ?? 1.5) + 1,
+              opacity: 1,
+            });
+          }
+        });
+        poly.on("mouseout", () => poly.setStyle(wardStyle(state, mode)));
+
+        const el = poly.getElement();
+        if (selected) {
+          poly.bringToFront();
+          el?.classList.add("gis-zone-glow-strong");
+        } else if (highlighted) {
+          el?.classList.add("gis-zone-glow");
+        }
+
+        // Label tên xã/phường — khi chọn luôn hiện, còn lại hiện khi đủ gần.
+        if (selected || (mode === "near" && pixelSize >= 130)) {
+          L.tooltip({
+            permanent: true,
+            direction: "center",
+            className: "gis-ward-label",
+            interactive: false,
+            opacity: 1,
+          })
+            .setLatLng(center)
+            .setContent(w.name)
+            .addTo(layer);
+        }
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [mapReady, wards, selectedWardId, highlightWardIds, wardFilterActive, zoom, onSelectWard]);
 
   // Lớp Polygon KCN/CCN — render lại khi bộ lọc ngành, khu được chọn hoặc mức zoom thay đổi.
   useEffect(() => {
@@ -296,16 +482,20 @@ export function IndustrialLayerMap({
 
         polygon.on("click", () => onSelectZone?.(c));
 
+        // Khi đã khoan xuống cấp xã/phường (chưa chọn KCN), các KCN ngoài vùng bị mờ.
+        const wardDimIds = selectedWardId && !selectedId ? (wardClusterIds ?? []) : null;
         const restyle = (hover: boolean) => {
-          if (selectedId && c.id !== selectedId) {
+          const inWard = wardDimIds ? wardDimIds.includes(c.id) : true;
+          if ((selectedId && c.id !== selectedId) || !inWard) {
             polygon.setStyle(dimZoneStyle(c, mode));
             applyGlow(polygon, 0);
             if (!hover) polygon.bringToBack();
             enhance?.setStyle(enhanceStyle(c, false, false));
             if (!hover) enhance?.bringToBack();
           } else {
+            const glowLevel = selected ? 2 : wardDimIds ? 1 : hover || mode === "far" ? 1 : 0;
             polygon.setStyle(zoneStyle(c, selected, hover, mode));
-            applyGlow(polygon, selected ? 2 : hover || mode === "far" ? 1 : 0);
+            applyGlow(polygon, glowLevel);
             if (selected) polygon.bringToFront();
             enhance?.setStyle(enhanceStyle(c, selected, hover));
             if (selected) enhance?.bringToFront();
@@ -324,7 +514,28 @@ export function IndustrialLayerMap({
     return () => {
       cancelled = true;
     };
-  }, [mapReady, zones, selectedZoneId, onSelectZone, zoom]);
+  }, [mapReady, zones, selectedZoneId, selectedWardId, wardClusterIds, onSelectZone, zoom]);
+
+  // Fit bounds khi chọn/chuyển xã/phường — zoom vừa đủ để thấy các KCN/CCN trong vùng.
+  useEffect(() => {
+    if (!mapReady || !selectedWardId || selectedZoneId) return;
+    const map = mapRef.current;
+    if (!map) return;
+    const ward = (wards ?? []).find((w) => w.id === selectedWardId);
+    if (!ward) return;
+    let cancelled = false;
+    (async () => {
+      const L = await import("leaflet");
+      if (cancelled) return;
+      map.fitBounds(L.latLngBounds(wardZoneLatLngs(ward)), {
+        padding: [60, 60],
+        maxZoom: WARD_FIT_MAX_ZOOM,
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [mapReady, selectedWardId, selectedZoneId, wards]);
 
   // Fit bounds khi chọn/chuyển KCN — zoom vừa đủ, không quá sát.
   useEffect(() => {
@@ -347,20 +558,21 @@ export function IndustrialLayerMap({
     };
   }, [mapReady, zones, selectedZoneId]);
 
-  // Quay về toàn tỉnh khi hủy chọn KCN (vẫn giữ bộ lọc ngành).
+  // Quay về toàn tỉnh khi hủy chọn KCN/xã (vẫn giữ bộ lọc ngành).
   useEffect(() => {
     if (!mapReady) return;
-    const prev = lastZoneIdRef.current;
-    if (selectedZoneId === prev) return;
-    if (selectedZoneId) {
-      lastZoneIdRef.current = selectedZoneId;
-    } else if (prev != null) {
-      lastZoneIdRef.current = null;
+    const prevZone = lastZoneIdRef.current;
+    const prevWard = lastWardIdRef.current;
+    if (selectedZoneId === prevZone && selectedWardId === prevWard) return;
+    lastZoneIdRef.current = selectedZoneId ?? null;
+    lastWardIdRef.current = selectedWardId ?? null;
+    if (selectedZoneId || selectedWardId) return; // fit bounds do effect riêng xử lý
+    if (prevZone != null || prevWard != null) {
       mapRef.current?.flyTo(TAY_NINH_CENTER, TAY_NINH_ZOOM, { duration: 0.6 });
     }
-  }, [mapReady, selectedZoneId]);
+  }, [mapReady, selectedZoneId, selectedWardId]);
 
-  // Marker doanh nghiệp — chỉ render khi đã chọn KCN, lọc theo ngành ở phía parent.
+  // Marker doanh nghiệp — hiển thị khi đã chọn KCN hoặc xã/phường, lọc theo ngành ở phía parent.
   useEffect(() => {
     if (!mapReady) return;
     const layer = companyLayerRef.current;
@@ -371,7 +583,7 @@ export function IndustrialLayerMap({
       if (cancelled) return;
       layer.clearLayers();
       markerByIdRef.current.clear();
-      if (!selectedZoneId) return;
+      if (!selectedZoneId && !selectedWardId) return;
 
       companies.forEach((f) => {
         const selected = f.id === selectedCompanyId;
@@ -383,7 +595,9 @@ export function IndustrialLayerMap({
         markerByIdRef.current.set(f.id, marker);
         marker.on("click", () => onSelectCompany?.(f));
         marker.bindPopup(
-          buildFactoryPopup(f, zoneName ?? undefined, () => onOpenProfile?.(f)),
+          buildFactoryPopup(f, zoneNameById?.[f.id] ?? zoneName ?? undefined, () =>
+            onOpenProfile?.(f),
+          ),
           {
             autoPanPadding: [40, 40],
           },
@@ -402,8 +616,10 @@ export function IndustrialLayerMap({
     mapReady,
     companies,
     selectedZoneId,
+    selectedWardId,
     selectedCompanyId,
     zoneName,
+    zoneNameById,
     onSelectCompany,
     onOpenProfile,
   ]);

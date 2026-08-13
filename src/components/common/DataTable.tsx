@@ -41,15 +41,21 @@ export function DataTable<T extends { id: string }>({
       out = rows.filter((row) =>
         columns.some((c) => {
           const v = c.value ? c.value(row) : (row as Record<string, unknown>)[c.key];
-          return String(v ?? "").toLowerCase().includes(q);
+          return String(v ?? "")
+            .toLowerCase()
+            .includes(q);
         }),
       );
     }
     if (sort) {
       const col = columns.find((c) => c.key === sort.key);
       out = [...out].sort((a, b) => {
-        const av = col?.value ? col.value(a) : ((a as Record<string, unknown>)[sort.key] as string | number);
-        const bv = col?.value ? col.value(b) : ((b as Record<string, unknown>)[sort.key] as string | number);
+        const av = col?.value
+          ? col.value(a)
+          : ((a as Record<string, unknown>)[sort.key] as string | number);
+        const bv = col?.value
+          ? col.value(b)
+          : ((b as Record<string, unknown>)[sort.key] as string | number);
         if (typeof av === "number" && typeof bv === "number") {
           return sort.dir === "asc" ? av - bv : bv - av;
         }
@@ -137,9 +143,7 @@ export function DataTable<T extends { id: string }>({
                     {c.render
                       ? c.render(row)
                       : String(
-                          (c.value
-                            ? c.value(row)
-                            : (row as Record<string, unknown>)[c.key]) ?? "",
+                          (c.value ? c.value(row) : (row as Record<string, unknown>)[c.key]) ?? "",
                         )}
                   </td>
                 ))}

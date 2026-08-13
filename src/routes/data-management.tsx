@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle2, FileScan, GitCompareArrows, ScanText, ShieldAlert, UploadCloud } from "lucide-react";
+import {
+  CheckCircle2,
+  FileScan,
+  GitCompareArrows,
+  ScanText,
+  ShieldAlert,
+  UploadCloud,
+} from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { StatCard } from "@/components/common/StatCard";
 import { ChartCard } from "@/components/common/ChartCard";
@@ -79,7 +86,11 @@ function DataManagement() {
         title="Quản trị dữ liệu"
         description="Số hóa – chuẩn hóa – kiểm tra chất lượng – đối soát. Dữ liệu chỉ được đưa vào CSDL ngành sau khi qua đủ các bước kiểm soát."
         crumbs={[{ label: "Dữ liệu" }, { label: "Quản trị dữ liệu" }]}
-        actions={<Button onClick={() => toast.success("Đã tạo bộ dữ liệu mới ở trạng thái Nháp")}>Tạo bộ dữ liệu</Button>}
+        actions={
+          <Button onClick={() => toast.success("Đã tạo bộ dữ liệu mới ở trạng thái Nháp")}>
+            Tạo bộ dữ liệu
+          </Button>
+        }
       />
 
       <div className="space-y-5 p-4 sm:p-6">
@@ -87,7 +98,13 @@ function DataManagement() {
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard label="Bộ dữ liệu đang quản lý" value="7" icon={FileScan} tone="gov" />
-          <StatCard label="Hồ sơ đã số hóa OCR/AI" value="12.480" delta="+364 tuần này" icon={ScanText} tone="teal" />
+          <StatCard
+            label="Hồ sơ đã số hóa OCR/AI"
+            value="12.480"
+            delta="+364 tuần này"
+            icon={ScanText}
+            tone="teal"
+          />
           <StatCard label="Lỗi chất lượng cần xử lý" value="320" icon={ShieldAlert} tone="danger" />
           <StatCard label="Bản ghi đã đối soát" value="94,2%" icon={CheckCircle2} tone="success" />
         </section>
@@ -101,7 +118,10 @@ function DataManagement() {
           </TabsList>
 
           <TabsContent value="ocr" className="mt-4 grid gap-4 lg:grid-cols-2">
-            <ChartCard title="Tải hồ sơ cần số hóa" subtitle="Hỗ trợ PDF, ảnh scan, DOCX (mô phỏng)">
+            <ChartCard
+              title="Tải hồ sơ cần số hóa"
+              subtitle="Hỗ trợ PDF, ảnh scan, DOCX (mô phỏng)"
+            >
               <div className="rounded-lg border-2 border-dashed border-border bg-surface p-8 text-center">
                 <UploadCloud className="mx-auto size-10 text-gov" strokeWidth={1.5} />
                 <p className="mt-3 text-sm font-medium text-navy">
@@ -158,7 +178,10 @@ function DataManagement() {
                     >
                       Xác nhận & lưu staging
                     </Button>
-                    <Button variant="outline" onClick={() => toast.info("Đã gửi yêu cầu bóc tách lại")}>
+                    <Button
+                      variant="outline"
+                      onClick={() => toast.info("Đã gửi yêu cầu bóc tách lại")}
+                    >
                       Bóc tách lại
                     </Button>
                   </div>

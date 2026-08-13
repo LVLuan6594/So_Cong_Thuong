@@ -32,10 +32,25 @@ function Page() {
       searchPlaceholder="Tìm nguồn phát thải..."
       drawerTitle="Hồ sơ nguồn phát thải"
       kpis={(rows) => [
-        { label: "Tổng CO2e", value: `${rows.reduce((s, r) => s + r.co2e, 0).toLocaleString("vi-VN")} tấn`, icon: Cloud, tone: "analytics" },
+        {
+          label: "Tổng CO2e",
+          value: `${rows.reduce((s, r) => s + r.co2e, 0).toLocaleString("vi-VN")} tấn`,
+          icon: Cloud,
+          tone: "analytics",
+        },
         { label: "Nguồn phát thải", value: rows.length, icon: Factory, tone: "gov" },
-        { label: "Doanh nghiệp phát thải", value: new Set(rows.map((r) => r.investor)).size, icon: Factory, tone: "warning" },
-        { label: "Dự án giảm phát thải", value: rows.filter((r) => r.intensity === 0).length, icon: Leaf, tone: "success" },
+        {
+          label: "Doanh nghiệp phát thải",
+          value: new Set(rows.map((r) => r.investor)).size,
+          icon: Factory,
+          tone: "warning",
+        },
+        {
+          label: "Dự án giảm phát thải",
+          value: rows.filter((r) => r.intensity === 0).length,
+          icon: Leaf,
+          tone: "success",
+        },
         { label: "Tín chỉ Carbon", value: "Đang cập nhật", icon: WalletCards, tone: "teal" },
       ]}
       renderDetail={(item) => (

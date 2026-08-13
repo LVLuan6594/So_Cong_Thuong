@@ -64,6 +64,9 @@ export const INDUSTRIES = [
   "Cơ khí",
   "Điện tử",
   "Chế biến nông sản",
+  "Chế biến thực phẩm",
+  "Hóa chất – Nhựa",
+  "Thép – VLXD",
   "Năng lượng",
   "Thương mại",
 ];

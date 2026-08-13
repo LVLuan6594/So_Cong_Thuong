@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { CLUSTERS } from "@/data/mock";
+import { ALL_GIS_LAYERS, type GisLayerId } from "@/lib/gis-catalog";
 import { INDUSTRIES } from "@/lib/constants";
 import type { Cluster } from "@/lib/types";
 
@@ -53,6 +54,10 @@ interface GisLayerValue {
   selectedClusterIds: string[];
   toggleCluster: (clusterId: string) => void;
   setSelectedClusterIds: (clusterIds: string[]) => void;
+  /** Các lớp bản đồ đang bật trên bản đồ GIS tổng hợp (/gis/map). */
+  visibleGisLayers: GisLayerId[];
+  toggleGisLayer: (layerId: GisLayerId) => void;
+  setVisibleGisLayers: (layers: GisLayerId[]) => void;
 }
 
 const GisLayerContext = createContext<GisLayerValue | null>(null);
@@ -62,6 +67,7 @@ export function GisLayerProvider({ children }: { children: ReactNode }) {
   const [selectedClusterIds, setSelectedClusterIds] = useState<string[]>(() =>
     CLUSTERS.map((c) => c.id),
   );
+  const [visibleGisLayers, setVisibleGisLayers] = useState<GisLayerId[]>(ALL_GIS_LAYERS);
 
   const toggleIndustry = (industry: string) =>
     setSelectedIndustries((prev) =>
@@ -73,6 +79,11 @@ export function GisLayerProvider({ children }: { children: ReactNode }) {
       prev.includes(clusterId) ? prev.filter((i) => i !== clusterId) : [...prev, clusterId],
     );
 
+  const toggleGisLayer = (layerId: GisLayerId) =>
+    setVisibleGisLayers((prev) =>
+      prev.includes(layerId) ? prev.filter((i) => i !== layerId) : [...prev, layerId],
+    );
+
   const value = useMemo<GisLayerValue>(
     () => ({
       selectedIndustries,
@@ -81,8 +92,11 @@ export function GisLayerProvider({ children }: { children: ReactNode }) {
       selectedClusterIds,
       toggleCluster,
       setSelectedClusterIds,
+      visibleGisLayers,
+      toggleGisLayer,
+      setVisibleGisLayers,
     }),
-    [selectedIndustries, selectedClusterIds],
+    [selectedIndustries, selectedClusterIds, visibleGisLayers],
   );
 
   return <GisLayerContext.Provider value={value}>{children}</GisLayerContext.Provider>;

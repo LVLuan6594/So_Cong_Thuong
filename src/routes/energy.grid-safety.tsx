@@ -34,10 +34,32 @@ function Page() {
       drawerTitle="Hồ sơ sự cố lưới điện"
       kpis={(rows) => [
         { label: "Tổng sự cố", value: rows.length, icon: AlertTriangle, tone: "gov" },
-        { label: "Đang xử lý", value: rows.filter((r) => (r.progress ?? "").includes("Đang")).length, icon: Clock, tone: "warning" },
-        { label: "Đã xử lý", value: rows.filter((r) => (r.progress ?? "").includes("Hoàn") || (r.progress ?? "").includes("Đã")).length, icon: CheckCircle2, tone: "success" },
-        { label: "Sự cố nghiêm trọng", value: rows.filter((r) => r.severity === "severe").length, icon: ShieldAlert, tone: "danger" },
-        { label: "Mất tải", value: `${rows.reduce((s, r) => s + (r.lostLoadMw ?? 0), 0)} MW`, icon: AlertTriangle, tone: "analytics" },
+        {
+          label: "Đang xử lý",
+          value: rows.filter((r) => (r.progress ?? "").includes("Đang")).length,
+          icon: Clock,
+          tone: "warning",
+        },
+        {
+          label: "Đã xử lý",
+          value: rows.filter(
+            (r) => (r.progress ?? "").includes("Hoàn") || (r.progress ?? "").includes("Đã"),
+          ).length,
+          icon: CheckCircle2,
+          tone: "success",
+        },
+        {
+          label: "Sự cố nghiêm trọng",
+          value: rows.filter((r) => r.severity === "severe").length,
+          icon: ShieldAlert,
+          tone: "danger",
+        },
+        {
+          label: "Mất tải",
+          value: `${rows.reduce((s, r) => s + (r.lostLoadMw ?? 0), 0)} MW`,
+          icon: AlertTriangle,
+          tone: "analytics",
+        },
       ]}
       renderDetail={(item) => (
         <FieldGrid

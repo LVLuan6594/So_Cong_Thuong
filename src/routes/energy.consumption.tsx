@@ -16,8 +16,18 @@ const columns: Column<EnergyConsumer>[] = [
   { key: "group", header: "Lĩnh vực", sortable: true },
   { key: "district", header: "Địa bàn", sortable: true },
   { key: "annual", header: "Điện năng năm", sortable: true, value: (r) => r.consumption.annual },
-  { key: "maxDemandKw", header: "Cực đại", sortable: true, value: (r) => r.consumption.maxDemandKw },
-  { key: "growthPct", header: "Tăng trưởng", sortable: true, value: (r) => r.consumption.growthPct },
+  {
+    key: "maxDemandKw",
+    header: "Cực đại",
+    sortable: true,
+    value: (r) => r.consumption.maxDemandKw,
+  },
+  {
+    key: "growthPct",
+    header: "Tăng trưởng",
+    sortable: true,
+    value: (r) => r.consumption.growthPct,
+  },
 ];
 
 function Page() {
@@ -32,9 +42,24 @@ function Page() {
       searchPlaceholder="Tìm cơ sở tiêu thụ..."
       drawerTitle="Hồ sơ tiêu thụ năng lượng"
       kpis={(rows) => [
-        { label: "Tổng điện năng tiêu thụ", value: `${rows.reduce((s, r) => s + r.consumption.annual, 0).toLocaleString("vi-VN")} kWh`, icon: Zap, tone: "gov" },
-        { label: "Công suất cực đại", value: `${Math.max(...rows.map((r) => r.consumption.maxDemandKw), 0).toLocaleString("vi-VN")} kW`, icon: Gauge, tone: "warning" },
-        { label: "Mức tăng trưởng TB", value: `${avg(rows.map((r) => r.consumption.growthPct)).toFixed(1)}%`, icon: TrendingUp, tone: "success" },
+        {
+          label: "Tổng điện năng tiêu thụ",
+          value: `${rows.reduce((s, r) => s + r.consumption.annual, 0).toLocaleString("vi-VN")} kWh`,
+          icon: Zap,
+          tone: "gov",
+        },
+        {
+          label: "Công suất cực đại",
+          value: `${Math.max(...rows.map((r) => r.consumption.maxDemandKw), 0).toLocaleString("vi-VN")} kW`,
+          icon: Gauge,
+          tone: "warning",
+        },
+        {
+          label: "Mức tăng trưởng TB",
+          value: `${avg(rows.map((r) => r.consumption.growthPct)).toFixed(1)}%`,
+          icon: TrendingUp,
+          tone: "success",
+        },
         { label: "Cơ sở trọng điểm", value: rows.length, icon: Leaf, tone: "teal" },
       ]}
       renderDetail={(item) => (
@@ -44,8 +69,14 @@ function Page() {
             { label: "Nhóm", value: item.group },
             { label: "Địa chỉ", value: item.address },
             { label: "Đơn vị quản lý", value: item.operator },
-            { label: "Điện năng tháng", value: `${item.consumption.monthly.toLocaleString("vi-VN")} kWh` },
-            { label: "Điện năng năm", value: `${item.consumption.annual.toLocaleString("vi-VN")} kWh` },
+            {
+              label: "Điện năng tháng",
+              value: `${item.consumption.monthly.toLocaleString("vi-VN")} kWh`,
+            },
+            {
+              label: "Điện năng năm",
+              value: `${item.consumption.annual.toLocaleString("vi-VN")} kWh`,
+            },
             { label: "Công suất cực đại", value: `${item.consumption.maxDemandKw} kW` },
             { label: "Hệ số tải", value: `${item.consumption.loadFactor}%` },
           ]}

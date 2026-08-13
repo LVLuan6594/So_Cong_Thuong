@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ChevronDown, ChevronLeft, ExternalLink, Layers } from "lucide-react";
-import { NAV_GROUPS, type NavItem } from "@/lib/nav";
+import { NAV_GROUPS, type NavChild, type NavItem } from "@/lib/nav";
 import { CLUSTERS } from "@/data/mock";
 import { clusterCountByIndustry, useGisLayer } from "@/lib/gis-layer-context";
 import { INDUSTRIES } from "@/lib/constants";
@@ -39,8 +39,8 @@ export function AppSidebar({ collapsed, onToggle }: { collapsed: boolean; onTogg
                     item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
                   return (
                     <li key={item.to}>
-                      {item.code === "05" && !collapsed ? (
-                        <GisNavItem item={item} active={activeItem} />
+                      {item.children?.length && !collapsed ? (
+                        <SubmenuNavItem item={item} active={activeItem} />
                       ) : item.external ? (
                         <a
                           href={item.to}
@@ -92,13 +92,13 @@ export function AppSidebar({ collapsed, onToggle }: { collapsed: boolean; onTogg
   );
 }
 
-function GisNavItem({ item, active }: { item: NavItem; active: boolean }) {
-  const [open, setOpen] = useState(active);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+function SubmenuNavItem({ item, active }: { item: NavItem; active: boolean }) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(active || isDescendantActive(item.children, pathname));
 
   useEffect(() => {
-    if (item.to === "/industrial-clusters" && pathname.startsWith(item.to)) setOpen(true);
-  }, [pathname, item.to]);
+    if (active || isDescendantActive(item.children, pathname)) setOpen(true);
+  }, [pathname, item, active]);
 
   return (
     <>
@@ -121,15 +121,148 @@ function GisNavItem({ item, active }: { item: NavItem; active: boolean }) {
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          aria-label={open ? "Thu gọn phân lớp bản đồ" : "Mở rộng phân lớp bản đồ"}
+          aria-label={open ? "Thu gọn mục con" : "Mở rộng mục con"}
           aria-expanded={open}
           className="mr-1 grid size-7 shrink-0 place-items-center rounded-md text-white/60 transition-colors hover:bg-white/10 hover:text-white"
         >
           <ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} />
         </button>
       </div>
+      {open ? <NavChildrenList children={item.children ?? []} /> : null}
+    </>
+  );
+}
+
+function NavChildrenList({ children }: { children: NavChild[] }) {
+  const pathname = usePathname();
+
+  return (
+    <ul className="mb-1 ml-3 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
+      {children.map((child) => (
+        <li key={child.to}>
+          {child.code === "05-gis" ? (
+            <GisChildItem child={child} />
+          ) : child.children?.length ? (
+            <ExpandableChild child={child} />
+          ) : (
+            <Link
+              to={child.to}
+              search={child.search as never}
+              className={cn(
+                "block rounded-md px-2 py-1.5 text-[13px] transition-colors",
+                isRouteActive(child.to, pathname)
+                  ? "bg-white/15 font-medium text-white"
+                  : "text-white/65 hover:bg-white/10 hover:text-white",
+              )}
+            >
+              {child.label}
+            </Link>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ExpandableChild({ child }: { child: NavChild }) {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (isRouteActive(child.to, pathname) || isDescendantActive(child.children, pathname)) {
+      setOpen(true);
+    }
+  }, [pathname, child]);
+
+  return (
+    <>
+      <div
+        className={cn(
+          "flex items-center rounded-md",
+          isRouteActive(child.to, pathname) ? "bg-white/15" : "hover:bg-white/10",
+        )}
+      >
+        <Link
+          to={child.to}
+          search={child.search as never}
+          className={cn(
+            "flex min-w-0 flex-1 items-center gap-2 px-2 py-1.5 text-[13px] transition-colors",
+            isRouteActive(child.to, pathname)
+              ? "font-medium text-white"
+              : "text-white/65 hover:text-white",
+          )}
+        >
+          {child.label}
+        </Link>
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Thu gọn mục con" : "Mở rộng mục con"}
+          aria-expanded={open}
+          className="mr-1 grid size-6 shrink-0 place-items-center rounded-md text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+        >
+          <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} />
+        </button>
+      </div>
+      {open ? <NavChildrenList children={child.children ?? []} /> : null}
+    </>
+  );
+}
+
+function GisChildItem({ child }: { child: NavChild }) {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (isRouteActive(child.to, pathname)) setOpen(true);
+  }, [pathname, child]);
+
+  return (
+    <>
+      <div
+        className={cn(
+          "flex items-center rounded-md",
+          isRouteActive(child.to, pathname) ? "bg-white/15" : "hover:bg-white/10",
+        )}
+      >
+        <Link
+          to={child.to}
+          className={cn(
+            "flex min-w-0 flex-1 items-center gap-2 px-2 py-1.5 text-[13px] transition-colors",
+            isRouteActive(child.to, pathname)
+              ? "font-medium text-white"
+              : "text-white/65 hover:text-white",
+          )}
+        >
+          {child.label}
+        </Link>
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Thu gọn bộ lọc" : "Mở rộng bộ lọc"}
+          aria-expanded={open}
+          className="mr-1 grid size-6 shrink-0 place-items-center rounded-md text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+        >
+          <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} />
+        </button>
+      </div>
       {open ? <GisLayerSubmenu /> : null}
     </>
+  );
+}
+
+function usePathname() {
+  return useRouterState({ select: (s) => s.location.pathname });
+}
+
+function isRouteActive(to: string, pathname: string) {
+  return to === "/" ? pathname === to : pathname.startsWith(to);
+}
+
+function isDescendantActive(children: NavChild[] | undefined, pathname: string): boolean {
+  if (!children) return false;
+  return children.some(
+    (c) => isRouteActive(c.to, pathname) || isDescendantActive(c.children, pathname),
   );
 }
 
@@ -248,7 +381,8 @@ function GisLayerSubmenu() {
           <LegendItem dot="bg-warning" label="Lấp đầy < 50%" />
         </div>
         <p className="mt-1.5 text-[10px] leading-relaxed text-white/40">
-          Polygon là ranh giới KCN/CCN. Nhấn vào Polygon để xem doanh nghiệp trong khu.
+          Đường đứt nét là ranh giới xã/phường (chính quyền 2 cấp), polygon là ranh giới KCN/CCN.
+          Nhấn vào để khoan xuống từng tầng cho tới doanh nghiệp.
         </p>
       </section>
     </div>

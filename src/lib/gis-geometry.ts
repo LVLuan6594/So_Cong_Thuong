@@ -1,4 +1,4 @@
-import type { Cluster, ClusterGeometry } from "@/lib/types";
+import type { Cluster, ClusterGeometry, WardZone } from "@/lib/types";
 
 // Sinh Polygon GeoJSON cho KCN/CCN từ dữ liệu hiện có (lat/lng + area).
 // Backend nên bổ sung trường `geometry` (GeoJSON); khi có, ưu tiên dùng geometry gốc.
@@ -19,6 +19,26 @@ export function clusterLatLngs(c: Cluster): [number, number][] {
 export function clusterGeometry(c: Cluster): ClusterGeometry {
   if (c.geometry) return c.geometry;
   const ring = clusterLatLngs(c).map(([lat, lng]) => [lng, lat] as [number, number]);
+  ring.push(ring[0]!);
+  return { type: "Polygon", coordinates: [ring] };
+}
+
+// Polygon tượng trưng cho vùng hành chính xã/phường (ranh giới ước lượng —
+// tròn hóa quanh tâm địa danh theo bán kính quy đổi từ diện tích tự nhiên).
+export function wardZoneLatLngs(w: WardZone): [number, number][] {
+  const dLat = w.approxRadiusM / 111320;
+  const dLng = w.approxRadiusM / (111320 * Math.cos((w.lat * Math.PI) / 180));
+  const points: [number, number][] = [];
+  const n = 16;
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    points.push([w.lat + dLat * Math.sin(a), w.lng + dLng * Math.cos(a)]);
+  }
+  return points;
+}
+
+export function wardZoneGeometry(w: WardZone): ClusterGeometry {
+  const ring = wardZoneLatLngs(w).map(([lat, lng]) => [lng, lat] as [number, number]);
   ring.push(ring[0]!);
   return { type: "Polygon", coordinates: [ring] };
 }

@@ -17,7 +17,7 @@ const WELCOME: ChatMsg = {
 };
 
 const BOT_REPLIES = [
-  "Để tôi kiểm tra dữ liệu mới nhất, xin chờ chút… Hiện tại tỉnh Tây Ninh có 26 cụm công nghiệp, 18 cụm đang hoạt động.",
+  "Để tôi kiểm tra dữ liệu mới nhất, xin chờ chút… Tỉnh Tây Ninh quy hoạch 108 cụm công nghiệp (~6.228 ha), trong đó 24 cụm đang hoạt động với 533 dự án đầu tư (92 dự án FDI).",
   "Theo CSDL ngành, có 2.486 doanh nghiệp đang hoạt động trên địa bàn tỉnh.",
   "Tôi đã ghi nhận yêu cầu. Bạn có thể tra cứu chi tiết tại phân hệ CSDL ngành hoặc bản đồ GIS cụm công nghiệp.",
   "Chỉ số sản xuất công nghiệp (IIP) quý gần nhất đạt 113,6% so với cùng kỳ năm trước.",
@@ -27,7 +27,7 @@ const BOT_REPLIES = [
 function botReply(question: string): string {
   const q = question.toLowerCase();
   if (q.includes("cụm công nghiệp") || q.includes("ccn") || q.includes("gis")) {
-    return "Tỉnh Tây Ninh hiện có 26 cụm công nghiệp, trong đó 18 cụm đang hoạt động, 8 cụm đang kêu gọi đầu tư. Xem chi tiết trên bản đồ GIS phân hệ Cụm công nghiệp.";
+    return "Tỉnh Tây Ninh quy hoạch 108 cụm công nghiệp (6.228 ha) theo QĐ 2968/QĐ-UBND; 24 cụm đang hoạt động (1.179 ha, 533 dự án, 92 FDI, tỷ lệ lấp đầy ~84%), 30 cụm đang đầu tư hạ tầng, 54 cụm mời gọi đầu tư. Xem chi tiết trên bản đồ GIS phân hệ Cụm công nghiệp.";
   }
   if (q.includes("doanh nghiệp") || q.includes("dn")) {
     return "CSDL ngành hiện quản lý 2.486 doanh nghiệp, 3.174 cơ sở SXKD. Tỷ lệ dữ liệu chính thức đạt hơn 74%.";

@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { Cluster } from "@/lib/types";
 import "leaflet/dist/leaflet.css";
 
-const TAY_NINH_CENTER: [number, number] = [11.3066, 106.15];
+// Phạm vi tỉnh Tây Ninh mới (sau hợp nhất Tây Ninh + Long An, 1/7/2025)
+const TAY_NINH_CENTER: [number, number] = [10.95, 106.25];
 
 function pinColor(c: Cluster): string {
   if (c.occupancy >= 75) return "#2E7D32";
@@ -25,7 +26,7 @@ function popupHtml(c: Cluster): string {
     `<div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#64748b">${k}</span><span style="font-weight:500">${v}</span></div>`;
   return `<div style="min-width:230px">
     <div style="font-weight:600;font-size:13px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.01em">${c.name}</div>
-    ${row("Địa bàn", c.district)}
+    ${row("Địa bàn", c.ward)}
     ${row("Diện tích", `${c.area} ha`)}
     ${row("Đã cho thuê", `${c.leased} ha`)}
     ${row("Tỷ lệ lấp đầy", `${c.occupancy}%`)}
@@ -61,7 +62,7 @@ export function ClusterMap({
       if (cancelled || !containerRef.current) return;
       const map = L.map(containerRef.current, {
         center: TAY_NINH_CENTER,
-        zoom: 10,
+        zoom: 9,
       });
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,

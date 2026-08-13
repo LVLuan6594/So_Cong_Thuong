@@ -34,9 +34,9 @@ export function StatCard({
 }: {
   label: string;
   value: string | number;
-  delta?: string;
-  icon?: LucideIcon;
-  tone?: Tone;
+  delta?: string | undefined;
+  icon?: LucideIcon | undefined;
+  tone?: Tone | undefined;
   active?: boolean;
   onClick?: () => void;
 }) {
@@ -51,7 +51,12 @@ export function StatCard({
       )}
     >
       {Icon ? (
-        <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-md", TONE_BG[tone])}>
+        <span
+          className={cn(
+            "flex size-10 shrink-0 items-center justify-center rounded-md",
+            TONE_BG[tone],
+          )}
+        >
           <Icon className={cn("size-5", TONE_TEXT[tone])} strokeWidth={1.75} />
         </span>
       ) : null}

@@ -72,7 +72,10 @@ export function HeroBanner() {
         {/* Dải thống kê nổi bật của tỉnh */}
         <div className="mt-12 grid grid-cols-2 gap-4 border-t border-white/15 pt-6 sm:mt-14 lg:grid-cols-4">
           {HERO_STATS.map((s) => (
-            <div key={s.label} className="rounded-xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-sm">
+            <div
+              key={s.label}
+              className="rounded-xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-sm"
+            >
               <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/60">
                 <TrendingUp className="size-3.5 text-emerald-300" />
                 {s.label}

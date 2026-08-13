@@ -8,9 +8,15 @@ export const Route = createFileRoute("/trade-promotion")({
   head: () => ({
     meta: [
       { title: "Xúc tiến thương mại | Nền tảng ngành Công Thương" },
-      { name: "description", content: "Hội chợ, triển lãm, kết nối giao thương và chương trình khuyến mại." },
+      {
+        name: "description",
+        content: "Hội chợ, triển lãm, kết nối giao thương và chương trình khuyến mại.",
+      },
       { property: "og:title", content: "Xúc tiến thương mại" },
-      { property: "og:description", content: "Hội chợ, triển lãm, kết nối giao thương và chương trình khuyến mại." },
+      {
+        property: "og:description",
+        content: "Hội chợ, triển lãm, kết nối giao thương và chương trình khuyến mại.",
+      },
     ],
   }),
   component: Page,
@@ -30,7 +36,9 @@ const columns: Column<Row>[] = [
     key: "status",
     header: "Trạng thái",
     render: (r) =>
-      "status" in r && typeof r.status === "string" ? <StatusBadge status={r.status as never} /> : null,
+      "status" in r && typeof r.status === "string" ? (
+        <StatusBadge status={r.status as never} />
+      ) : null,
   },
 ];
 
@@ -43,7 +51,11 @@ function Page() {
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Xúc tiến thương mại" }]}
       />
       <div className="p-4 sm:p-6">
-        <DataTable columns={columns} rows={PROMOTIONS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
+        <DataTable
+          columns={columns}
+          rows={PROMOTIONS as Row[]}
+          searchPlaceholder="Tìm kiếm trong danh sách..."
+        />
       </div>
     </>
   );

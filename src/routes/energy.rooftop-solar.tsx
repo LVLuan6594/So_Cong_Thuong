@@ -13,7 +13,12 @@ export const Route = createFileRoute("/energy/rooftop-solar")({
 
 const columns: Column<RooftopSolar>[] = [
   { key: "owner", header: "Đơn vị/chủ hộ", sortable: true },
-  { key: "installedCapacityKw", header: "Công suất", sortable: true, value: (r) => r.installedCapacityKw ?? 0 },
+  {
+    key: "installedCapacityKw",
+    header: "Công suất",
+    sortable: true,
+    value: (r) => r.installedCapacityKw ?? 0,
+  },
   { key: "district", header: "Địa bàn", sortable: true },
   { key: "customerType", header: "Loại hình", sortable: true },
   { key: "connection", header: "Đấu nối", value: (r) => r.connection.point },
@@ -33,9 +38,24 @@ function Page() {
       drawerTitle="Hồ sơ điện mặt trời mái nhà"
       kpis={(rows) => [
         { label: "Số hệ thống", value: rows.length, icon: SolarPanel, tone: "gov" },
-        { label: "Tổng công suất", value: `${(rows.reduce((s, r) => s + (r.installedCapacityKw ?? 0), 0) / 1000).toFixed(2)} MWp`, icon: Zap, tone: "success" },
-        { label: "Đang hòa lưới", value: rows.filter((r) => r.status.includes("vận hành")).length, icon: PlugZap, tone: "teal" },
-        { label: "Tự tiêu thụ", value: `${rows.reduce((s, r) => s + (r.operation?.selfConsumptionKwh ?? 0), 0).toLocaleString("vi-VN")} kWh`, icon: Home, tone: "analytics" },
+        {
+          label: "Tổng công suất",
+          value: `${(rows.reduce((s, r) => s + (r.installedCapacityKw ?? 0), 0) / 1000).toFixed(2)} MWp`,
+          icon: Zap,
+          tone: "success",
+        },
+        {
+          label: "Đang hòa lưới",
+          value: rows.filter((r) => r.status.includes("vận hành")).length,
+          icon: PlugZap,
+          tone: "teal",
+        },
+        {
+          label: "Tự tiêu thụ",
+          value: `${rows.reduce((s, r) => s + (r.operation?.selfConsumptionKwh ?? 0), 0).toLocaleString("vi-VN")} kWh`,
+          icon: Home,
+          tone: "analytics",
+        },
       ]}
       renderDetail={(item) => (
         <FieldGrid

@@ -24,10 +24,7 @@ export function StatusBadge({
   className?: string;
 }) {
   return (
-    <Badge
-      variant="outline"
-      className={cn("rounded-md font-medium", TONE[status], className)}
-    >
+    <Badge variant="outline" className={cn("rounded-md font-medium", TONE[status], className)}>
       {label ?? STATUS_LABEL[status]}
     </Badge>
   );

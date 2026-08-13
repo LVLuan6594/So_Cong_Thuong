@@ -8,9 +8,15 @@ export const Route = createFileRoute("/market")({
   head: () => ({
     meta: [
       { title: "Thị trường & Sản phẩm | Nền tảng ngành Công Thương" },
-      { name: "description", content: "Sản phẩm công nghiệp chủ lực, tiêu chuẩn, chứng nhận và diễn biến giá." },
+      {
+        name: "description",
+        content: "Sản phẩm công nghiệp chủ lực, tiêu chuẩn, chứng nhận và diễn biến giá.",
+      },
       { property: "og:title", content: "Thị trường & Sản phẩm" },
-      { property: "og:description", content: "Sản phẩm công nghiệp chủ lực, tiêu chuẩn, chứng nhận và diễn biến giá." },
+      {
+        property: "og:description",
+        content: "Sản phẩm công nghiệp chủ lực, tiêu chuẩn, chứng nhận và diễn biến giá.",
+      },
     ],
   }),
   component: Page,
@@ -29,7 +35,9 @@ const columns: Column<Row>[] = [
     key: "status",
     header: "Trạng thái",
     render: (r) =>
-      "status" in r && typeof r.status === "string" ? <StatusBadge status={r.status as never} /> : null,
+      "status" in r && typeof r.status === "string" ? (
+        <StatusBadge status={r.status as never} />
+      ) : null,
   },
 ];
 
@@ -42,7 +50,11 @@ function Page() {
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Thị trường & Sản phẩm" }]}
       />
       <div className="p-4 sm:p-6">
-        <DataTable columns={columns} rows={PRODUCTS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
+        <DataTable
+          columns={columns}
+          rows={PRODUCTS as Row[]}
+          searchPlaceholder="Tìm kiếm trong danh sách..."
+        />
       </div>
     </>
   );

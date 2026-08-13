@@ -8,9 +8,15 @@ export const Route = createFileRoute("/integration")({
   head: () => ({
     meta: [
       { title: "Tích hợp dữ liệu | Nền tảng ngành Công Thương" },
-      { name: "description", content: "Trạng thái kết nối LGSP, NDXP, QLVBĐH, Cổng DVC và nhật ký đồng bộ." },
+      {
+        name: "description",
+        content: "Trạng thái kết nối LGSP, NDXP, QLVBĐH, Cổng DVC và nhật ký đồng bộ.",
+      },
       { property: "og:title", content: "Tích hợp dữ liệu" },
-      { property: "og:description", content: "Trạng thái kết nối LGSP, NDXP, QLVBĐH, Cổng DVC và nhật ký đồng bộ." },
+      {
+        property: "og:description",
+        content: "Trạng thái kết nối LGSP, NDXP, QLVBĐH, Cổng DVC và nhật ký đồng bộ.",
+      },
     ],
   }),
   component: Page,
@@ -29,7 +35,9 @@ const columns: Column<Row>[] = [
     key: "status",
     header: "Trạng thái",
     render: (r) =>
-      "status" in r && typeof r.status === "string" ? <StatusBadge status={r.status as never} /> : null,
+      "status" in r && typeof r.status === "string" ? (
+        <StatusBadge status={r.status as never} />
+      ) : null,
   },
 ];
 
@@ -42,7 +50,11 @@ function Page() {
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Tích hợp dữ liệu" }]}
       />
       <div className="p-4 sm:p-6">
-        <DataTable columns={columns} rows={INTEGRATIONS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
+        <DataTable
+          columns={columns}
+          rows={INTEGRATIONS as Row[]}
+          searchPlaceholder="Tìm kiếm trong danh sách..."
+        />
       </div>
     </>
   );

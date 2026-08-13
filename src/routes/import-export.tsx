@@ -8,9 +8,15 @@ export const Route = createFileRoute("/import-export")({
   head: () => ({
     meta: [
       { title: "Xuất nhập khẩu | Nền tảng ngành Công Thương" },
-      { name: "description", content: "Kim ngạch xuất nhập khẩu theo mã HS, doanh nghiệp và thị trường." },
+      {
+        name: "description",
+        content: "Kim ngạch xuất nhập khẩu theo mã HS, doanh nghiệp và thị trường.",
+      },
       { property: "og:title", content: "Xuất nhập khẩu" },
-      { property: "og:description", content: "Kim ngạch xuất nhập khẩu theo mã HS, doanh nghiệp và thị trường." },
+      {
+        property: "og:description",
+        content: "Kim ngạch xuất nhập khẩu theo mã HS, doanh nghiệp và thị trường.",
+      },
     ],
   }),
   component: Page,
@@ -29,7 +35,9 @@ const columns: Column<Row>[] = [
     key: "status",
     header: "Trạng thái",
     render: (r) =>
-      "status" in r && typeof r.status === "string" ? <StatusBadge status={r.status as never} /> : null,
+      "status" in r && typeof r.status === "string" ? (
+        <StatusBadge status={r.status as never} />
+      ) : null,
   },
 ];
 
@@ -42,7 +50,11 @@ function Page() {
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Xuất nhập khẩu" }]}
       />
       <div className="p-4 sm:p-6">
-        <DataTable columns={columns} rows={TRADES as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
+        <DataTable
+          columns={columns}
+          rows={TRADES as Row[]}
+          searchPlaceholder="Tìm kiếm trong danh sách..."
+        />
       </div>
     </>
   );

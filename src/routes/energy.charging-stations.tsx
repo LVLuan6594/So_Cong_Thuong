@@ -14,7 +14,11 @@ export const Route = createFileRoute("/energy/charging-stations")({
 const columns: Column<ChargingStation>[] = [
   { key: "name", header: "Trạm sạc", sortable: true },
   { key: "powerKw", header: "Công suất", sortable: true },
-  { key: "ports", header: "Số cổng", value: (r) => r.ports.ccs2 + r.ports.chademo + r.ports.acType2 },
+  {
+    key: "ports",
+    header: "Số cổng",
+    value: (r) => r.ports.ccs2 + r.ports.chademo + r.ports.acType2,
+  },
   { key: "freePorts", header: "Cổng trống", sortable: true },
   { key: "type", header: "Loại", sortable: true },
   { key: "district", header: "Địa bàn", sortable: true },
@@ -34,10 +38,30 @@ function Page() {
       drawerTitle="Hồ sơ trạm sạc điện"
       kpis={(rows) => [
         { label: "Tổng trạm", value: rows.length, icon: BatteryCharging, tone: "gov" },
-        { label: "Đang hoạt động", value: rows.filter((r) => r.status.includes("Hoạt động")).length, icon: Zap, tone: "success" },
-        { label: "Đang bảo trì", value: rows.filter((r) => r.status.includes("Bảo trì")).length, icon: Wrench, tone: "warning" },
-        { label: "Tổng cổng sạc", value: rows.reduce((s, r) => s + r.ports.ccs2 + r.ports.chademo + r.ports.acType2, 0), icon: PlugZap, tone: "teal" },
-        { label: "Cổng đang trống", value: rows.reduce((s, r) => s + r.freePorts, 0), icon: CircleParking, tone: "analytics" },
+        {
+          label: "Đang hoạt động",
+          value: rows.filter((r) => r.status.includes("Hoạt động")).length,
+          icon: Zap,
+          tone: "success",
+        },
+        {
+          label: "Đang bảo trì",
+          value: rows.filter((r) => r.status.includes("Bảo trì")).length,
+          icon: Wrench,
+          tone: "warning",
+        },
+        {
+          label: "Tổng cổng sạc",
+          value: rows.reduce((s, r) => s + r.ports.ccs2 + r.ports.chademo + r.ports.acType2, 0),
+          icon: PlugZap,
+          tone: "teal",
+        },
+        {
+          label: "Cổng đang trống",
+          value: rows.reduce((s, r) => s + r.freePorts, 0),
+          icon: CircleParking,
+          tone: "analytics",
+        },
       ]}
       renderDetail={(item) => (
         <FieldGrid
@@ -47,7 +71,10 @@ function Page() {
             { label: "Công suất", value: `${item.powerKw} kW` },
             { label: "Số cổng", value: item.ports.ccs2 + item.ports.chademo + item.ports.acType2 },
             { label: "Cổng trống", value: item.freePorts },
-            { label: "Chuẩn", value: `CCS2: ${item.ports.ccs2}, CHAdeMO: ${item.ports.chademo}, AC Type2: ${item.ports.acType2}` },
+            {
+              label: "Chuẩn",
+              value: `CCS2: ${item.ports.ccs2}, CHAdeMO: ${item.ports.chademo}, AC Type2: ${item.ports.acType2}`,
+            },
             { label: "Loại", value: item.type },
             { label: "Địa chỉ", value: item.address },
             { label: "Trạng thái", value: <EnergyStatusBadge status={item.status} /> },

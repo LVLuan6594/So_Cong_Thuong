@@ -15,7 +15,12 @@ const columns: Column<PowerProject>[] = [
   { key: "name", header: "Tên dự án", sortable: true },
   { key: "type", header: "Loại nguồn", sortable: true },
   { key: "investor", header: "Chủ đầu tư", sortable: true },
-  { key: "designCapacityMw", header: "Công suất", sortable: true, value: (r) => r.designCapacityMw ?? 0 },
+  {
+    key: "designCapacityMw",
+    header: "Công suất",
+    sortable: true,
+    value: (r) => r.designCapacityMw ?? 0,
+  },
   { key: "district", header: "Địa bàn", sortable: true },
   { key: "status", header: "Trạng thái", render: (r) => <EnergyStatusBadge status={r.status} /> },
 ];
@@ -33,10 +38,30 @@ function Page() {
       drawerTitle="Hồ sơ dự án"
       kpis={(rows) => [
         { label: "Tổng dự án", value: rows.length, icon: Zap, tone: "gov" },
-        { label: "Đang vận hành", value: rows.filter((r) => r.status.includes("vận hành")).length, icon: Factory, tone: "success" },
-        { label: "Đang đầu tư", value: rows.filter((r) => r.status.includes("đầu tư")).length, icon: Factory, tone: "warning" },
-        { label: "Đang quy hoạch", value: rows.filter((r) => r.status.includes("quy hoạch")).length, icon: Leaf, tone: "teal" },
-        { label: "Tổng công suất", value: `${rows.reduce((s, r) => s + (r.designCapacityMw ?? 0), 0)} MW`, icon: Zap, tone: "analytics" },
+        {
+          label: "Đang vận hành",
+          value: rows.filter((r) => r.status.includes("vận hành")).length,
+          icon: Factory,
+          tone: "success",
+        },
+        {
+          label: "Đang đầu tư",
+          value: rows.filter((r) => r.status.includes("đầu tư")).length,
+          icon: Factory,
+          tone: "warning",
+        },
+        {
+          label: "Đang quy hoạch",
+          value: rows.filter((r) => r.status.includes("quy hoạch")).length,
+          icon: Leaf,
+          tone: "teal",
+        },
+        {
+          label: "Tổng công suất",
+          value: `${rows.reduce((s, r) => s + (r.designCapacityMw ?? 0), 0)} MW`,
+          icon: Zap,
+          tone: "analytics",
+        },
       ]}
       renderDetail={(item) => (
         <FieldGrid
@@ -50,7 +75,11 @@ function Page() {
             { label: "Trạm đấu nối", value: item.substationCode },
             { label: "Điện áp", value: item.gridVoltage },
             { label: "Trạng thái", value: <EnergyStatusBadge status={item.status} /> },
-            { label: "Bản đồ vị trí", value: item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined },
+            {
+              label: "Bản đồ vị trí",
+              value:
+                item.latitude && item.longitude ? `${item.latitude}, ${item.longitude}` : undefined,
+            },
           ]}
         />
       )}
