@@ -169,8 +169,8 @@ export function EnergyLoading() {
 export function EnergyError({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="p-6">
-      <div className="gov-card flex items-center justify-between gap-4 p-5">
-        <div className="flex items-center gap-3">
+      <div className="gov-card flex flex-wrap items-center justify-between gap-4 p-5">
+        <div className="flex min-w-0 items-center gap-3">
           <span className="flex size-10 items-center justify-center rounded-md bg-destructive/10 text-destructive">
             <AlertTriangle className="size-5" />
           </span>

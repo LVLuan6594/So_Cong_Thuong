@@ -9,6 +9,10 @@ export function InvestorCTA() {
           aria-hidden
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(21,101,192,0.5),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(0,137,123,0.4),transparent_55%)]"
         />
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:48px_48px]"
+        />
         <div className="relative flex flex-col items-start gap-8 p-8 sm:p-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest">

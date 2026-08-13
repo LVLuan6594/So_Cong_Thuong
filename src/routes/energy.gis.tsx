@@ -83,7 +83,7 @@ function Page() {
       <PageHeader
         title="GIS Năng lượng"
         description="Bản đồ lớp năng lượng: base map, trạm biến áp, tuyến điện, trụ điện, dự án nguồn điện, ĐMT mái nhà, sự cố, carbon và trạm sạc."
-        crumbs={[{ label: "Điều tra & Năng lượng", to: "/energy" }, { label: "GIS Năng lượng" }]}
+        crumbs={[{ label: "Nguồn năng lượng tái tạo", to: "/energy" }, { label: "GIS Năng lượng" }]}
         variant="panel"
         icon={MapIcon}
         actions={
@@ -97,7 +97,7 @@ function Page() {
 
       <div className="grid grid-cols-1 gap-4 p-4 sm:p-6 2xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-4">
-          <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <StatCard
               label="Lưới & trạm theo GIS"
               value={data.substations.length + data.lines.length}

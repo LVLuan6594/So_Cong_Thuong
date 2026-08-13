@@ -52,6 +52,10 @@ export function ClusterMap({
 
   useEffect(() => {
     let cancelled = false;
+    let observer: ResizeObserver | undefined;
+    const onResize = () => {
+      if (mapRef.current && containerRef.current) mapRef.current.invalidateSize();
+    };
     (async () => {
       const L = await import("leaflet");
       if (cancelled || !containerRef.current) return;
@@ -67,9 +71,18 @@ export function ClusterMap({
       layerGroupRef.current = L.layerGroup().addTo(map);
       mapRef.current = map;
       setMapReady(true);
+
+      // Cập nhật kích thước khi container đổi (xoay màn hình, mở/đóng sidebar, resize).
+      window.addEventListener("resize", onResize);
+      if (typeof ResizeObserver !== "undefined") {
+        observer = new ResizeObserver(onResize);
+        observer.observe(containerRef.current);
+      }
     })();
     return () => {
       cancelled = true;
+      window.removeEventListener("resize", onResize);
+      observer?.disconnect();
       mapRef.current?.remove();
       mapRef.current = null;
       layerGroupRef.current = null;
@@ -103,7 +116,7 @@ export function ClusterMap({
     <div
       ref={containerRef}
       className="cluster-map z-0 w-full"
-      style={{ height }}
+      style={{ height: `min(${height}px, 70vh)` }}
       aria-label="Bản đồ cụm công nghiệp tỉnh Tây Ninh (OpenStreetMap)"
     />
   );

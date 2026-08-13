@@ -26,10 +26,10 @@ export function PageHeader({
   if (variant === "panel") {
     const Icon = icon;
     return (
-      <div className="mx-4 mt-4 mb-4 overflow-hidden rounded-xl border border-border bg-card shadow-panel sm:mx-6 sm:mt-6">
+      <div className="mx-2 mt-3 mb-3 overflow-hidden rounded-xl border border-border bg-card shadow-panel sm:mx-4 sm:mt-4 sm:mb-4 lg:mx-6 lg:mt-6">
         <div className="h-1 bg-gradient-to-r from-navy via-gov to-teal" />
-        <div className="px-6 py-4">
-          <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <div className="px-4 py-4 sm:px-6">
+          <nav className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
             <Link to="/" className="flex items-center gap-1 hover:text-gov">
               <Home className="size-3.5" />
               Trang chủ
@@ -71,8 +71,8 @@ export function PageHeader({
   }
 
   return (
-    <div className="border-b border-border bg-card px-6 py-4">
-      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
+    <div className="border-b border-border bg-card px-4 py-4 sm:px-6">
+      <nav className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
         <Link to="/" className="flex items-center gap-1 hover:text-gov">
           <Home className="size-3.5" />
           Trang chủ

@@ -337,7 +337,7 @@ function DashboardPage() {
         }
       />
 
-      <div className="space-y-5 p-6">
+      <div className="space-y-5 p-4 sm:p-6">
         <FilterBar
           filters={[
             { label: "Kỳ báo cáo", value: period, options: PERIODS, onChange: setPeriod },
@@ -379,7 +379,7 @@ function DashboardPage() {
           ))}
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-2">
+        <section className="grid gap-4 lg:grid-cols-2">
           <ChartCard
             title="Doanh nghiệp theo lĩnh vực"
             subtitle="Nhấn cột để drill-down theo lĩnh vực"

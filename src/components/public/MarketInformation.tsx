@@ -16,7 +16,7 @@ const TONE_TEXT: Record<string, string> = {
 
 export function MarketInformation({ items }: { items: PortalPost[] }) {
   return (
-    <section id="thi-truong" className="bg-surface py-16">
+    <section id="thi-truong" className="bg-surface py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Nắm bắt diễn biến"
@@ -27,7 +27,10 @@ export function MarketInformation({ items }: { items: PortalPost[] }) {
         {/* KPI nhỏ — giữ nhẹ nhàng, không biến trang thành dashboard */}
         <div className="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {PORTAL_MARKET_KPIS.map((k) => (
-            <div key={k.label} className="rounded-xl border border-border bg-white p-4 shadow-sm">
+            <div
+              key={k.label}
+              className="rounded-2xl border border-border bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+            >
               <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                 {k.label}
               </p>
@@ -45,10 +48,10 @@ export function MarketInformation({ items }: { items: PortalPost[] }) {
             <Link
               key={p.id}
               to={portalDetailTo(p)}
-              className="group flex overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-shadow hover:shadow-xl"
+              className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:flex-row"
             >
-              <PublicThumb post={p} className="h-full w-40 shrink-0 sm:w-52" />
-              <div className="flex flex-col justify-center p-5">
+              <PublicThumb post={p} className="h-40 w-full shrink-0 sm:h-full sm:w-52" />
+              <div className="flex min-w-0 flex-1 flex-col justify-center p-5">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-gov">
                   {p.category}
                 </p>

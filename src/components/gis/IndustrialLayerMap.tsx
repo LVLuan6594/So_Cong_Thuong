@@ -167,6 +167,10 @@ export function IndustrialLayerMap({
   // Khởi tạo bản đồ một lần — không bao giờ recreate khi đổi ngành/chọn KCN/mở drawer.
   useEffect(() => {
     let cancelled = false;
+    let observer: ResizeObserver | undefined;
+    const onResize = () => {
+      if (mapRef.current && containerRef.current) mapRef.current.invalidateSize();
+    };
     (async () => {
       const L = await import("leaflet");
       if (cancelled || !containerRef.current) return;
@@ -197,9 +201,18 @@ export function IndustrialLayerMap({
       void enhancePane;
       setZoom(map.getZoom());
       map.on("zoomend", () => setZoom(map.getZoom()));
+
+      // Cập nhật kích thước khi container đổi (xoay màn hình, mở/đóng sidebar, resize).
+      window.addEventListener("resize", onResize);
+      if (typeof ResizeObserver !== "undefined") {
+        observer = new ResizeObserver(onResize);
+        observer.observe(containerRef.current);
+      }
     })();
     return () => {
       cancelled = true;
+      window.removeEventListener("resize", onResize);
+      observer?.disconnect();
       mapRef.current?.remove();
       mapRef.current = null;
       zoneLayerRef.current = null;
@@ -399,7 +412,7 @@ export function IndustrialLayerMap({
     <div
       ref={containerRef}
       className="gis-map z-0 w-full"
-      style={{ height }}
+      style={{ height: `min(${height}px, 70vh)` }}
       aria-label="Bản đồ GIS khu/cụm công nghiệp tỉnh Tây Ninh (OpenStreetMap)"
     />
   );

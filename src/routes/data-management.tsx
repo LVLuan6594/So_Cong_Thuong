@@ -82,7 +82,7 @@ function DataManagement() {
         actions={<Button onClick={() => toast.success("Đã tạo bộ dữ liệu mới ở trạng thái Nháp")}>Tạo bộ dữ liệu</Button>}
       />
 
-      <div className="space-y-5 p-6">
+      <div className="space-y-5 p-4 sm:p-6">
         <DataLifecycle />
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -93,14 +93,14 @@ function DataManagement() {
         </section>
 
         <Tabs defaultValue="ocr">
-          <TabsList>
+          <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="ocr">Số hóa OCR/AI</TabsTrigger>
             <TabsTrigger value="master">Master Data</TabsTrigger>
             <TabsTrigger value="quality">Chất lượng dữ liệu</TabsTrigger>
             <TabsTrigger value="reconcile">Đối soát</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="ocr" className="mt-4 grid gap-4 xl:grid-cols-2">
+          <TabsContent value="ocr" className="mt-4 grid gap-4 lg:grid-cols-2">
             <ChartCard title="Tải hồ sơ cần số hóa" subtitle="Hỗ trợ PDF, ảnh scan, DOCX (mô phỏng)">
               <div className="rounded-lg border-2 border-dashed border-border bg-surface p-8 text-center">
                 <UploadCloud className="mx-auto size-10 text-gov" strokeWidth={1.5} />
@@ -187,7 +187,7 @@ function DataManagement() {
             />
           </TabsContent>
 
-          <TabsContent value="reconcile" className="mt-4 grid gap-4 xl:grid-cols-2">
+          <TabsContent value="reconcile" className="mt-4 grid gap-4 lg:grid-cols-2">
             <ChartCard title="Đối soát dữ liệu nội bộ – LGSP" subtitle="Kỳ đối soát: Quý II/2026">
               <ul className="space-y-2 text-sm">
                 {[

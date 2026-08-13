@@ -110,14 +110,16 @@ export function DetailPageShell({
                 {post.attachments.map((a) => (
                   <li
                     key={a.name}
-                    className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
+                    className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm"
                   >
-                    <span className="font-medium text-navy">{a.name}</span>
+                    <span className="min-w-0 flex-1 break-words font-medium text-navy">
+                      {a.name}
+                    </span>
                     <a
                       href={a.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-gov hover:underline"
+                      className="shrink-0 font-semibold text-gov hover:underline"
                     >
                       Tải xuống
                     </a>

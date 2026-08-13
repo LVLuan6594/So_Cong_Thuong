@@ -41,7 +41,7 @@ function Page() {
         description="Tra cứu hồ sơ số doanh nghiệp trong cơ sở dữ liệu dùng chung của ngành."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "CSDL ngành Công Thương" }]}
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <DataTable columns={columns} rows={ENTERPRISES as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
       </div>
     </>

@@ -40,7 +40,7 @@ function Page() {
         description="Kho báo cáo theo kỳ, drill-down tỉnh – huyện và xuất báo cáo DOCX/XLSX/PDF."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Báo cáo & BI" }]}
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <DataTable columns={columns} rows={REPORTS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
       </div>
     </>

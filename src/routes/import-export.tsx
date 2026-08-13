@@ -41,7 +41,7 @@ function Page() {
         description="Kim ngạch xuất nhập khẩu theo mã HS, doanh nghiệp và thị trường."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Xuất nhập khẩu" }]}
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <DataTable columns={columns} rows={TRADES as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
       </div>
     </>

@@ -227,7 +227,11 @@ export function EnergyMap({
 
   useEffect(() => {
     let cancelled = false;
+    let observer: ResizeObserver | undefined;
     const markers = markerByKeyRef.current;
+    const onResize = () => {
+      if (mapRef.current && containerRef.current) mapRef.current.invalidateSize();
+    };
     (async () => {
       const L = await import("leaflet");
       if (cancelled || !containerRef.current) return;
@@ -240,9 +244,18 @@ export function EnergyMap({
       layerRef.current = L.layerGroup().addTo(map);
       mapRef.current = map;
       setReady(true);
+
+      // Cập nhật kích thước khi container đổi (xoay màn hình, mở/đóng sidebar, resize).
+      window.addEventListener("resize", onResize);
+      if (typeof ResizeObserver !== "undefined") {
+        observer = new ResizeObserver(onResize);
+        observer.observe(containerRef.current);
+      }
     })();
     return () => {
       cancelled = true;
+      window.removeEventListener("resize", onResize);
+      observer?.disconnect();
       mapRef.current?.remove();
       mapRef.current = null;
       layerRef.current = null;
@@ -376,16 +389,16 @@ export function EnergyMap({
   };
 
   return (
-    <div className="relative bg-surface" style={{ height }}>
+    <div className="relative bg-surface" style={{ height: `min(${height}px, 70vh)` }}>
       <div
         ref={containerRef}
         className="energy-map z-0 w-full"
-        style={{ height }}
+        style={{ height: `min(${height}px, 70vh)` }}
         aria-label="Bản đồ GIS năng lượng tỉnh Tây Ninh"
       />
 
       {!compact ? (
-        <div className="absolute left-3 top-3 z-[500] w-56 rounded-md border border-border bg-card/95 shadow-panel backdrop-blur">
+        <div className="absolute left-3 top-3 z-[500] w-56 max-w-[calc(100%-1.5rem)] rounded-md border border-border bg-card/95 shadow-panel backdrop-blur">
           <button
             type="button"
             onClick={() => setLayersOpen((value) => !value)}

@@ -6,19 +6,22 @@ import type { PortalPost } from "@/lib/types";
 
 export function CategoryNews({ category, items }: { category: string; items: PortalPost[] }) {
   return (
-    <section id="tin-theo-linh-vuc" className="bg-surface py-16">
+    <section id="tin-theo-linh-vuc" className="bg-surface py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4 sm:mb-10">
           <div>
-            <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.2em] text-gov">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-gov/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-gov">
+              <span className="size-1.5 rounded-full bg-gov" />
               Tin theo lĩnh vực
-            </p>
-            <h2 className="text-2xl font-bold tracking-tight text-navy">Lĩnh vực: {category}</h2>
+            </span>
+            <h2 className="text-2xl font-bold tracking-tight text-navy sm:text-3xl">
+              Lĩnh vực: {category}
+            </h2>
           </div>
         </div>
 
         {items.length === 0 ? (
-          <div className="rounded-2xl border border-border bg-white p-10 text-center text-sm text-muted-foreground">
+          <div className="rounded-3xl border border-border bg-white p-10 text-center text-sm text-muted-foreground">
             Hiện chưa có tin tức cho lĩnh vực <strong className="text-navy">{category}</strong>.
           </div>
         ) : (
@@ -27,7 +30,7 @@ export function CategoryNews({ category, items }: { category: string; items: Por
               <Link
                 key={p.id}
                 to={portalDetailTo(p)}
-                className="group overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-shadow hover:shadow-xl"
+                className="group overflow-hidden rounded-3xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
               >
                 <PublicThumb post={p} className="h-44" />
                 <div className="p-5">

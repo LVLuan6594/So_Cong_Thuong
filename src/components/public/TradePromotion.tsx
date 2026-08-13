@@ -7,7 +7,7 @@ import type { PortalPost } from "@/lib/types";
 
 export function TradePromotion({ items }: { items: PortalPost[] }) {
   return (
-    <section id="xuc-tien-thuong-mai" className="bg-surface py-16">
+    <section id="xuc-tien-thuong-mai" className="bg-surface py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Đồng hành doanh nghiệp"
@@ -19,7 +19,7 @@ export function TradePromotion({ items }: { items: PortalPost[] }) {
             <Link
               key={p.id}
               to={portalDetailTo(p)}
-              className="group overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-shadow hover:shadow-xl"
+              className="group overflow-hidden rounded-3xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
             >
               <PublicThumb post={p} className="h-40" />
               <div className="p-5">

@@ -42,7 +42,7 @@ function Page() {
         description="Hội chợ, triển lãm, kết nối giao thương và chương trình khuyến mại."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Xúc tiến thương mại" }]}
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <DataTable columns={columns} rows={PROMOTIONS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
       </div>
     </>

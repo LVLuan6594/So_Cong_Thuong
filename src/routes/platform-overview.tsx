@@ -36,7 +36,7 @@ function PlatformOverview() {
         crumbs={[{ label: "Điều hành" }, { label: "Tổng quan nền tảng" }]}
       />
 
-      <div className="space-y-5 p-6">
+      <div className="space-y-5 p-4 sm:p-6">
         <section className="gov-card p-5">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-navy">
             Kiến trúc tổng thể

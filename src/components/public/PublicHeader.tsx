@@ -111,7 +111,7 @@ export function PublicHeader() {
             <img
               src="/img/Logo.gif"
               alt={SITE_CONFIG.organization.shortName}
-              className="block h-auto w-full max-w-full object-contain"
+              className="block h-auto max-h-14 w-full max-w-full object-contain sm:max-h-16 lg:max-h-20"
             />
           </Link>
         </div>
@@ -120,7 +120,7 @@ export function PublicHeader() {
       {/* Main bar: Navigation | Search */}
       <div className="mx-auto flex min-h-[64px] max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:min-h-[72px] lg:px-8 xl:gap-6">
         {/* Navigation (một dòng duy nhất) */}
-        <nav className="hidden min-w-0 flex-1 items-center gap-1 xl:flex xl:gap-1.5 2xl:gap-3">
+        <nav className="hidden min-w-0 flex-1 items-center gap-0.5 lg:flex lg:gap-1 2xl:gap-3">
           {NAV_LINKS.map((l) => {
             const active = l.to ? location.pathname === l.to : isLanding && spyMuc === l.muc;
             return (
@@ -131,7 +131,7 @@ export function PublicHeader() {
                 resetScroll={!!l.to}
                 onClick={() => onNavClick(l.muc)}
                 className={cn(
-                  "group relative whitespace-nowrap rounded-lg px-3 py-2.5 text-[15px] transition-all duration-200",
+                  "group relative whitespace-nowrap rounded-lg px-2 py-2 text-sm transition-all duration-200 xl:px-3 xl:text-[15px]",
                   active
                     ? "font-semibold text-navy"
                     : "font-medium text-navy/70 hover:bg-gov/5 hover:text-gov",
@@ -161,10 +161,10 @@ export function PublicHeader() {
               }}
               onFocus={() => setSearchOpen(true)}
               placeholder="Tìm kiếm thông tin..."
-              className="h-10 w-44 rounded-full border-navy/15 pl-8 sm:w-52 lg:w-60 xl:w-64"
+              className="h-10 w-36 rounded-full border-navy/15 pl-8 sm:w-44 lg:w-48 xl:w-64"
             />
             {searchOpen && query.trim() ? (
-              <div className="absolute right-0 top-11 w-80 overflow-hidden rounded-xl border border-border bg-white shadow-xl">
+              <div className="absolute right-0 top-11 w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-xl border border-border bg-white shadow-xl sm:w-80">
                 <p className="border-b border-border bg-surface px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                   Kết quả tìm kiếm
                 </p>
@@ -201,17 +201,58 @@ export function PublicHeader() {
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
             aria-label="Mở menu"
-            className="grid size-10 place-items-center rounded-md text-navy hover:bg-surface xl:hidden"
+            className="grid size-10 place-items-center rounded-md text-navy hover:bg-surface lg:hidden"
           >
             {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile / tablet nav (dưới xl) */}
+      {/* Mobile / tablet nav (dưới lg) */}
       {mobileOpen ? (
-        <div className="border-t border-border bg-white xl:hidden">
+        <div className="border-t border-border bg-white lg:hidden">
           <div className="mx-auto max-w-7xl space-y-1 px-4 py-3 sm:px-6 lg:px-8">
+            <div className="relative mb-2 md:hidden">
+              <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setSearchOpen(true);
+                }}
+                placeholder="Tìm kiếm thông tin..."
+                className="h-10 rounded-full border-navy/15 pl-8"
+              />
+              {searchOpen && query.trim() ? (
+                <div className="absolute inset-x-0 top-11 z-10 overflow-hidden rounded-xl border border-border bg-white shadow-xl">
+                  {results.length === 0 ? (
+                    <p className="px-3 py-4 text-sm text-muted-foreground">
+                      Không tìm thấy nội dung phù hợp.
+                    </p>
+                  ) : (
+                    <ul className="max-h-72 overflow-y-auto">
+                      {results.map((r) => (
+                        <li key={r.id}>
+                          <Link
+                            to={portalDetailTo(r)}
+                            onClick={closeAll}
+                            className="block px-3 py-2.5 transition-colors hover:bg-surface"
+                          >
+                            <span className="block truncate text-sm font-medium text-navy">
+                              {r.title}
+                            </span>
+                            <span className="mt-0.5 flex items-center gap-2 text-[11px] text-muted-foreground">
+                              <span className="text-gov">{r.category}</span>
+                              <span>{formatPortalDate(r.publishedAt)}</span>
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ) : null}
+            </div>
             {NAV_LINKS.map((l) => {
               const active = l.to ? location.pathname === l.to : isLanding && spyMuc === l.muc;
               return (

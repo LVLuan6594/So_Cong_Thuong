@@ -40,7 +40,7 @@ function EnterpriseDetail() {
           </Button>
         }
       />
-      <div className="space-y-5 p-6">
+      <div className="space-y-5 p-4 sm:p-6">
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard label="Cơ sở SXKD" value={e.links.facilities} icon={Factory} tone="gov" />
           <StatCard label="Sản phẩm" value={e.links.products} icon={Boxes} tone="teal" />
@@ -48,7 +48,7 @@ function EnterpriseDetail() {
           <StatCard label="Hồ sơ XNK" value={e.links.trades} icon={Ship} tone="analytics" />
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-2">
+        <section className="grid gap-4 lg:grid-cols-2">
           <ChartCard title="Thông tin pháp lý">
             <dl className="divide-y divide-border text-sm">
               {[

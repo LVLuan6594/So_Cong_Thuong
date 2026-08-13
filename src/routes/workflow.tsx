@@ -42,7 +42,7 @@ function Page() {
         description="Trình – kiểm duyệt – phê duyệt – khóa kỳ cho các bộ dữ liệu ngành Công Thương."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Workflow & phê duyệt" }]}
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <DataTable columns={columns} rows={WORKFLOW_ITEMS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
       </div>
     </>

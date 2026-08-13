@@ -22,20 +22,22 @@ const BUSINESS_LINKS: { label: string; icon: LucideIcon; muc?: string }[] = [
 
 export function BusinessCTA() {
   return (
-    <section id="doanh-nghiep" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="grid gap-6 lg:grid-cols-5">
-        <div className="rounded-3xl bg-gradient-to-br from-navy via-gov to-teal p-8 text-white lg:col-span-2 lg:p-10">
-          <span className="grid size-12 place-items-center rounded-xl bg-white/15">
+    <section id="doanh-nghiep" className="bg-surface py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-5">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-gov to-teal p-8 text-white lg:col-span-2 lg:p-10">
+          <span className="absolute -right-10 -top-10 size-40 rounded-full bg-white/10 blur-2xl" />
+          <span className="relative grid size-12 place-items-center rounded-2xl bg-white/15">
             <Factory className="size-6" />
           </span>
-          <h2 className="mt-5 text-2xl font-bold leading-tight">Dành cho doanh nghiệp</h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/80">
+          <h2 className="relative mt-5 text-2xl font-bold leading-tight">Dành cho doanh nghiệp</h2>
+          <p className="relative mt-3 text-sm leading-relaxed text-white/80">
             Truy cập nhanh các chương trình, thông tin và công cụ hỗ trợ doanh nghiệp trên địa bàn
             tỉnh Tây Ninh.
           </p>
           <Link
             to="/industry-database"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-white/90"
+            className="relative mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-white/90"
           >
             <Globe className="size-4" /> Tra cứu doanh nghiệp
           </Link>
@@ -46,7 +48,7 @@ export function BusinessCTA() {
             const external = l.muc === "gis";
             const Inner = (
               <>
-                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-gov/10 text-gov transition-colors group-hover:bg-gov group-hover:text-white">
+                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gov/10 text-gov transition-colors group-hover:bg-gov group-hover:text-white">
                   <l.icon className="size-5" strokeWidth={1.8} />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -79,6 +81,7 @@ export function BusinessCTA() {
               </Link>
             );
           })}
+        </div>
         </div>
       </div>
     </section>

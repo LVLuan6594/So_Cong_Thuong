@@ -118,8 +118,10 @@ export function LeadershipPage() {
                       </p>
                     </div>
                   </div>
-                  <p className="pl-12 text-sm font-medium text-navy sm:pl-0">{u.name}</p>
-                  <div className="space-y-0.5 pl-12 text-xs text-muted-foreground sm:pl-0">
+                  <p className="pl-10 break-words text-sm font-medium text-navy sm:pl-0">
+                    {u.name}
+                  </p>
+                  <div className="space-y-0.5 pl-10 break-words text-xs text-muted-foreground sm:pl-0">
                     {u.officePhone ? <p>ĐT CQ: {u.officePhone}</p> : null}
                     {u.mobile ? <p>Di động: {u.mobile}</p> : null}
                     {u.email ? (
@@ -127,7 +129,7 @@ export function LeadershipPage() {
                         Email:{" "}
                         <a
                           href={`mailto:${u.email}`}
-                          className="font-medium text-gov hover:underline"
+                          className="font-medium break-all text-gov hover:underline"
                         >
                           {u.email}
                         </a>

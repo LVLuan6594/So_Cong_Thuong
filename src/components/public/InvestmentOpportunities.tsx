@@ -9,7 +9,7 @@ export function InvestmentOpportunities() {
   const zones = CLUSTERS.slice(0, 3);
 
   return (
-    <section id="dau-tu" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section id="dau-tu" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <SectionHeader
         eyebrow="Thu hút đầu tư"
         title="Dự án & Cơ hội đầu tư"
@@ -21,12 +21,13 @@ export function InvestmentOpportunities() {
           return (
             <div
               key={c.id}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-shadow hover:shadow-xl"
+              className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative h-36 bg-gradient-to-br from-slate-800 via-navy to-teal-600">
-                <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-navy">
+              <div className="relative h-36 overflow-hidden bg-gradient-to-br from-slate-800 via-navy to-teal-600">
+                <span className="absolute left-4 top-4 z-10 rounded-full bg-white/90 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-navy shadow">
                   {c.district}
                 </span>
+                <span className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.18),transparent_45%)]" />
                 <p className="absolute inset-0 flex items-end p-4 text-2xl font-extrabold uppercase tracking-wide text-white/90">
                   {c.name}
                 </p>
@@ -36,13 +37,13 @@ export function InvestmentOpportunities() {
                   <MapPin className="size-3.5 text-gov" /> Tây Ninh · {c.district}
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-                  <div className="rounded-lg bg-surface px-3 py-2">
+                  <div className="rounded-xl bg-surface px-3 py-2">
                     <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
                       Diện tích
                     </p>
                     <p className="font-semibold text-navy">{c.area} ha</p>
                   </div>
-                  <div className="rounded-lg bg-emerald-50 px-3 py-2">
+                  <div className="rounded-xl bg-emerald-50 px-3 py-2">
                     <p className="text-[10px] uppercase tracking-wide text-emerald-700">
                       Đất còn lại
                     </p>
@@ -95,7 +96,7 @@ export function InvestmentOpportunities() {
           );
         })}
       </div>
-      <p className="mt-4 text-center text-xs text-muted-foreground">{PORTAL_INVESTMENT_NOTE}</p>
+      <p className="mt-5 text-center text-xs text-muted-foreground">{PORTAL_INVESTMENT_NOTE}</p>
     </section>
   );
 }

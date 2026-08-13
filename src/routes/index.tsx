@@ -145,7 +145,7 @@ function OverviewPage() {
         }
       />
 
-      <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:p-6 xl:grid-cols-3">
         {/* Module 01 – CSDL NGÀNH */}
         <DashboardModule
           title="CSDL ngành"
@@ -184,12 +184,12 @@ function OverviewPage() {
 
         {/* Module 03 – ĐIỀU TRA & NĂNG LƯỢNG */}
         <DashboardModule
-          title="Điều tra & Năng lượng"
+          title="Nguồn năng lượng tái tạo"
           subtitle="Hồ sơ năng lượng · khảo sát"
           icon={Zap}
           tone="cyan"
           to="/energy"
-          actionLabel="Điều tra & năng lượng"
+          actionLabel="Nguồn năng lượng tái tạo"
         >
           <div className="grid grid-cols-2 gap-2">
             <KpiMiniCard label="Dự án năng lượng" value="48" />

@@ -32,16 +32,16 @@ export function AppHeader({ onMenu }: { onMenu: () => void }) {
         <Menu className="size-5" />
       </Button>
 
-      <Link to="/" className="flex items-center gap-2.5">
+      <Link to="/" className="flex min-w-0 items-center gap-2.5">
         {/* Vùng placeholder cho logo/quốc huy — thay asset chính thức sau */}
-        <span className="flex size-9 items-center justify-center rounded-md border border-white/25 bg-white/10">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-white/25 bg-white/10">
           <Landmark className="size-5" strokeWidth={1.7} />
         </span>
-        <span className="leading-tight">
+        <span className="min-w-0 leading-tight">
           <span className="block text-[11px] font-semibold uppercase tracking-widest text-white/70">
             Sở Công Thương
           </span>
-          <span className="block text-sm font-semibold uppercase tracking-wide">
+          <span className="hidden truncate text-sm font-semibold uppercase tracking-wide sm:block">
             Nền tảng số hóa dữ liệu ngành Công Thương
           </span>
         </span>
@@ -78,7 +78,7 @@ export function AppHeader({ onMenu }: { onMenu: () => void }) {
             <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-warning" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-80">
+        <DropdownMenuContent align="end" className="w-[calc(100vw-2rem)] max-w-sm sm:w-80">
           <DropdownMenuLabel className="text-navy">Thông báo hệ thống</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="flex-col items-start">

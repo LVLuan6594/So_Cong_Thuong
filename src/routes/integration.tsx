@@ -41,7 +41,7 @@ function Page() {
         description="Trạng thái kết nối LGSP, NDXP, QLVBĐH, Cổng DVC và nhật ký đồng bộ."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Tích hợp dữ liệu" }]}
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <DataTable columns={columns} rows={INTEGRATIONS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
       </div>
     </>

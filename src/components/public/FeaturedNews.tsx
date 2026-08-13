@@ -7,36 +7,37 @@ import type { PortalPost } from "@/lib/types";
 
 export function FeaturedNews({ main, sidebar }: { main: PortalPost; sidebar: PortalPost[] }) {
   return (
-    <section id="tin-tuc" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section id="tin-tuc" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <SectionHeader
         eyebrow="Cập nhật liên tục"
         title="Tin nổi bật"
         description="Những thông tin hoạt động, chính sách và sự kiện tiêu biểu của ngành Công Thương tỉnh Tây Ninh."
       />
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* Main featured */}
+        {/* Main featured — overlay trên ảnh */}
         <Link
           to={portalDetailTo(main)}
-          className="group relative block overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-shadow hover:shadow-xl lg:col-span-3"
+          className="group relative block overflow-hidden rounded-3xl border border-border bg-white shadow-sm transition-shadow hover:shadow-2xl lg:col-span-3"
         >
-          <PublicThumb post={main} className="h-72 sm:h-80" />
-          <div className="p-6">
-            <div className="mb-3 flex items-center gap-3">
-              <span className="rounded-full bg-gov px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+          <PublicThumb post={main} className="h-72 w-full sm:h-[26rem]" />
+          <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <span className="rounded-full bg-gov px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white shadow">
                 {main.category}
               </span>
-              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1 text-xs text-white/80">
                 <CalendarDays className="size-3.5" />
                 {formatPortalDate(main.publishedAt)}
               </span>
             </div>
-            <h3 className="text-xl font-bold leading-snug text-navy transition-colors group-hover:text-gov sm:text-2xl">
+            <h3 className="text-xl font-bold leading-snug drop-shadow sm:text-2xl">
               {main.title}
             </h3>
-            <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-white/80 sm:text-[15px]">
               {main.summary}
             </p>
-            <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gov">
+            <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold">
               Xem chi tiết{" "}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
             </span>
@@ -44,15 +45,15 @@ export function FeaturedNews({ main, sidebar }: { main: PortalPost; sidebar: Por
         </Link>
 
         {/* Sidebar list */}
-        <div className="space-y-4 lg:col-span-2">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:col-span-2 lg:grid-cols-1 lg:gap-4">
           {sidebar.map((n) => (
             <Link
               key={n.id}
               to={portalDetailTo(n)}
-              className="group flex gap-4 rounded-xl border border-border bg-white p-3 shadow-sm transition-shadow hover:shadow-lg"
+              className="group flex gap-4 rounded-2xl border border-border bg-white p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <PublicThumb post={n} className="h-24 w-28 shrink-0" />
-              <div className="min-w-0">
+              <PublicThumb post={n} className="h-24 w-28 shrink-0 rounded-xl" />
+              <div className="min-w-0 flex flex-col justify-center">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-gov">
                   {n.category}
                 </p>

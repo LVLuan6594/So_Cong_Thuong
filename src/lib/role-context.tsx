@@ -15,7 +15,9 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<RoleContextValue>(() => {
     const role = ROLES.find((r) => r.id === roleId) ?? ROLES[0]!;
-    const navItems = NAV_ITEMS.filter((i) => i.roles.includes(roleId));
+    const navItems = NAV_ITEMS.filter(
+      (i) => i.roles.includes(roleId) && i.to !== "/trang-thong-tin",
+    );
     return {
       role,
       setRole: setRoleId,

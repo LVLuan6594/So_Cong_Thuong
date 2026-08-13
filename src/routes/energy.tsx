@@ -68,7 +68,7 @@ export const Route = createFileRoute("/energy")({
       {
         name: "description",
         content:
-          "Dashboard tổng quan phân hệ Điều tra & Năng lượng: nguồn điện, lưới điện, phụ tải, NLTT, an toàn lưới, carbon và trạm sạc.",
+          "Dashboard tổng quan phân hệ Nguồn năng lượng tái tạo: nguồn điện, lưới điện, phụ tải, NLTT, an toàn lưới, carbon và trạm sạc.",
       },
     ],
   }),
@@ -179,7 +179,7 @@ function Page() {
       <PageHeader
         title="Tổng quan năng lượng"
         description="Quản lý toàn diện dữ liệu năng lượng: Nguồn điện - Lưới điện - Phụ tải - Năng lượng tái tạo - Tiết kiệm năng lượng - An toàn lưới điện - Phát thải carbon - Trạm sạc điện"
-        crumbs={[{ label: "Điều tra & Năng lượng" }, { label: "Tổng quan năng lượng" }]}
+        crumbs={[{ label: "Nguồn năng lượng tái tạo" }, { label: "Tổng quan năng lượng" }]}
         variant="panel"
         icon={Zap}
         actions={
@@ -254,7 +254,7 @@ function Page() {
             />
           </section>
 
-          <section className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <ChartCard title="Cơ cấu nguồn điện theo công suất">
               <div className="grid min-h-64 grid-cols-1 gap-3 md:grid-cols-[1fr_1fr]">
                 <div className="relative min-h-56">
@@ -384,7 +384,7 @@ function Page() {
             </ChartCard>
           </section>
 
-          <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <ChartCard title="Top 5 trạm biến áp tải cao">
               <SimpleSubstationTable
                 rows={scopedSubstations.slice(0, 5)}

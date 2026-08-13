@@ -2,13 +2,24 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Building2, Landmark, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const HERO_STATS = [
+  { label: "Xuất khẩu 5 tháng", value: "8,13", unit: "tỷ USD", delta: "+16,1%" },
+  { label: "Xuất siêu", value: "1,73", unit: "tỷ USD", delta: "giữ vững" },
+  { label: "Tổng mức bán lẻ", value: "38.452", unit: "tỷ đồng", delta: "+22,35%" },
+  { label: "Thị trường xuất khẩu", value: "150", unit: "quốc gia", delta: "+12 mới" },
+];
+
 export function HeroBanner() {
   return (
     <section className="relative overflow-hidden bg-navy text-white">
-      {/* Decorative background */}
+      {/* Nền: gradient + lưới pattern nhẹ */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(21,101,192,0.45),transparent_55%),radial-gradient(ellipse_at_bottom_left,rgba(0,137,123,0.3),transparent_50%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(21,101,192,0.45),transparent_55%),radial-gradient(ellipse_at_bottom_left,rgba(0,137,123,0.32),transparent_50%)]"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:56px_56px]"
       />
       <div
         aria-hidden
@@ -56,30 +67,23 @@ export function HeroBanner() {
               </Link>
             </Button>
           </div>
+        </div>
 
-          <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-white/15 pt-6 text-sm">
-            <div className="flex items-center gap-2.5">
-              <TrendingUp className="size-5 text-emerald-300" />
-              <div>
-                <p className="font-semibold text-white">Xúc tiến thương mại</p>
-                <p className="text-xs text-white/60">Hội chợ, kết nối giao thương</p>
-              </div>
+        {/* Dải thống kê nổi bật của tỉnh */}
+        <div className="mt-12 grid grid-cols-2 gap-4 border-t border-white/15 pt-6 sm:mt-14 lg:grid-cols-4">
+          {HERO_STATS.map((s) => (
+            <div key={s.label} className="rounded-xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-sm">
+              <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/60">
+                <TrendingUp className="size-3.5 text-emerald-300" />
+                {s.label}
+              </p>
+              <p className="mt-1.5 text-2xl font-extrabold tabular-nums text-white">
+                {s.value}
+                <span className="ml-1 text-xs font-semibold text-white/60">{s.unit}</span>
+              </p>
+              <p className="mt-0.5 text-xs font-semibold text-emerald-300">{s.delta}</p>
             </div>
-            <div className="flex items-center gap-2.5">
-              <Building2 className="size-5 text-sky-300" />
-              <div>
-                <p className="font-semibold text-white">Đồng hành đầu tư</p>
-                <p className="text-xs text-white/60">KCN/CCN, dự án hạ tầng</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <Landmark className="size-5 text-teal-300" />
-              <div>
-                <p className="font-semibold text-white">Kết nối doanh nghiệp</p>
-                <p className="text-xs text-white/60">Cổng thông tin 3 bên</p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

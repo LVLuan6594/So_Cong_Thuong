@@ -32,7 +32,7 @@ export function PromotionPrograms({ items }: { items: PortalPost[] }) {
   const filtered = useMemo(() => items.filter((p) => filterMatch(p, filter)), [items, filter]);
 
   return (
-    <section id="khuyen-mai" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section id="khuyen-mai" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <SectionHeader
         eyebrow="Ưu đãi cho người tiêu dùng"
         title="Chương trình khuyến mại"
@@ -61,7 +61,7 @@ export function PromotionPrograms({ items }: { items: PortalPost[] }) {
         {filtered.map((p) => (
           <div
             key={p.id}
-            className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-shadow hover:shadow-xl"
+            className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
           >
             <PublicThumb post={p} className="h-44" />
             <div className="flex flex-1 flex-col p-5">

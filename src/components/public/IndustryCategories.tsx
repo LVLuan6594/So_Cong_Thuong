@@ -20,7 +20,7 @@ export function IndustryCategories({
   onChange: (name: string) => void;
 }) {
   return (
-    <section id="linh-vuc" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section id="linh-vuc" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <SectionHeader
         eyebrow="Tra cứu theo chuyên mục"
         title="Lĩnh vực ngành Công Thương"
@@ -35,13 +35,13 @@ export function IndustryCategories({
               type="button"
               onClick={() => onChange(c.name)}
               className={cn(
-                "group flex flex-col items-center gap-3 rounded-2xl border border-border bg-white p-5 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg",
+                "group flex flex-col items-center gap-3 rounded-3xl border border-border bg-white p-5 text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg",
                 selected && "border-gov ring-2 ring-gov/30",
               )}
             >
               <span
                 className={cn(
-                  "grid size-12 place-items-center rounded-xl bg-gradient-to-br text-white shadow-sm",
+                  "grid size-12 place-items-center rounded-2xl bg-gradient-to-br text-white shadow-sm transition-transform group-hover:scale-110",
                   c.grad,
                 )}
               >

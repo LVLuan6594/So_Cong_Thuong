@@ -17,14 +17,17 @@ export function SectionHeader({
   moreLabel?: string;
 }) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div>
+    <div className="mb-8 flex flex-wrap items-end justify-between gap-4 sm:mb-10">
+      <div className="max-w-2xl">
         {eyebrow ? (
-          <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.2em] text-gov">{eyebrow}</p>
+          <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-gov/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-gov">
+            <span className="size-1.5 rounded-full bg-gov" />
+            {eyebrow}
+          </span>
         ) : null}
-        <h2 className="text-2xl font-bold tracking-tight text-navy sm:text-[28px]">{title}</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-navy sm:text-3xl">{title}</h2>
         {description ? (
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
             {description}
           </p>
         ) : null}
@@ -33,7 +36,7 @@ export function SectionHeader({
         <Link
           to="/trang-thong-tin"
           search={{ muc: moreMuc }}
-          className="group inline-flex items-center gap-1.5 text-sm font-semibold text-gov transition-colors hover:text-navy"
+          className="group inline-flex items-center gap-1.5 rounded-full border border-gov/30 bg-gov/5 px-4 py-2 text-sm font-semibold text-gov transition-colors hover:bg-gov hover:text-white"
         >
           {moreLabel}
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />

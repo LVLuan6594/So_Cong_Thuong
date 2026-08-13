@@ -41,7 +41,7 @@ function Page() {
         description="Sản phẩm công nghiệp chủ lực, tiêu chuẩn, chứng nhận và diễn biến giá."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Thị trường & Sản phẩm" }]}
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <DataTable columns={columns} rows={PRODUCTS as Row[]} searchPlaceholder="Tìm kiếm trong danh sách..." />
       </div>
     </>

@@ -60,7 +60,7 @@ export function EnergyCollectionPage<T extends { id: string }>({
       <PageHeader
         title={title}
         description={description}
-        crumbs={[{ label: "Điều tra & Năng lượng", to: "/energy" }, { label: title }]}
+        crumbs={[{ label: "Nguồn năng lượng tái tạo", to: "/energy" }, { label: title }]}
         variant="panel"
         icon={icon}
         actions={

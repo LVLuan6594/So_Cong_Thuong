@@ -48,7 +48,7 @@ export function AlertItem({
     <span className="flex items-center gap-2 rounded-md border border-border px-2.5 py-2 text-xs transition-colors hover:border-current">
       <span className={cn("size-2 shrink-0 rounded-full", t.dot)} />
       <span className={cn("text-sm font-semibold tabular-nums", t.count)}>{count}</span>
-      <span className="truncate text-muted-foreground">{label}</span>
+      <span className="min-w-0 flex-1 truncate text-muted-foreground">{label}</span>
     </span>
   );
   if (!to) return body;

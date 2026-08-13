@@ -186,7 +186,7 @@ function Page() {
         icon={MapIcon}
       />
 
-      <div className="space-y-4 p-6">
+      <div className="space-y-4 p-4 sm:p-6">
         <div className="gov-card overflow-hidden">
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
             <div>
@@ -202,14 +202,14 @@ function Page() {
                 e.preventDefault();
                 runSearch();
               }}
-              className="relative"
+              className="relative w-full sm:w-auto"
             >
               <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm KCN / doanh nghiệp / MST / ngành..."
-                className="h-9 w-64 pl-8"
+                className="h-9 w-full pl-8 sm:w-72"
               />
             </form>
           </header>

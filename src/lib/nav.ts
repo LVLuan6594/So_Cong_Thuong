@@ -79,7 +79,7 @@ export const NAV_ITEMS: NavItem[] = [
   { code: "14", label: "Workflow & phê duyệt", to: "/workflow", icon: Workflow, group: "DỮ LIỆU", roles: ["dept", "specialist", "admin"] },
   { code: "04", label: "CSDL ngành", to: "/industry-database", icon: Boxes, group: "DỮ LIỆU", roles: ["leader", "dept", "specialist", "enterprise", "admin"] },
   { code: "05", label: "GIS Cụm công nghiệp", to: "/industrial-clusters", icon: Map, group: "NGHIỆP VỤ CHUYÊN NGÀNH", roles: ["leader", "dept", "specialist", "gis", "investor", "admin"] },
-  { code: "06", label: "Điều tra & Năng lượng", to: "/energy", icon: Zap, group: "NGHIỆP VỤ CHUYÊN NGÀNH", roles: ["leader", "dept", "specialist", "surveyor", "admin"] },
+  { code: "06", label: "Nguồn năng lượng tái tạo", to: "/energy", icon: Zap, group: "NGHIỆP VỤ CHUYÊN NGÀNH", roles: ["leader", "dept", "specialist", "surveyor", "admin"] },
   { code: "07", label: "Thị trường & Sản phẩm", to: "/market", icon: Store, group: "NGHIỆP VỤ CHUYÊN NGÀNH", roles: ["leader", "dept", "specialist", "enterprise", "admin"] },
   { code: "08", label: "Xuất nhập khẩu", to: "/import-export", icon: Ship, group: "NGHIỆP VỤ CHUYÊN NGÀNH", roles: ["leader", "dept", "specialist", "enterprise", "admin"] },
   { code: "09", label: "Xúc tiến thương mại", to: "/trade-promotion", icon: Globe2, group: "NGHIỆP VỤ CHUYÊN NGÀNH", roles: ["leader", "dept", "specialist", "enterprise", "investor", "admin"] },
@@ -135,7 +135,7 @@ export const PLATFORM_MODULES = [
     icon: Layers,
     tone: "teal" as const,
     to: "/industrial-clusters",
-    items: ["E1 – GIS Cụm công nghiệp", "E2 – Điều tra & Năng lượng", "E3 – Thị trường & Sản phẩm", "E4 – Xuất nhập khẩu", "E5 – Xúc tiến thương mại"],
+    items: ["E1 – GIS Cụm công nghiệp", "E2 – Nguồn năng lượng tái tạo", "E3 – Thị trường & Sản phẩm", "E4 – Xuất nhập khẩu", "E5 – Xúc tiến thương mại"],
   },
   {
     code: "F",

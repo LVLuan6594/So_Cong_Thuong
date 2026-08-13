@@ -7,14 +7,14 @@ import { cn } from "@/lib/utils";
 
 export function Announcements({ items }: { items: PortalPost[] }) {
   return (
-    <section id="thong-bao" className="bg-surface py-16">
+    <section id="thong-bao" className="py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Cập nhật từ cơ quan"
           title="Thông báo mới"
           description="Các thông báo quan trọng dành cho doanh nghiệp, hợp tác xã và người dân."
         />
-        <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+        <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
           <ul className="divide-y divide-border">
             {items.map((a) => (
               <li key={a.id}>

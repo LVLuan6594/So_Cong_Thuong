@@ -227,6 +227,7 @@ function Page() {
     {
       key: "permissions",
       header: "Quyền truy cập",
+      className: "hidden lg:table-cell",
       render: (r) => (
         <div className="flex max-w-64 flex-wrap gap-1">
           {r.permissions.length ? (
@@ -245,7 +246,12 @@ function Page() {
         </div>
       ),
     },
-    { key: "lastLogin", header: "Đăng nhập gần nhất", sortable: true },
+    {
+      key: "lastLogin",
+      header: "Đăng nhập gần nhất",
+      sortable: true,
+      className: "hidden sm:table-cell",
+    },
     {
       key: "status",
       header: "Trạng thái",
@@ -320,7 +326,7 @@ function Page() {
         description="Người dùng, vai trò, phân quyền và nhật ký kiểm toán hệ thống."
         crumbs={[{ label: "Nghiệp vụ" }, { label: "Quản trị hệ thống" }]}
       />
-      <div className="space-y-4 p-6">
+      <div className="space-y-4 p-4 sm:p-6">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="gov-card px-4 py-3">
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
@@ -383,7 +389,7 @@ function Page() {
           </DialogHeader>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="f-name">Họ tên *</Label>
                 <Input
@@ -414,7 +420,7 @@ function Page() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>Vai trò</Label>
                 <Select value={form.role} onValueChange={onRoleChange}>
