@@ -364,8 +364,8 @@ function OverviewPage() {
           subtitle="Nhập → Chuẩn hóa → Trình duyệt → Khóa kỳ → Khai thác"
           icon={Workflow}
           tone="slate"
-          to="/workflow"
-          actionLabel="Workflow & phê duyệt"
+          to="/data-management"
+          actionLabel="Quản trị dữ liệu"
           className="sm:col-span-2"
         >
           <ol className="flex flex-wrap items-center gap-1.5">
@@ -399,7 +399,7 @@ function OverviewPage() {
           subtitle="Theo phân công của bạn"
           icon={ListChecks}
           tone="slate"
-          to="/workflow"
+          to="/data-management"
           actionLabel="Xem tất cả"
         >
           <ul className="space-y-1.5">

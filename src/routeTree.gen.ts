@@ -22,7 +22,6 @@ import { Route as MarketRouteImport } from './routes/market'
 import { Route as PlatformOverviewRouteImport } from './routes/platform-overview'
 import { Route as TradePromotionRouteImport } from './routes/trade-promotion'
 import { Route as TrangThongTinRouteImport } from './routes/trang-thong-tin'
-import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as EnergyCarbonRouteImport } from './routes/energy.carbon'
 import { Route as EnergyChargingStationsRouteImport } from './routes/energy.charging-stations'
 import { Route as EnergyConsumptionRouteImport } from './routes/energy.consumption'
@@ -108,11 +107,6 @@ const TradePromotionRoute = TradePromotionRouteImport.update({
 const TrangThongTinRoute = TrangThongTinRouteImport.update({
   id: '/trang-thong-tin',
   path: '/trang-thong-tin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WorkflowRoute = WorkflowRouteImport.update({
-  id: '/workflow',
-  path: '/workflow',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnergyCarbonRoute = EnergyCarbonRouteImport.update({
@@ -236,7 +230,6 @@ export interface FileRoutesByFullPath {
   '/platform-overview': typeof PlatformOverviewRoute
   '/trade-promotion': typeof TradePromotionRoute
   '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
-  '/workflow': typeof WorkflowRoute
   '/energy/carbon': typeof EnergyCarbonRoute
   '/energy/charging-stations': typeof EnergyChargingStationsRoute
   '/energy/consumption': typeof EnergyConsumptionRoute
@@ -273,7 +266,6 @@ export interface FileRoutesByTo {
   '/platform-overview': typeof PlatformOverviewRoute
   '/trade-promotion': typeof TradePromotionRoute
   '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
-  '/workflow': typeof WorkflowRoute
   '/energy/carbon': typeof EnergyCarbonRoute
   '/energy/charging-stations': typeof EnergyChargingStationsRoute
   '/energy/consumption': typeof EnergyConsumptionRoute
@@ -311,7 +303,6 @@ export interface FileRoutesById {
   '/platform-overview': typeof PlatformOverviewRoute
   '/trade-promotion': typeof TradePromotionRoute
   '/trang-thong-tin': typeof TrangThongTinRouteWithChildren
-  '/workflow': typeof WorkflowRoute
   '/energy/carbon': typeof EnergyCarbonRoute
   '/energy/charging-stations': typeof EnergyChargingStationsRoute
   '/energy/consumption': typeof EnergyConsumptionRoute
@@ -350,7 +341,6 @@ export interface FileRouteTypes {
     | '/platform-overview'
     | '/trade-promotion'
     | '/trang-thong-tin'
-    | '/workflow'
     | '/energy/carbon'
     | '/energy/charging-stations'
     | '/energy/consumption'
@@ -387,7 +377,6 @@ export interface FileRouteTypes {
     | '/platform-overview'
     | '/trade-promotion'
     | '/trang-thong-tin'
-    | '/workflow'
     | '/energy/carbon'
     | '/energy/charging-stations'
     | '/energy/consumption'
@@ -424,7 +413,6 @@ export interface FileRouteTypes {
     | '/platform-overview'
     | '/trade-promotion'
     | '/trang-thong-tin'
-    | '/workflow'
     | '/energy/carbon'
     | '/energy/charging-stations'
     | '/energy/consumption'
@@ -462,7 +450,6 @@ export interface RootRouteChildren {
   PlatformOverviewRoute: typeof PlatformOverviewRoute
   TradePromotionRoute: typeof TradePromotionRoute
   TrangThongTinRoute: typeof TrangThongTinRouteWithChildren
-  WorkflowRoute: typeof WorkflowRoute
   EnterprisesIdRoute: typeof EnterprisesIdRoute
   GisMapRoute: typeof GisMapRoute
 }
@@ -558,13 +545,6 @@ declare module '@tanstack/react-router' {
       path: '/trang-thong-tin'
       fullPath: '/trang-thong-tin'
       preLoaderRoute: typeof TrangThongTinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/workflow': {
-      id: '/workflow'
-      path: '/workflow'
-      fullPath: '/workflow'
-      preLoaderRoute: typeof WorkflowRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/energy/carbon': {
@@ -788,7 +768,6 @@ const rootRouteChildren: RootRouteChildren = {
   PlatformOverviewRoute: PlatformOverviewRoute,
   TradePromotionRoute: TradePromotionRoute,
   TrangThongTinRoute: TrangThongTinRouteWithChildren,
-  WorkflowRoute: WorkflowRoute,
   EnterprisesIdRoute: EnterprisesIdRoute,
   GisMapRoute: GisMapRoute,
 }

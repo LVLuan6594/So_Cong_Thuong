@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { ThinkingDots } from "@/components/common/ThinkingDots";
 import {
   answerQuestion,
   createDraftDataset,
@@ -55,6 +56,14 @@ const WELCOME: ChatMsg = {
 };
 
 const ACCEPT = ".csv,.txt,.xlsx,.xls,.docx,.doc,.pdf";
+
+const THINK_LABELS = [
+  "Đang phân tích câu hỏi",
+  "Đang truy xuất CSDL ngành Công Thương",
+  "Đang tổng hợp câu trả lời",
+] as const;
+
+const FILE_LABELS = ["Đang đọc file", "Đang trích xuất dữ liệu", "Đang chuẩn hóa báo cáo"] as const;
 
 // Trả lời dựa trên dữ liệu báo cáo đã lưu trong CSDL (JSON/localStorage).
 function reportBotAnswer(question: string): ChatMsg | undefined {
@@ -127,6 +136,7 @@ export function ChatBot() {
   const [maximized, setMaximized] = useState(false);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [thinkingLabel, setThinkingLabel] = useState<string>(THINK_LABELS[0]);
   const [messages, setMessages] = useState<ChatMsg[]>([WELCOME]);
   const fileRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -144,10 +154,11 @@ export function ChatBot() {
 
   const send = (preset?: string) => {
     const text = (preset?.trim() || input.trim()) as string;
-    if (!text) return;
+    if (!text || typing) return;
     setMessages((m) => [...m, { id: Date.now(), from: "user", text }]);
     setInput("");
     setTyping(true);
+    setThinkingLabel(THINK_LABELS[0]);
     const dataAnswer = answerDataQuestion(text);
     const reply: ChatMsg =
       reportBotAnswer(text) ??
@@ -156,20 +167,24 @@ export function ChatBot() {
         from: "bot",
         ...(dataAnswer ?? helpAnswer()),
       } as ChatMsg);
-    setTimeout(
-      () => {
-        pushBot(reply);
-      },
-      2500 + Math.random() * 1500,
-    );
+    THINK_LABELS.forEach((label, i) => {
+      if (i === 0) return;
+      setTimeout(() => setThinkingLabel(label), i * 1000);
+    });
+    setTimeout(() => pushBot(reply), 3000 + Math.random() * 1000);
   };
 
   const handleFile = (file: File) => {
-    if (!file) return;
+    if (!file || typing) return;
     setMessages((m) => [...m, { id: Date.now(), from: "user", text: `📎 ${file.name}` }]);
     setTyping(true);
-    extractFromFile(file)
-      .then((extracted) => {
+    setThinkingLabel(FILE_LABELS[0]);
+    FILE_LABELS.forEach((label, i) => {
+      if (i === 0) return;
+      setTimeout(() => setThinkingLabel(label), i * 1000);
+    });
+    Promise.all([extractFromFile(file), new Promise<void>((resolve) => setTimeout(resolve, 2800))])
+      .then(([extracted]) => {
         const draft = createDraftDataset({
           name: extracted.name,
           fileName: file.name,
@@ -310,7 +325,8 @@ export function ChatBot() {
               <div className="flex justify-start">
                 <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-sm border border-border bg-card px-3.5 py-2.5 text-xs text-muted-foreground">
                   <Loader2 className="size-3.5 animate-spin" />
-                  Đang truy xuất dữ liệu...
+                  <span>{thinkingLabel}...</span>
+                  <ThinkingDots />
                 </div>
               </div>
             ) : null}
@@ -330,6 +346,7 @@ export function ChatBot() {
               placeholder="Nhập câu hỏi hoặc đính kèm file dữ liệu..."
               className="min-h-9 max-h-24 flex-1 resize-none bg-surface py-2"
               rows={1}
+              disabled={typing}
             />
             <input
               ref={fileRef}

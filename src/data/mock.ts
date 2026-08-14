@@ -16,13 +16,11 @@ import type {
   IntegrationLog,
   IntegrationRow,
   MasterRecord,
-  ProductRecord,
   PromotionProgram,
   QualityIssue,
   SurveyRecord,
   TradeRecord,
   UserRow,
-  WorkflowItem,
 } from "@/lib/types";
 
 export const OVERVIEW_KPI = [
@@ -2132,69 +2130,6 @@ export const ENERGY_TREND = [
   { month: "T6", output: 531, capacity: 227 },
 ];
 
-export const PRODUCTS: ProductRecord[] = [
-  {
-    id: "SP-01",
-    name: "Cao su khối SVR 3L",
-    group: "Cao su",
-    market: "Trung Quốc, EU",
-    standard: "TCVN 3769",
-    certificate: "ISO 9001",
-    trend: 4.2,
-    status: "approved",
-  },
-  {
-    id: "SP-02",
-    name: "Kết cấu thép công nghiệp",
-    group: "Sản phẩm cơ khí",
-    market: "Hoa Kỳ, Nhật Bản",
-    standard: "ASTM A36",
-    certificate: "ISO 3834",
-    trend: 2.6,
-    status: "locked",
-  },
-  {
-    id: "SP-03",
-    name: "Bo mạch điện tử dân dụng",
-    group: "Điện tử",
-    market: "Hàn Quốc, ASEAN",
-    standard: "IPC-A-610",
-    certificate: "ISO 14001",
-    trend: -1.4,
-    status: "approved",
-  },
-  {
-    id: "SP-04",
-    name: "Tinh bột khoai mì",
-    group: "Nông sản chế biến",
-    market: "Trung Quốc, EU",
-    standard: "TCVN 10546",
-    certificate: "HACCP",
-    trend: 6.8,
-    status: "locked",
-  },
-  {
-    id: "SP-05",
-    name: "Vải dệt kim",
-    group: "Dệt may",
-    market: "EU, Hoa Kỳ",
-    standard: "OEKO-TEX",
-    certificate: "BSCI",
-    trend: 1.1,
-    status: "pending",
-  },
-  {
-    id: "SP-06",
-    name: "Hạt điều nhân",
-    group: "Nông sản chế biến",
-    market: "Hoa Kỳ, EU",
-    standard: "TCVN 4850",
-    certificate: "HACCP",
-    trend: -3.2,
-    status: "need_more",
-  },
-];
-
 export const PRICE_TREND = [
   { month: "T1", caosu: 38.2, nongsan: 12.4, detmay: 26.1 },
   { month: "T2", caosu: 39.1, nongsan: 12.9, detmay: 25.8 },
@@ -2901,121 +2836,6 @@ export const QUALITY_ISSUES: QualityIssue[] = [
     severity: "Thấp",
     assignee: "Nguyễn Thị Lan",
     status: "approved",
-  },
-];
-
-export const WORKFLOW_ITEMS: WorkflowItem[] = [
-  {
-    id: "WF-01",
-    name: "Báo cáo sản xuất công nghiệp T6/2026",
-    unit: "Phòng QLCN",
-    updatedBy: "Nguyễn Thị Lan",
-    time: "06/08/2026 08:12",
-    source: "Nhập liệu",
-    stage: "new",
-    history: [
-      {
-        actor: "Nguyễn Thị Lan",
-        role: "Chuyên viên",
-        action: "Tạo bộ dữ liệu",
-        time: "06/08/2026 08:12",
-      },
-    ],
-  },
-  {
-    id: "WF-02",
-    name: "Cập nhật hồ sơ CCN Bến Cầu",
-    unit: "Phòng QLCN",
-    updatedBy: "Phạm Đức Duy",
-    time: "05/08/2026 15:40",
-    source: "OCR/AI",
-    stage: "checking",
-    history: [
-      {
-        actor: "Phạm Đức Duy",
-        role: "Chuyên viên",
-        action: "Trích xuất OCR/AI",
-        time: "05/08/2026 14:02",
-      },
-      {
-        actor: "Trần Thị Hạnh",
-        role: "Kiểm tra viên",
-        action: "Đang kiểm tra chất lượng",
-        time: "05/08/2026 15:40",
-      },
-    ],
-  },
-  {
-    id: "WF-03",
-    name: "Danh mục sản phẩm chủ lực 2026",
-    unit: "Phòng QLTM",
-    updatedBy: "Đỗ Thị Minh",
-    time: "04/08/2026 09:25",
-    source: "Nhập liệu",
-    stage: "pending",
-    history: [
-      {
-        actor: "Đỗ Thị Minh",
-        role: "Chuyên viên",
-        action: "Cập nhật dữ liệu",
-        time: "03/08/2026 10:11",
-      },
-      {
-        actor: "Lê Văn Cường",
-        role: "Kiểm duyệt",
-        action: "Đã kiểm duyệt, trình phê duyệt",
-        time: "04/08/2026 09:25",
-      },
-    ],
-  },
-  {
-    id: "WF-04",
-    name: "Số liệu xuất nhập khẩu quý II/2026",
-    unit: "Phòng QLTM",
-    updatedBy: "Vũ Hải Nam",
-    time: "02/08/2026 16:30",
-    source: "NDXP",
-    stage: "approved",
-    history: [
-      {
-        actor: "Vũ Hải Nam",
-        role: "Chuyên viên",
-        action: "Đồng bộ từ NDXP",
-        time: "01/08/2026 07:00",
-      },
-      {
-        actor: "Lê Văn Cường",
-        role: "Kiểm duyệt",
-        action: "Kiểm duyệt đạt",
-        time: "02/08/2026 11:20",
-      },
-      { actor: "Nguyễn Văn A", role: "Lãnh đạo Sở", action: "Phê duyệt", time: "02/08/2026 16:30" },
-    ],
-  },
-  {
-    id: "WF-05",
-    name: "Hồ sơ năng lượng quý I/2026",
-    unit: "Phòng QLNL",
-    updatedBy: "Trần Thị Hoa",
-    time: "12/07/2026 10:05",
-    source: "Điều tra",
-    stage: "locked",
-    history: [
-      {
-        actor: "Trần Thị Hoa",
-        role: "Cán bộ điều tra",
-        action: "Nhập phiếu điều tra",
-        time: "20/06/2026 09:00",
-      },
-      {
-        actor: "Lê Văn Cường",
-        role: "Kiểm duyệt",
-        action: "Kiểm duyệt đạt",
-        time: "05/07/2026 14:12",
-      },
-      { actor: "Nguyễn Văn A", role: "Lãnh đạo Sở", action: "Phê duyệt", time: "10/07/2026 08:40" },
-      { actor: "Hệ thống", role: "Tự động", action: "Khóa kỳ báo cáo", time: "12/07/2026 10:05" },
-    ],
   },
 ];
 

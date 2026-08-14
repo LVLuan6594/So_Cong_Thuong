@@ -35,6 +35,7 @@ import { ChartCard } from "@/components/common/ChartCard";
 import { StatCard } from "@/components/common/StatCard";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { StatusBadge } from "@/components/common/StatusBadge";
+import { ThinkingDots } from "@/components/common/ThinkingDots";
 import { MiniBarChart, MiniDonutChart } from "@/components/dashboard/MiniCharts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -495,13 +496,30 @@ function ComparisonCard({ datasets }: { datasets: ReportDataset[] }) {
 }
 
 function ReportAssistant({ dataset }: { dataset: ReportDataset }) {
-  const [chats, setChats] = useState<{ q: string; a: ReportAnswer }[]>([]);
+  const [chats, setChats] = useState<{ q: string; a: ReportAnswer | null }[]>([]);
   const [q, setQ] = useState("");
+  const [thinking, setThinking] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
+  }, [chats, thinking]);
+
   const ask = () => {
     const text = q.trim();
-    if (!text) return;
-    setChats((prev) => [...prev, { q: text, a: answerQuestion(dataset, text) }]);
+    if (!text || thinking) return;
+    setChats((prev) => [...prev, { q: text, a: null }]);
     setQ("");
+    setThinking(true);
+    setTimeout(
+      () => {
+        setChats((prev) =>
+          prev.map((c) => (c.a === null ? { ...c, a: answerQuestion(dataset, text) } : c)),
+        );
+        setThinking(false);
+      },
+      1500 + Math.random() * 1500,
+    );
   };
   return (
     <ChartCard
@@ -516,7 +534,10 @@ function ReportAssistant({ dataset }: { dataset: ReportDataset }) {
         </Badge>
       }
     >
-      <div className="flex min-h-40 flex-col gap-2.5 rounded-md border border-border bg-surface/50 p-3">
+      <div
+        ref={listRef}
+        className="flex max-h-64 min-h-40 flex-col gap-2.5 overflow-y-auto rounded-md border border-border bg-surface/50 p-3"
+      >
         {chats.length === 0 ? (
           <p className="py-6 text-center text-xs text-muted-foreground">
             Thử hỏi: “quốc gia tăng mạnh nhất?”, “xếp hạng theo mức tăng”, “so sánh 2025 và 2026”…
@@ -527,32 +548,39 @@ function ReportAssistant({ dataset }: { dataset: ReportDataset }) {
               <p className="justify-self-end rounded-xl rounded-br-sm bg-gov px-3 py-1.5 text-xs text-white">
                 {c.q}
               </p>
-              <div className="rounded-xl rounded-bl-sm border border-border bg-card px-3 py-2 text-xs leading-relaxed">
-                <p className="whitespace-pre-line">{c.a.text}</p>
-                {c.a.rows?.length ? (
-                  <ul className="mt-2 space-y-1 border-t border-border pt-2">
-                    {c.a.rows.map((r) => (
-                      <li key={r.label} className="flex items-center justify-between gap-3">
-                        <span className="min-w-0 flex-1 truncate text-muted-foreground">
-                          {r.label}
-                        </span>
-                        <span
-                          className={cn(
-                            "font-medium tabular-nums",
-                            r.tone === "up"
-                              ? "text-success"
-                              : r.tone === "down"
-                                ? "text-destructive"
-                                : "",
-                          )}
-                        >
-                          {r.value}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
+              {c.a ? (
+                <div className="rounded-xl rounded-bl-sm border border-border bg-card px-3 py-2 text-xs leading-relaxed">
+                  <p className="whitespace-pre-line">{c.a.text}</p>
+                  {c.a.rows?.length ? (
+                    <ul className="mt-2 space-y-1 border-t border-border pt-2">
+                      {c.a.rows.map((r) => (
+                        <li key={r.label} className="flex items-center justify-between gap-3">
+                          <span className="min-w-0 flex-1 truncate text-muted-foreground">
+                            {r.label}
+                          </span>
+                          <span
+                            className={cn(
+                              "font-medium tabular-nums",
+                              r.tone === "up"
+                                ? "text-success"
+                                : r.tone === "down"
+                                  ? "text-destructive"
+                                  : "",
+                            )}
+                          >
+                            {r.value}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 rounded-xl rounded-bl-sm border border-border bg-card px-3 py-2 text-xs text-muted-foreground">
+                  <ThinkingDots />
+                  AI đang suy nghĩ...
+                </div>
+              )}
             </div>
           ))
         )}
@@ -564,8 +592,14 @@ function ReportAssistant({ dataset }: { dataset: ReportDataset }) {
           onKeyDown={(e) => e.key === "Enter" && ask()}
           placeholder="Đặt câu hỏi về báo cáo này..."
           className="h-9 flex-1"
+          disabled={thinking}
         />
-        <Button size="sm" className="h-9 gap-1 bg-gov text-white hover:bg-gov/90" onClick={ask}>
+        <Button
+          size="sm"
+          className="h-9 gap-1 bg-gov text-white hover:bg-gov/90"
+          onClick={ask}
+          disabled={thinking || !q.trim()}
+        >
           <Send className="size-3.5" /> Hỏi
         </Button>
       </div>

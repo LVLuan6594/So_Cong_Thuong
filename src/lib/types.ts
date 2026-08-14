@@ -150,6 +150,48 @@ export interface ProductRecord {
   status: DataStatus;
 }
 
+/** Sản phẩm chủ lực — mở rộng từ ProductRecord cho trang Thị trường & Sản phẩm. */
+export interface MarketProduct extends ProductRecord {
+  output?: number; // sản lượng quy đổi theo unit
+  unit?: string; // đơn vị sản lượng
+  price?: number; // đơn giá tham chiếu (nghìn đồng theo priceUnit)
+  priceUnit?: string; // đơn vị đơn giá
+  facilities?: number; // số cơ sở SXKD
+  ward?: string; // địa bàn sản xuất chính
+}
+
+/** Chỉ số giá theo nhóm hàng (100 = kỳ gốc) — đầu vào cho AI dự báo giá. */
+export interface MarketPriceRow {
+  period: string; // ví dụ "T1/2025"
+  caoSu: number;
+  duong: number;
+  nongSan: number;
+  detMay: number;
+  coKhi: number;
+}
+
+/** Thị trường xuất khẩu chính của tỉnh. */
+export interface MarketExportMarket {
+  id: string;
+  name: string;
+  valueBilUsd: number; // kim ngạch (tỷ USD)
+  sharePct: number; // tỷ trọng (%)
+  growthPct: number; // tăng trưởng so cùng kỳ (%)
+  mainProducts: string[];
+  note?: string;
+}
+
+/** Cảnh báo diễn biến thị trường. */
+export interface MarketAlert {
+  id: string;
+  title: string;
+  group: string;
+  level: "Cao" | "Trung bình" | "Thấp";
+  since: string;
+  detail: string;
+  suggestion: string;
+}
+
 export interface TradeRecord {
   id: string;
   hs: string;
@@ -241,17 +283,6 @@ export interface QualityIssue {
   severity: "Cao" | "Trung bình" | "Thấp";
   assignee: string;
   status: DataStatus;
-}
-
-export interface WorkflowItem {
-  id: string;
-  name: string;
-  unit: string;
-  updatedBy: string;
-  time: string;
-  source: string;
-  stage: "new" | "checking" | "pending" | "approved" | "locked";
-  history: { actor: string; role: string; action: string; time: string }[];
 }
 
 export type IntegrationDirection = "in" | "out" | "both";

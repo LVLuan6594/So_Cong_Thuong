@@ -12,7 +12,6 @@ import {
   ShieldCheck,
   Ship,
   Store,
-  Workflow,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -96,14 +95,6 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Quản trị dữ liệu",
     to: "/data-management",
     icon: Database,
-    group: "DỮ LIỆU",
-    roles: ["dept", "specialist", "admin"],
-  },
-  {
-    code: "14",
-    label: "Workflow & phê duyệt",
-    to: "/workflow",
-    icon: Workflow,
     group: "DỮ LIỆU",
     roles: ["dept", "specialist", "admin"],
   },
