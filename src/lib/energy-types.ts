@@ -351,6 +351,12 @@ export interface EnergyOverview {
   projectStatus: { name: string; value: number }[];
   incidentBreakdown: { severity: IncidentSeverity; label: string; value: number }[];
   alerts: { severity: IncidentSeverity; count: number; label: string }[];
+  /** Độ tin cậy cung cấp điện: SAIFI (số lần mất điện) & SAIDI (phút) theo năm.
+   *  Tham khảo từ EVNHCMC (Bộ Công Thương) — mốc 2016, 2020 là số thật, năm giữa nội suy. */
+  reliabilityTrend: { year: string; saifi: number; saidi: number }[];
+  reliabilityTarget: { period: string; saifi: number; saidi: number };
+  /** Chỉ số tự động hóa & giám sát lưới điện (nguồn Bộ Công Thương). */
+  automationIndicators: { label: string; value: string; detail?: string }[];
 }
 
 // ─────────────────────────── GIS ───────────────────────────

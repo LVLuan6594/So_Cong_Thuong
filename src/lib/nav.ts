@@ -109,7 +109,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     code: "04",
-    label: "CSDL ngành",
+    label: "Dữ liệu doanh nghiệp",
     to: "/industry-database",
     icon: Boxes,
     group: "DỮ LIỆU",

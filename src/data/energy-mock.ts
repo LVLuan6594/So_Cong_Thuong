@@ -1897,6 +1897,58 @@ export const ENERGY_OVERVIEW: EnergyOverview = {
     { severity: "high", count: 1, label: "Sự cố cao" },
     { severity: "medium", count: 1, label: "Trung bình đang xử lý" },
   ],
+  // Độ tin cậy cung cấp điện — tham khảo EVNHCMC (Bộ Công Thương, 17/08/2021).
+  // Mốc 2016 và 2020 là số thật; 2017–2019 nội suy để minh họa xu hướng.
+  reliabilityTrend: [
+    { year: "2016", saifi: 5.11, saidi: 514 },
+    { year: "2017", saifi: 3.98, saidi: 397 },
+    { year: "2018", saifi: 2.85, saidi: 279 },
+    { year: "2019", saifi: 1.72, saidi: 162 },
+    { year: "2020", saifi: 0.59, saidi: 44 },
+  ],
+  reliabilityTarget: { period: "2021–2025", saifi: 0.5, saidi: 50 },
+  automationIndicators: [
+    {
+      label: "Giám sát từ xa trạm 220kV",
+      value: "100%",
+      detail: "Kết nối tín hiệu SCADA toàn bộ TBA 220kV",
+    },
+    {
+      label: "Điều khiển từ xa trạm 110kV",
+      value: "100%",
+      detail: "Toàn bộ TBA 110kV điều khiển từ xa",
+    },
+    {
+      label: "Mini-SCADA tuyến 22kV",
+      value: "770/770",
+      detail: "Giám sát, điều khiển xa toàn bộ tuyến dây 22kV",
+    },
+    {
+      label: "Tự động hóa DAS/DMS",
+      value: "148 tuyến",
+      detail: "04 công ty điện lực, trong đó 58 tuyến tự động hóa hoàn toàn",
+    },
+    {
+      label: "Thao tác từ xa thành công",
+      value: ">99%",
+      detail: "Tỷ lệ thao tác xa lưới điện thành công",
+    },
+    {
+      label: "Chuyển tải sự cố < 5 phút",
+      value: ">81%",
+      detail: "Tỷ lệ chuyển tải sự cố trong thời gian dưới 5 phút",
+    },
+    {
+      label: "Doing Business — tiếp cận điện năng",
+      value: "8/8 điểm",
+      detail: "Kết quả chấm điểm năm 2020 của Tổ chức Doing Business",
+    },
+    {
+      label: "Lộ trình tự động hóa lưới điện",
+      value: "100% (2023)",
+      detail: "75% năm 2022 → 100% năm 2023",
+    },
+  ],
 };
 
 // ─────────────────────────── Gói dữ liệu GIS ───────────────────────────

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -34,6 +34,8 @@ import { DashboardModule, KpiMiniCard } from "@/components/dashboard/DashboardMo
 import { MiniBarChart, MiniDonutChart, MiniTrendChart } from "@/components/dashboard/MiniCharts";
 import { ProgressMetric, TaskItem } from "@/components/dashboard/Metrics";
 import { cn } from "@/lib/utils";
+import { computeTradePromotionKpis } from "@/lib/trade-promotion-service";
+import { computeImportExportKpis } from "@/lib/import-export-service";
 import { DISTRICTS, LIFECYCLE_STEPS, PERIODS } from "@/lib/constants";
 import {
   CLUSTERS,
@@ -90,6 +92,8 @@ const DIGITIZATION = [
 function OverviewPage() {
   const [period, setPeriod] = useState(PERIODS[0]!);
   const [unit, setUnit] = useState(DISTRICTS[0]!);
+  const xttm = useMemo(() => computeTradePromotionKpis(), []);
+  const xnk = useMemo(() => computeImportExportKpis(), []);
 
   return (
     <>
@@ -236,10 +240,23 @@ function OverviewPage() {
           actionLabel="Xuất nhập khẩu"
         >
           <div className="grid grid-cols-2 gap-2">
-            <KpiMiniCard label="DN xuất nhập khẩu" value="184" />
-            <KpiMiniCard label="Kim ngạch XK" value="246 tr USD" />
-            <KpiMiniCard label="Kim ngạch NK" value="151 tr USD" />
-            <KpiMiniCard label="Thị trường" value="42" />
+            <KpiMiniCard
+              label="DN xuất nhập khẩu"
+              value={xnk.enterprises.toLocaleString("vi-VN")}
+            />
+            <KpiMiniCard
+              label="Kim ngạch XK"
+              value={`${xnk.export2026.toLocaleString("vi-VN", { maximumFractionDigits: 1 })} tỷ USD`}
+            />
+            <KpiMiniCard
+              label="Kim ngạch NK"
+              value={`${xnk.import2026.toLocaleString("vi-VN", { maximumFractionDigits: 1 })} tỷ USD`}
+            />
+            <KpiMiniCard
+              label="Tăng so cùng kỳ"
+              value={`+${xnk.growth2026}%`}
+              valueClassName="text-success"
+            />
           </div>
           <MiniTrendChart
             data={TRADE_TREND}
@@ -261,10 +278,17 @@ function OverviewPage() {
           actionLabel="Xúc tiến thương mại"
         >
           <div className="grid grid-cols-2 gap-2">
-            <KpiMiniCard label="Chương trình" value="18" />
-            <KpiMiniCard label="Sự kiện" value="42" />
-            <KpiMiniCard label="DN tham gia" value="320" />
-            <KpiMiniCard label="Nhiệm vụ thực hiện" value="6" />
+            <KpiMiniCard label="Chương trình 2026" value={String(xttm.count2026)} />
+            <KpiMiniCard
+              label="Kinh phí (nghìn USD)"
+              value={xttm.budget2026.toLocaleString("vi-VN", { maximumFractionDigits: 1 })}
+            />
+            <KpiMiniCard label="DN tham gia" value={xttm.enterprises2026.toLocaleString("vi-VN")} />
+            <KpiMiniCard
+              label="Tăng so 2025"
+              value={`${xttm.growthPrograms >= 0 ? "+" : ""}${xttm.growthPrograms}%`}
+              valueClassName={xttm.growthPrograms >= 0 ? "text-success" : "text-destructive"}
+            />
           </div>
           <div>
             <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">

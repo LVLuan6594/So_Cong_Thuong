@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   ArrowDown,
   ArrowUp,
@@ -143,10 +144,19 @@ export function GridAiForecast({
       )} MW`,
     };
     setProposals((prev) => [proposal, ...prev]);
+    toast.success(`Đã tạo đề xuất "${proposal.title}" (Nháp).`);
   };
 
-  const setProposalStatus = (id: string, workflowStatus: GridPlanProposal["workflowStatus"]) =>
+  const setProposalStatus = (id: string, workflowStatus: GridPlanProposal["workflowStatus"]) => {
+    const label =
+      workflowStatus === "PENDING"
+        ? "Đã trình duyệt đề xuất."
+        : workflowStatus === "APPROVED"
+          ? "Đã duyệt đề xuất."
+          : "Đã trả về đề xuất.";
     setProposals((prev) => prev.map((p) => (p.id === id ? { ...p, workflowStatus } : p)));
+    toast.success(label);
+  };
 
   return (
     <div className="space-y-4">
@@ -315,7 +325,10 @@ export function GridAiForecast({
                     size="sm"
                     variant="ghost"
                     className="text-destructive hover:text-destructive"
-                    onClick={() => setProposals((prev) => prev.filter((x) => x.id !== p.id))}
+                    onClick={() => {
+                      setProposals((prev) => prev.filter((x) => x.id !== p.id));
+                      toast.info(`Đã xóa đề xuất "${p.title}".`);
+                    }}
                   >
                     <Trash2 />
                     Xoá

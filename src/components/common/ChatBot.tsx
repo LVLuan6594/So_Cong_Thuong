@@ -1,47 +1,125 @@
 import { useEffect, useRef, useState } from "react";
-import { Bot, Maximize2, MessageSquare, Minimize2, Send, Sparkles, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import {
+  Bot,
+  FileUp,
+  Loader2,
+  Maximize2,
+  MessageSquare,
+  Minimize2,
+  Paperclip,
+  Send,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  answerQuestion,
+  createDraftDataset,
+  extractFromFile,
+  readReportDatasets,
+  summarizeDataset,
+  writeReportDatasets,
+} from "@/lib/report-service";
+import { answerDataQuestion, CHAT_SUGGESTIONS, helpAnswer } from "@/lib/chat-qa";
+import type { ReportDataset } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+interface ChatAction {
+  label: string;
+  to: string;
+}
+
+interface AnswerRow {
+  label: string;
+  value: string;
+  tone?: string;
+}
 
 interface ChatMsg {
   id: number;
   from: "bot" | "user";
   text: string;
+  action?: ChatAction;
+  rows?: AnswerRow[];
+  followUps?: string[];
 }
 
 const WELCOME: ChatMsg = {
   id: 0,
   from: "bot",
-  text: "Xin chào! Tôi là trợ lý ảo ngành Công Thương Tây Ninh. Tôi có thể hỗ trợ tra cứu doanh nghiệp, cụm công nghiệp, giấy phép và báo cáo. Bạn cần gì ạ?",
+  text: "Xin chào! Tôi là trợ lý ảo ngành Công Thương Tây Ninh. Tôi có thể trả lời câu hỏi về dữ liệu trong nền tảng: doanh nghiệp, cụm công nghiệp, năng lượng, xuất nhập khẩu, xúc tiến thương mại, lãnh đạo, tin tức — và nhận file dữ liệu (CSV/Excel/Word/PDF) để trích xuất thành báo cáo chuẩn hóa. Bạn có thể đặt câu hỏi hoặc chọn gợi ý bên dưới:",
+  followUps: CHAT_SUGGESTIONS,
 };
 
-const BOT_REPLIES = [
-  "Để tôi kiểm tra dữ liệu mới nhất, xin chờ chút… Tỉnh Tây Ninh quy hoạch 108 cụm công nghiệp (~6.228 ha), trong đó 24 cụm đang hoạt động với 533 dự án đầu tư (92 dự án FDI).",
-  "Theo CSDL ngành, có 2.486 doanh nghiệp đang hoạt động trên địa bàn tỉnh.",
-  "Tôi đã ghi nhận yêu cầu. Bạn có thể tra cứu chi tiết tại phân hệ CSDL ngành hoặc bản đồ GIS cụm công nghiệp.",
-  "Chỉ số sản xuất công nghiệp (IIP) quý gần nhất đạt 113,6% so với cùng kỳ năm trước.",
-  "Bạn có thể đặt câu hỏi về: doanh nghiệp, cụm công nghiệp, năng lượng, xuất nhập khẩu hoặc thủ tục hành chính.",
-];
+const ACCEPT = ".csv,.txt,.xlsx,.xls,.docx,.doc,.pdf";
 
-function botReply(question: string): string {
+// Trả lời dựa trên dữ liệu báo cáo đã lưu trong CSDL (JSON/localStorage).
+function reportBotAnswer(question: string): ChatMsg | undefined {
   const q = question.toLowerCase();
-  if (q.includes("cụm công nghiệp") || q.includes("ccn") || q.includes("gis")) {
-    return "Tỉnh Tây Ninh quy hoạch 108 cụm công nghiệp (6.228 ha) theo QĐ 2968/QĐ-UBND; 24 cụm đang hoạt động (1.179 ha, 533 dự án, 92 FDI, tỷ lệ lấp đầy ~84%), 30 cụm đang đầu tư hạ tầng, 54 cụm mời gọi đầu tư. Xem chi tiết trên bản đồ GIS phân hệ Cụm công nghiệp.";
+  const isReportQuestion =
+    q.includes("báo cáo") ||
+    q.includes("báo cao") ||
+    q.includes("xuất nhập khẩu") ||
+    q.includes("xếp hạng") ||
+    q.includes("tăng") ||
+    q.includes("giảm") ||
+    q.includes("quốc gia") ||
+    q.includes("so sánh") ||
+    q.includes("kỳ");
+  if (!isReportQuestion) return undefined;
+
+  const datasets = readReportDatasets();
+  const approved = datasets
+    .filter((d) => d.status === "approved" || d.status === "locked")
+    .sort((a, b) => b.savedAt.localeCompare(a.savedAt));
+  const draft = datasets.filter((d) => d.status === "draft");
+  const dataset: ReportDataset | undefined = approved[0];
+
+  if (q.includes("nháp") || q.includes("chờ") || q.includes("chua duyệt")) {
+    if (!draft.length) return undefined;
+    const names = draft.map((d) => `"${d.name}"`).join(", ");
+    return {
+      id: Date.now() + 1,
+      from: "bot",
+      text: `Hiện có ${draft.length} báo cáo nháp chờ xử lý: ${names}. Bạn vào trang Báo cáo & BI để kiểm tra, chuẩn hóa và xác nhận.`,
+      action: { label: "Xử lý nháp → Báo cáo & BI", to: "/analytics" },
+      followUps: ["Có bao nhiêu doanh nghiệp?", "Tổng kim ngạch XNK 6T/2026?"],
+    };
   }
-  if (q.includes("doanh nghiệp") || q.includes("dn")) {
-    return "CSDL ngành hiện quản lý 2.486 doanh nghiệp, 3.174 cơ sở SXKD. Tỷ lệ dữ liệu chính thức đạt hơn 74%.";
+
+  if (!dataset) {
+    if (q.includes("báo cáo") || q.includes("báo cao")) {
+      return {
+        id: Date.now() + 1,
+        from: "bot",
+        text: "Chưa có báo cáo nào được lưu. Bạn có thể upload file dữ liệu (CSV/Excel/Word/PDF) ngay tại đây bằng nút đính kèm 📎 để tôi trích xuất thành báo cáo chuẩn hóa.",
+        followUps: ["Có bao nhiêu doanh nghiệp?", "Độ tin cậy cung cấp điện?"],
+      };
+    }
+    return undefined;
   }
-  if (q.includes("giấy phép") || q.includes("phép")) {
-    return "Hệ thống đang quản lý 1.827 giấy phép, 37 giấy phép sắp hết hạn trong 30 ngày tới.";
-  }
-  if (q.includes("xuất khẩu") || q.includes("xuat khau") || q.includes("xnc")) {
-    return "Kim ngạch xuất khẩu gần nhất đạt 246 triệu USD, nhập khẩu 151 triệu USD. Hoa Kỳ là thị trường xuất khẩu lớn nhất (34%).";
-  }
-  if (q.includes("năng lượng") || q.includes("dien")) {
-    return "Có 48 dự án năng lượng, 31 đang hoạt động, 17 đang triển khai. Sản lượng điện thương phẩm khoảng 531 triệu kWh.";
-  }
-  return BOT_REPLIES[Math.floor(Math.random() * BOT_REPLIES.length)]!;
+
+  const answer = answerQuestion(dataset, question);
+  const rows: AnswerRow[] | undefined = answer.rows
+    ?.map((r) => {
+      const tone =
+        r.tone === "up" ? "text-success" : r.tone === "down" ? "text-destructive" : undefined;
+      return tone
+        ? { label: r.label, value: String(r.value), tone }
+        : { label: r.label, value: String(r.value) };
+    })
+    .filter((r): r is AnswerRow => true);
+  const msg: ChatMsg = {
+    id: Date.now() + 1,
+    from: "bot",
+    text: `Báo cáo gần nhất: "${dataset.name}" (${dataset.period}). ${answer.text}`,
+    action: { label: "Xem Dashboard & xuất báo cáo → /analytics", to: "/analytics" },
+    followUps: ["So sánh kỳ trước?", "Quốc gia nào tăng mạnh nhất?", "Xem Dashboard báo cáo"],
+  };
+  return rows?.length ? { ...msg, rows } : msg;
 }
 
 export function ChatBot() {
@@ -50,6 +128,7 @@ export function ChatBot() {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState<ChatMsg[]>([WELCOME]);
+  const fileRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,20 +137,65 @@ export function ChatBot() {
     return () => clearTimeout(t);
   }, [messages, open, typing]);
 
-  const send = () => {
-    const text = input.trim();
+  const pushBot = (msg: Omit<ChatMsg, "id" | "from">) => {
+    setMessages((m) => [...m, { ...msg, id: Date.now() + 1, from: "bot" }]);
+    setTyping(false);
+  };
+
+  const send = (preset?: string) => {
+    const text = (preset?.trim() || input.trim()) as string;
     if (!text) return;
     setMessages((m) => [...m, { id: Date.now(), from: "user", text }]);
     setInput("");
     setTyping(true);
-    const reply = botReply(text);
+    const dataAnswer = answerDataQuestion(text);
+    const reply: ChatMsg =
+      reportBotAnswer(text) ??
+      ({
+        id: Date.now() + 1,
+        from: "bot",
+        ...(dataAnswer ?? helpAnswer()),
+      } as ChatMsg);
     setTimeout(
       () => {
-        setMessages((m) => [...m, { id: Date.now() + 1, from: "bot", text: reply }]);
-        setTyping(false);
+        pushBot(reply);
       },
-      900 + Math.random() * 700,
+      2500 + Math.random() * 1500,
     );
+  };
+
+  const handleFile = (file: File) => {
+    if (!file) return;
+    setMessages((m) => [...m, { id: Date.now(), from: "user", text: `📎 ${file.name}` }]);
+    setTyping(true);
+    extractFromFile(file)
+      .then((extracted) => {
+        const draft = createDraftDataset({
+          name: extracted.name,
+          fileName: file.name,
+          fileType: extracted.fileType,
+          columns: extracted.columns,
+          rows: extracted.rows,
+          period: "Chưa cập nhật",
+          year: new Date().getFullYear(),
+          source: "ChatBot",
+          via: "chatbot",
+        });
+        writeReportDatasets([draft, ...readReportDatasets()]);
+        toast.success(
+          `Đã trích xuất "${file.name}": ${extracted.rows.length} dòng · ${extracted.columns.length} cột.`,
+        );
+        pushBot({
+          text: `Đã nhận file "${file.name}". Tôi đã trích xuất ${extracted.rows.length} dòng · ${extracted.columns.length} cột và chuẩn hóa thành báo cáo nháp "${draft.name}".\n\n${summarizeDataset(draft)}\n\nHãy kiểm tra dữ liệu, xác nhận rồi xuất báo cáo Word/Excel/PDF trên trang Báo cáo & BI.`,
+          action: { label: "Xem & xuất báo cáo → /analytics", to: "/analytics" },
+        });
+      })
+      .catch((err: Error) => {
+        toast.error(`Không trích xuất được file: ${err.message ?? "lỗi không xác định"}.`);
+        pushBot({
+          text: `Xin lỗi, không trích xuất được file: ${err.message ?? "lỗi không xác định"}.`,
+        });
+      });
   };
 
   return (
@@ -133,20 +257,60 @@ export function ChatBot() {
                       : "rounded-bl-sm border border-border bg-card text-foreground",
                   )}
                 >
-                  {m.text}
+                  <p className="whitespace-pre-line">{m.text}</p>
+                  {m.rows?.length ? (
+                    <ul className="mt-2 space-y-1 border-t border-border pt-2">
+                      {m.rows.map((r) => (
+                        <li
+                          key={r.label}
+                          className="flex items-center justify-between gap-3 text-xs"
+                        >
+                          <span className="min-w-0 flex-1 truncate text-muted-foreground">
+                            {r.label}
+                          </span>
+                          <span className={cn("font-medium tabular-nums", r.tone)}>{r.value}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {m.action ? (
+                    <Link
+                      to={m.action.to}
+                      onClick={() => {
+                        setOpen(false);
+                        setMaximized(false);
+                      }}
+                      className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-gov/10 px-2.5 py-1.5 text-xs font-semibold text-gov hover:bg-gov/15"
+                    >
+                      <FileUp className="size-3.5" />
+                      {m.action.label}
+                    </Link>
+                  ) : null}
+                  {m.followUps?.length ? (
+                    <div className="mt-2 flex flex-wrap gap-1.5 border-t border-border pt-2">
+                      {m.followUps.map((f) => (
+                        <button
+                          key={f}
+                          type="button"
+                          onClick={() => {
+                            if (typing) return;
+                            send(f);
+                          }}
+                          className="rounded-full border border-border bg-surface px-2.5 py-1 text-left text-xs text-muted-foreground transition-colors hover:border-gov/50 hover:text-gov"
+                        >
+                          {f}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             ))}
             {typing ? (
               <div className="flex justify-start">
-                <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm border border-border bg-card px-3.5 py-2.5">
-                  {[0, 1, 2].map((i) => (
-                    <span
-                      key={i}
-                      className="size-1.5 animate-bounce rounded-full bg-muted-foreground"
-                      style={{ animationDelay: `${i * 0.15}s` }}
-                    />
-                  ))}
+                <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-sm border border-border bg-card px-3.5 py-2.5 text-xs text-muted-foreground">
+                  <Loader2 className="size-3.5 animate-spin" />
+                  Đang truy xuất dữ liệu...
                 </div>
               </div>
             ) : null}
@@ -163,14 +327,34 @@ export function ChatBot() {
                   send();
                 }
               }}
-              placeholder="Nhập câu hỏi..."
+              placeholder="Nhập câu hỏi hoặc đính kèm file dữ liệu..."
               className="min-h-9 max-h-24 flex-1 resize-none bg-surface py-2"
               rows={1}
             />
+            <input
+              ref={fileRef}
+              type="file"
+              accept={ACCEPT}
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleFile(f);
+                e.target.value = "";
+              }}
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-9 shrink-0 rounded-lg"
+              title="Đính kèm file dữ liệu (CSV/Excel/Word/PDF)"
+              onClick={() => fileRef.current?.click()}
+            >
+              <Paperclip className="size-4" />
+            </Button>
             <Button
               size="icon"
               className="size-9 shrink-0 rounded-lg bg-gov text-white hover:bg-gov/90"
-              onClick={send}
+              onClick={() => send()}
               disabled={!input.trim() || typing}
             >
               <Send className="size-4" />

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   AlertTriangle,
   ArrowRight,
@@ -142,7 +143,15 @@ export function EnergyFilterBar({
           ))}
         </SelectContent>
       </Select>
-      <Button variant="outline" size="sm" onClick={onRefresh} className="shrink-0">
+      <Button
+        variant="outline"
+        size="sm"
+        className="shrink-0"
+        onClick={() => {
+          onRefresh();
+          toast.info("Đã làm mới dữ liệu năng lượng.");
+        }}
+      >
         <RefreshCw className="size-4" /> Làm mới
       </Button>
     </div>
@@ -179,7 +188,13 @@ export function EnergyError({ onRetry }: { onRetry: () => void }) {
             <p className="text-sm text-muted-foreground">Vui lòng thử tải lại dữ liệu.</p>
           </div>
         </div>
-        <Button variant="outline" onClick={onRetry}>
+        <Button
+          variant="outline"
+          onClick={() => {
+            onRetry();
+            toast.info("Đang thử tải lại dữ liệu năng lượng...");
+          }}
+        >
           <RefreshCw className="size-4" /> Retry
         </Button>
       </div>

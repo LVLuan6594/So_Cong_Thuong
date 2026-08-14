@@ -4,15 +4,18 @@ import { useQuery } from "@tanstack/react-query";
 import {
   AlertTriangle,
   Cable,
+  Clock,
   Cloud,
   Database,
   Factory,
+  Gauge,
   Leaf,
   Map as MapIcon,
   Maximize,
   Minimize,
   PlugZap,
   ShieldAlert,
+  ShieldCheck,
   Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -623,6 +626,120 @@ function Page() {
                 </div>
               </div>
             </aside>
+          </div>
+        </section>
+
+        {/* 2b. Độ tin cậy cung cấp điện */}
+        <section className="rounded-2xl border border-navy/15 bg-navy/[0.05] p-3 sm:p-4">
+          <SectionHeading
+            icon={ShieldCheck}
+            title="Độ tin cậy cung cấp điện"
+            subtitle="Chỉ số SAIFI/SAIDI & tự động hóa lưới điện — tham khảo EVNHCMC (nguồn Bộ Công Thương, 17/08/2021)."
+          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              label="SAIFI năm 2020"
+              value={`${fmt(overview.reliabilityTrend.at(-1)?.saifi ?? 0)} lần`}
+              delta="▼ 4,52 lần so 2016 (5,11)"
+              icon={Gauge}
+              tone="success"
+            />
+            <StatCard
+              label="SAIDI năm 2020"
+              value={`${fmt(overview.reliabilityTrend.at(-1)?.saidi ?? 0)} phút`}
+              delta="▼ 470 phút so 2016 (514)"
+              icon={Clock}
+              tone="success"
+            />
+            <StatCard
+              label={`Chỉ tiêu ${overview.reliabilityTarget.period}`}
+              value={`< ${overview.reliabilityTarget.saifi} lần · < ${overview.reliabilityTarget.saidi} phút`}
+              delta="Mục tiêu giai đoạn 2021–2025"
+              icon={ShieldAlert}
+              tone="gov"
+            />
+            <StatCard
+              label="Doing Business 2020"
+              value="8/8 điểm"
+              delta="Tiếp cận điện năng"
+              icon={Zap}
+              tone="analytics"
+            />
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <ChartCard
+              title="Xu hướng SAIFI & SAIDI (2016–2020)"
+              subtitle="SAIFI (lần) — trục trái · SAIDI (phút) — trục phải. Mốc 2016, 2020 số thật; 2017–2019 nội suy tham khảo."
+            >
+              <ResponsiveContainer width="100%" height={240}>
+                <LineChart
+                  data={overview.reliabilityTrend}
+                  margin={{ left: -14, right: 0, top: 8 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={11} />
+                  <YAxis
+                    yAxisId="saifi"
+                    tickLine={false}
+                    axisLine={false}
+                    fontSize={11}
+                    width={44}
+                    domain={[0, 6]}
+                  />
+                  <YAxis
+                    yAxisId="saidi"
+                    orientation="right"
+                    tickLine={false}
+                    axisLine={false}
+                    fontSize={11}
+                    width={44}
+                    domain={[0, 560]}
+                  />
+                  <Tooltip />
+                  <Line
+                    yAxisId="saifi"
+                    type="monotone"
+                    dataKey="saifi"
+                    name="SAIFI (lần)"
+                    stroke="#1565C0"
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                  />
+                  <Line
+                    yAxisId="saidi"
+                    type="monotone"
+                    dataKey="saidi"
+                    name="SAIDI (phút)"
+                    stroke="#E59A23"
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartCard>
+
+            <ChartCard
+              title="Tự động hóa & giám sát từ xa"
+              subtitle="Kết quả ứng dụng SCADA/DAS/DMS — tham khảo EVNHCMC"
+            >
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {overview.automationIndicators.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-md border border-border bg-surface px-3 py-2.5"
+                  >
+                    <p className="text-lg font-bold tabular-nums text-gov">{item.value}</p>
+                    <p className="mt-0.5 text-xs font-medium text-navy">{item.label}</p>
+                    {item.detail ? (
+                      <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">
+                        {item.detail}
+                      </p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </ChartCard>
           </div>
         </section>
 

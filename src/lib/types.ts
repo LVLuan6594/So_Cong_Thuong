@@ -4,6 +4,24 @@
 export type DataStatus =
   "draft" | "checking" | "need_more" | "pending" | "approved" | "locked" | "published" | "error";
 
+export interface ExpiringLicense {
+  id: string;
+  code: string;
+  enterprise: string;
+  district: string;
+  expiresAt: string; // ISO date, ví dụ "2026-09-12"
+}
+
+export interface EnterpriseLicense {
+  id: string;
+  enterpriseId: string;
+  code: string;
+  type: string; // loại giấy phép, ví dụ "GP đăng ký kinh doanh"
+  issuedAt: string; // ISO date — ngày cấp
+  expiresAt: string; // ISO date — ngày hết hạn
+  status: "valid" | "expiring" | "expired";
+}
+
 export interface Enterprise {
   id: string;
   name: string;
@@ -12,6 +30,7 @@ export interface Enterprise {
   district: string;
   address: string;
   representative: string;
+  email: string;
   employees: number;
   revenue: number; // tỷ đồng
   status: "active" | "suspended" | "dissolved";
@@ -140,6 +159,32 @@ export interface TradeRecord {
   exportValue: number;
   importValue: number;
   period: string;
+  hsGroup?: string;
+  direction?: "XK" | "NK" | "Quá cảnh";
+  gate?: string;
+  growth?: number;
+  value2025?: number;
+  value2026?: number;
+  status?: DataStatus;
+  legalBasis?: string;
+  note?: string;
+}
+
+export interface BorderGateRecord {
+  id: string;
+  name: string;
+  level: "Cửa khẩu quốc tế" | "Cửa khẩu chính";
+  district: string;
+  country: string;
+  value2026: number;
+  growth: number;
+  fee2026: number;
+  declarations: number;
+  transit2026: number;
+  goods: string[];
+  highlight: string;
+  status: DataStatus;
+  legalBasis?: string;
 }
 
 export interface PromotionProgram {
@@ -151,7 +196,31 @@ export interface PromotionProgram {
   budget: number;
   result: string;
   status: DataStatus;
-  kind: "Hội chợ" | "Triển lãm" | "Kết nối giao thương" | "Khuyến mại";
+  kind:
+    | "Hội chợ"
+    | "Triển lãm"
+    | "Kết nối giao thương"
+    | "Khuyến mại"
+    | "Hội thảo"
+    | "Đoàn giao thương"
+    | "TMĐT";
+  /** Năm thực hiện chương trình. */
+  year: number;
+  /** Kỳ theo dõi (Q1..Q4, 6T, "Cả năm"). */
+  quarter?: string;
+  /** Thị trường/địa điểm tổ chức (trong nước hoặc quốc tế). */
+  market?: string;
+  /** Nguồn kinh phí: ngân sách nhà nước hay ngoài ngân sách. */
+  fundSource?: "NSNN" | "Ngoài NS";
+  /** Kinh phí thực tế giải ngân (nghìn USD). */
+  actualBudget?: number;
+  /** Kết quả: số hợp đồng/biên bản/đơn đặt hàng ước tính. */
+  agreements?: number;
+  /** Danh sách doanh nghiệp tham gia (id liên kết CSDL ngành). */
+  participantIds?: string[];
+  /** Căn cứ pháp lý gắn với chương trình. */
+  legalBasis?: string;
+  note?: string;
 }
 
 export interface MasterRecord {
@@ -185,14 +254,56 @@ export interface WorkflowItem {
   history: { actor: string; role: string; action: string; time: string }[];
 }
 
+export type IntegrationDirection = "in" | "out" | "both";
+
 export interface IntegrationRow {
   id: string;
+  code: string;
   system: string;
-  api: string;
+  description: string;
+  vendor: string;
+  purpose: string;
+  direction: IntegrationDirection;
+  method: "REST API" | "SOAP" | "Webhook" | "File transfer" | "ODBC" | "Kafka";
+  endpoint: string;
+  auth: "OAuth2" | "Token" | "Basic" | "VPN + IP allowlist" | "mTLS";
+  frequency: string;
+  dataTypes: string[];
   lastSync: string;
+  nextSync: string;
   success: number;
   failed: number;
   latency: number;
+  status: "connected" | "limited" | "error";
+  owner: string;
+  lastError?: string;
+}
+
+export interface IntegrationLog {
+  id: string;
+  time: string;
+  system: string;
+  code: string;
+  action:
+    | "Đồng bộ thành công"
+    | "Đồng bộ thất bại"
+    | "Đối soát"
+    | "Kiểm tra kết nối"
+    | "Cập nhật cấu hình";
+  records: number;
+  message: string;
+  result: "SUCCESS" | "FAILED" | "INFO";
+}
+
+export interface DataFlow {
+  id: string;
+  name: string;
+  description: string;
+  direction: IntegrationDirection;
+  source: string;
+  target: string;
+  dataTypes: string[];
+  method: string;
   status: "connected" | "limited" | "error";
 }
 
@@ -215,6 +326,47 @@ export interface AuditRow {
   object: string;
   ip: string;
   result: "SUCCESS" | "FAILED";
+}
+
+// --- Báo cáo & BI --------------------------------------------------------------
+export type ReportFileType = "CSV" | "XLSX" | "DOCX" | "PDF" | "MẪU";
+export type ReportColumnType = "text" | "number" | "percent";
+export type ReportDatasetSource = "upload" | "chatbot" | "sample";
+
+export interface ReportColumn {
+  key: string;
+  header: string;
+  type: ReportColumnType;
+}
+
+export interface ReportRow {
+  id: string;
+  cells: Record<string, string | number>;
+}
+
+export interface ReportDataset {
+  id: string;
+  name: string;
+  fileName: string;
+  fileType: ReportFileType;
+  period: string;
+  year: number;
+  quarter?: string;
+  source: string;
+  columns: ReportColumn[];
+  rows: ReportRow[];
+  status: DataStatus;
+  extractedAt: string;
+  savedAt: string;
+  summary?: string;
+  viewCount?: number;
+  via: ReportDatasetSource;
+}
+
+// Câu trả lời của trợ lý báo cáo (tính toán từ dữ liệu đã chuẩn hóa).
+export interface ReportAnswer {
+  text: string;
+  rows?: { label: string; value: number | string; tone?: string }[];
 }
 
 // --- Trang th�ng tin (public portal) ------------------------------------------

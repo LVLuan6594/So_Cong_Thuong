@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { LucideIcon } from "lucide-react";
 import { Download } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/common/PageHeader";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { StatCard, type Tone } from "@/components/common/StatCard";
@@ -55,6 +56,33 @@ export function EnergyCollectionPage<T extends { id: string }>({
   const rows = query.data ?? [];
   const stats = kpis?.(rows) ?? [];
 
+  const exportCsv = () => {
+    if (!rows.length) {
+      toast.info("Không có dữ liệu để xuất.");
+      return;
+    }
+    const esc = (v: unknown) => {
+      const s = String(v ?? "");
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const lines = [
+      columns.map((c) => c.header).join(","),
+      ...rows.map((row) =>
+        columns
+          .map((c) => esc(c.value ? c.value(row) : (row as Record<string, unknown>)[c.key]))
+          .join(","),
+      ),
+    ];
+    const blob = new Blob([`\ufeff${lines.join("\r\n")}`], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${title.replace(/\s+/g, "-")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Đã xuất ${rows.length} bản ghi ra file CSV.`);
+  };
+
   return (
     <>
       <PageHeader
@@ -64,7 +92,7 @@ export function EnergyCollectionPage<T extends { id: string }>({
         variant="panel"
         icon={icon}
         actions={
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={exportCsv}>
             <Download className="size-4" /> Export
           </Button>
         }
