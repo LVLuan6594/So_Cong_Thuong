@@ -223,7 +223,10 @@ export function EnergyStatusBadge({ status }: { status?: string }) {
   const tone =
     value.includes("Quá tải") || value.includes("nghiêm trọng")
       ? "border-destructive/30 bg-destructive/10 text-destructive"
-      : value.includes("Đang đầu tư") || value.includes("Đang xử lý") || value.includes("Cảnh báo")
+      : value.includes("Bảo trì") ||
+          value.includes("Đang đầu tư") ||
+          value.includes("Đang xử lý") ||
+          value.includes("Cảnh báo")
         ? "border-warning/40 bg-warning/15 text-warning"
         : value.includes("Quy hoạch") || value.includes("Lập")
           ? "border-gov/30 bg-gov/10 text-gov"

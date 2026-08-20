@@ -323,6 +323,75 @@ export interface ChargingStation {
   status: string;
 }
 
+// ─────────────────── Trạm sạc — nhu cầu sạc & AI (Nhiệm vụ 7) ───────────────────
+export type ChargingForecastHorizon = "7 ngày" | "1 tháng" | "Quý" | "1 năm";
+
+/** Dữ liệu nhu cầu sạc theo huyện, từng kỳ (12 kỳ T1..T12 trong năm). */
+export interface ChargingDemandRecord {
+  district: string;
+  period: string;
+  energyKwh: number;
+  sessions: number;
+}
+
+/** Kết quả dự báo nhu cầu sạc điện cho một huyện (AI, demo deterministic). */
+export interface ChargingDemandForecast {
+  district: string;
+  horizon: ChargingForecastHorizon;
+  unit: string;
+  /** Công suất lắp đặt trạm sạc hiện có của huyện (kW). */
+  installedCapacityKw: number;
+  /** Ngưỡng cảnh báo theo kỳ (kWh) = năng lượng tối đa các trạm có thể đáp ứng. */
+  thresholdKwh: number;
+  lastActualKwh: number;
+  peakForecastKwh: number;
+  growthPerYearPct: number;
+  risk: "Thấp" | "Trung bình" | "Cao";
+  points: {
+    period: string;
+    actual?: number;
+    base?: number;
+    min?: number;
+    max?: number;
+    threshold?: number;
+  }[];
+  scenarios: { key: "low" | "base" | "high"; label: string; value: number }[];
+  method: string;
+  confidencePct: number;
+  note: string;
+}
+
+export type ChargingSuggestionKind = "new" | "expand";
+
+/** Đề xuất vị trí trạm sạc mới từ AI (luồng phê duyệt Nháp→Trình→Duyệt). */
+export interface ChargingStationSuggestion {
+  id: string;
+  kind: ChargingSuggestionKind;
+  title: string;
+  district: string;
+  latitude: number;
+  longitude: number;
+  demandKw: number;
+  score: number;
+  reasons: string[];
+  workflowStatus: "DRAFT" | "PENDING" | "APPROVED" | "RETURNED";
+  createdAt: string;
+  nearStation?: string;
+}
+
+/** Phân tích vị trí đặt trạm sạc mới: trạm gần nhất + dư địa + độ phủ. */
+export interface ChargingLocationAnalysis {
+  lat: number;
+  lng: number;
+  demandKw: number;
+  nearStation: ChargingStation | null;
+  distanceKm: number | null;
+  spareKw: number;
+  canSupply: boolean;
+  coveragePct: number;
+  recommendation: string;
+}
+
 // ─────────────────────────── Tổng quan ───────────────────────────
 export interface EnergyOverview {
   kpis: {

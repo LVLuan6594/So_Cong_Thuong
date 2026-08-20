@@ -83,6 +83,30 @@ type EnergyMapEntity =
   | { kind: "charging"; item: ChargingStation }
   | { kind: "consumer"; item: KeyEnergyConsumer };
 
+/** Vùng/circle bổ sung trên bản đồ (khu vực quá tải, vùng nhu cầu sạc cao...). */
+export interface EnergyMapExtraCircle {
+  id: string;
+  lat: number;
+  lng: number;
+  radiusMeters: number;
+  color: string;
+  label: string;
+  fillOpacity?: number;
+  popup?: string;
+}
+
+/** Marker bổ sung trên bản đồ (vị trí trạm sạc đề xuất, cảnh báo AI...). */
+export interface EnergyMapExtraMarker {
+  id: string;
+  lat: number;
+  lng: number;
+  label: string;
+  sublabel?: string;
+  color: string;
+  glyph?: string;
+  onSelect?: () => void;
+}
+
 function pointKey(entity: EnergyMapEntity) {
   return `${entity.kind}:${entity.item.id}`;
 }
@@ -91,7 +115,12 @@ function rowHtml(label: string, value: string | number | undefined) {
   return `<div style="display:flex;justify-content:space-between;gap:12px;font-size:11px;padding:2px 0"><span style="color:#64748b">${label}</span><span style="font-weight:600;color:#0f2a4a;text-align:right">${value ?? "Đang cập nhật"}</span></div>`;
 }
 
-function markerColor(kind: EnergyMapEntity["kind"], item: EnergyMapEntity["item"]) {
+function markerColor(
+  kind: EnergyMapEntity["kind"],
+  item: EnergyMapEntity["item"],
+  chargingColor?: string,
+) {
+  if (kind === "charging" && chargingColor) return chargingColor;
   if (kind === "incident") return "#C62828";
   if (kind === "charging") return "#7C3AED";
   if (kind === "consumer") return "#0F766E";
@@ -102,7 +131,12 @@ function markerColor(kind: EnergyMapEntity["kind"], item: EnergyMapEntity["item"
   return "#1565C0";
 }
 
-function iconHtml(kind: EnergyMapEntity["kind"], color: string, selected: boolean) {
+function iconHtml(
+  kind: EnergyMapEntity["kind"],
+  color: string,
+  selected: boolean,
+  ringExtra = false,
+) {
   const glyph =
     kind === "substation"
       ? "⚡"
@@ -117,7 +151,11 @@ function iconHtml(kind: EnergyMapEntity["kind"], color: string, selected: boolea
               : kind === "consumer"
                 ? "kW"
                 : "EV";
-  const ring = selected ? "box-shadow:0 0 0 4px rgba(21,101,192,.25);" : "";
+  const ring = selected
+    ? "box-shadow:0 0 0 4px rgba(21,101,192,.25);"
+    : ringExtra
+      ? "box-shadow:0 0 0 4px rgba(198,40,40,.45);"
+      : "";
   return `<div style="width:28px;height:28px;border-radius:999px;background:${color};border:2px solid #fff;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:800;${ring}">${glyph}</div>`;
 }
 
@@ -191,20 +229,43 @@ function buildPopup(entity: EnergyMapEntity, onOpen: () => void): HTMLElement {
   return el;
 }
 
+function buildExtraMarkerPopup(marker: EnergyMapExtraMarker): HTMLElement {
+  const el = document.createElement("div");
+  el.style.minWidth = "220px";
+  el.style.fontFamily = "Inter, system-ui, sans-serif";
+  el.innerHTML = `<div style="font-weight:700;color:#0f2a4a;margin-bottom:6px">${marker.label}</div>
+    ${
+      marker.sublabel
+        ? `<div style="color:#64748b;font-size:11px;margin-bottom:8px">${marker.sublabel}</div>`
+        : ""
+    }
+    <button class="energy-open-profile" style="margin-top:8px;width:100%;padding:7px 10px;border:0;border-radius:7px;background:${marker.color};color:#fff;font-size:12px;font-weight:700;cursor:pointer">Xem chi tiết</button>`;
+  el.querySelector<HTMLElement>(".energy-open-profile")?.addEventListener("click", () =>
+    marker.onSelect?.(),
+  );
+  return el;
+}
+
 export function EnergyMap({
   data,
   selectedKey,
   selectedLineKey,
+  selectedExtraKey,
   onSelectEntity,
   height = 560,
   compact = false,
   fill = false,
   layerOptions,
   initialLayers,
+  chargingTone,
+  extraCircles,
+  extraMarkers,
+  extraLegend,
 }: {
   data: EnergyGisData;
   selectedKey?: string | null;
   selectedLineKey?: string | null;
+  selectedExtraKey?: string | null;
   onSelectEntity?: (entity: EnergyMapEntity) => void;
   height?: number;
   compact?: boolean;
@@ -212,6 +273,14 @@ export function EnergyMap({
   fill?: boolean;
   layerOptions?: EnergyMapLayerOption[];
   initialLayers?: EnergyMapLayerKey[];
+  /** Màu marker trạm sạc theo trạng thái (mặc định đồng màu tím). */
+  chargingTone?: (station: ChargingStation) => { color: string; ring?: boolean } | undefined;
+  /** Các vùng bổ sung (quá tải, nhu cầu cao...) — vẽ dưới dạng vòng tròn. */
+  extraCircles?: EnergyMapExtraCircle[];
+  /** Các marker bổ sung (vị trí đề xuất, cảnh báo AI...). */
+  extraMarkers?: EnergyMapExtraMarker[];
+  /** Chú giải bổ sung tương ứng extra layer. */
+  extraLegend?: { color: string; label: string }[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
@@ -394,11 +463,13 @@ export function EnergyMap({
         const lng = entity.item.longitude;
         if (!lat || !lng) return;
         const selected = key === selectedKey;
-        const color = markerColor(entity.kind, entity.item);
+        const tone =
+          entity.kind === "charging" && chargingTone ? chargingTone(entity.item) : undefined;
+        const color = markerColor(entity.kind, entity.item, tone?.color);
         const marker = L.marker([lat, lng], {
           icon: L.divIcon({
             className: "energy-map-pin",
-            html: iconHtml(entity.kind, color, selected),
+            html: iconHtml(entity.kind, color, selected, tone?.ring),
             iconSize: [28, 28],
             iconAnchor: [14, 14],
           }),
@@ -411,6 +482,46 @@ export function EnergyMap({
           onSelectEntity?.(entity);
         });
         markerByKeyRef.current.set(key, marker);
+      });
+
+      extraCircles?.forEach((circle) => {
+        L.circle([circle.lat, circle.lng], {
+          radius: circle.radiusMeters,
+          color: circle.color,
+          fillColor: circle.color,
+          fillOpacity: circle.fillOpacity ?? 0.16,
+          weight: 1.5,
+          dashArray: "4 4",
+        })
+          .addTo(layer)
+          .bindPopup(
+            `<div style="min-width:200px;font-family:Inter,system-ui,sans-serif"><div style="font-weight:700;color:#0f2a4a;margin-bottom:6px">${circle.label}</div>${
+              circle.popup ?? ""
+            }</div>`,
+          );
+      });
+
+      extraMarkers?.forEach((marker) => {
+        const key = `extra:${marker.id}`;
+        const selected = key === selectedExtraKey;
+        const glyph = marker.glyph ?? "AI";
+        const ring = selected ? "box-shadow:0 0 0 4px rgba(21,101,192,.25);" : "";
+        const mk = L.marker([marker.lat, marker.lng], {
+          icon: L.divIcon({
+            className: "energy-map-pin",
+            html: `<div style="width:28px;height:28px;border-radius:999px;background:${marker.color};border:2px solid #fff;color:#fff;display:grid;place-items:center;font-size:9px;font-weight:800;${ring}">${glyph}</div>`,
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+          }),
+          title: marker.label,
+        })
+          .addTo(layer)
+          .bindPopup(buildExtraMarkerPopup(marker));
+        mk.on("click", () => {
+          mk.openPopup();
+          marker.onSelect?.();
+        });
+        markerByKeyRef.current.set(key, mk);
       });
 
       if (selectedKey) {
@@ -436,19 +547,34 @@ export function EnergyMap({
     return () => {
       cancelled = true;
     };
-  }, [compact, data, onSelectEntity, points, ready, selectedKey, selectedLineKey, visibleLayers]);
+  }, [
+    chargingTone,
+    compact,
+    data,
+    extraCircles,
+    extraMarkers,
+    onSelectEntity,
+    points,
+    ready,
+    selectedExtraKey,
+    selectedKey,
+    selectedLineKey,
+    visibleLayers,
+  ]);
 
   useEffect(() => {
-    if (!ready || !selectedKey) return;
-    const marker = markerByKeyRef.current.get(selectedKey);
+    if (!ready) return;
+    const key = selectedKey ?? selectedExtraKey;
+    if (!key) return;
+    const marker = markerByKeyRef.current.get(key);
     const map = mapRef.current;
     if (!marker || !map) return;
     map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), compact ? 10 : 12), { duration: 0.5 });
     // Mở popup sau khi bay xong: mở ngay trong lúc animation dễ bị Leaflet bỏ qua/mất popup.
     map.once("moveend", () => {
-      markerByKeyRef.current.get(selectedKey)?.openPopup();
+      markerByKeyRef.current.get(key)?.openPopup();
     });
-  }, [compact, ready, selectedKey]);
+  }, [compact, ready, selectedExtraKey, selectedKey]);
 
   // Zoom đến tuyến điện được chọn (mở rộng vừa đủ để thấy toàn tuyến).
   useEffect(() => {
@@ -526,6 +652,11 @@ export function EnergyMap({
         <Legend color="bg-teal" label="Phụ tải trọng điểm" />
         <Legend color="bg-destructive" label="Sự cố" />
         <Legend color="bg-analytics" label="Trạm sạc" />
+        {extraLegend?.map((item) => (
+          <p key={item.label} className="flex items-center gap-1.5 text-muted-foreground">
+            <span className="size-2 rounded-full" style={{ background: item.color }} /> {item.label}
+          </p>
+        ))}
       </div>
     </div>
   );
@@ -539,4 +670,4 @@ function Legend({ color, label }: { color: string; label: string }) {
   );
 }
 
-export type { EnergyMapEntity };
+export type { EnergyMapEntity, EnergyMapExtraCircle, EnergyMapExtraMarker };
