@@ -54,7 +54,7 @@ export function computeMarketKpis(): MarketKpis {
     products: MARKET_PRODUCTS.length,
     groups: groups.size,
     facilities,
-    retail6T: "38.452 tỷ đồng",
+    retail6T: "1,54 tỷ USD",
     retailGrowth: 22.35,
     export5T: "8,13 tỷ USD",
     exportGrowth: 16.1,
@@ -353,7 +353,7 @@ export const MARKET_LEGAL_BASIS: MarketLegalBasis[] = [
     date: "07/2026",
     effective: "2026",
     summary:
-      "Thị trường hàng hóa thiết yếu duy trì ổn định; tổng mức bán lẻ 6 tháng ước đạt 38.452 tỷ đồng, tăng 22,35% so cùng kỳ; không xảy ra thiếu hàng, sốt giá; kim ngạch XK 5 tháng đạt 8,13 tỷ USD, giữ vững xuất siêu 1,73 tỷ USD.",
+      "Thị trường hàng hóa thiết yếu duy trì ổn định; tổng mức bán lẻ 6 tháng ước đạt 1,54 tỷ USD, tăng 22,35% so cùng kỳ; không xảy ra thiếu hàng, sốt giá; kim ngạch XK 5 tháng đạt 8,13 tỷ USD, giữ vững xuất siêu 1,73 tỷ USD.",
     url: "https://sct.tayninh.gov.vn/thuong-mai",
   },
 ];
@@ -386,7 +386,7 @@ export function buildMarketDataset(): ReportDataset {
       { key: "san_pham", header: "Sản phẩm", type: "text" },
       { key: "nhom", header: "Nhóm hàng", type: "text" },
       { key: "san_luong", header: "Sản lượng", type: "number" },
-      { key: "don_gia", header: "Đơn giá tham chiếu", type: "number" },
+      { key: "don_gia", header: "Đơn giá tham chiếu (USD)", type: "number" },
       { key: "thi_truong", header: "Thị trường", type: "text" },
       { key: "tieu_chuan", header: "Tiêu chuẩn", type: "text" },
       { key: "chung_nhan", header: "Chứng nhận", type: "text" },

@@ -154,7 +154,7 @@ export interface ProductRecord {
 export interface MarketProduct extends ProductRecord {
   output?: number; // sản lượng quy đổi theo unit
   unit?: string; // đơn vị sản lượng
-  price?: number; // đơn giá tham chiếu (nghìn đồng theo priceUnit)
+  price?: number; // đơn giá tham chiếu (USD theo priceUnit)
   priceUnit?: string; // đơn vị đơn giá
   facilities?: number; // số cơ sở SXKD
   ward?: string; // địa bàn sản xuất chính

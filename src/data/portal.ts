@@ -135,9 +135,9 @@ export const PORTAL_POSTS: PortalPost[] = [
       "Thị trường hàng hoá thiết yếu 6 tháng đầu năm 2026 trên địa bàn tỉnh Tây Ninh duy trì ổn định",
     slug: "thi-truong-hang-hoa-thiet-yeu-6-thang-dau-nam-2026",
     summary:
-      "6 tháng đầu năm 2026, thị trường hàng hoá thiết yếu trên địa bàn tỉnh Tây Ninh duy trì ổn định, tổng mức bán lẻ ước đạt 38.452 tỷ đồng, tăng 22,35% so với cùng kỳ.",
+      "6 tháng đầu năm 2026, thị trường hàng hoá thiết yếu trên địa bàn tỉnh Tây Ninh duy trì ổn định, tổng mức bán lẻ ước đạt 1,54 tỷ USD, tăng 22,35% so với cùng kỳ.",
     content:
-      "Theo báo cáo của Sở Công Thương, 6 tháng đầu năm 2026 thị trường hàng hoá thiết yếu trên địa bàn tỉnh Tây Ninh tiếp tục duy trì ổn định. Nguồn cung các mặt hàng thiết yếu phục vụ sản xuất và tiêu dùng được bảo đảm, không xảy ra tình trạng thiếu hàng, sốt giá.\n\nTổng mức bán lẻ hàng hoá và doanh thu dịch vụ 6 tháng đầu năm 2026 ước đạt 38.452 tỷ đồng, tăng 22,35% so với cùng kỳ năm 2025, phản ánh sức mua trên địa bàn tiếp tục tăng trưởng tốt.\n\nGiá các mặt hàng thiết yếu như lương thực, thực phẩm, xăng dầu, gas đạt mức tăng nhẹ chung theo mặt bằng cả nước và nhanh chóng hạ nhiệt, không để xảy ra biến động cục bộ. Sở Công Thương tăng cường công tác kiểm tra, kiểm soát thị trường và theo dõi sát diễn biến cung cầu nhằm kịp thời đề xuất các giải pháp bình ổn thị trường.",
+      "Theo báo cáo của Sở Công Thương, 6 tháng đầu năm 2026 thị trường hàng hoá thiết yếu trên địa bàn tỉnh Tây Ninh tiếp tục duy trì ổn định. Nguồn cung các mặt hàng thiết yếu phục vụ sản xuất và tiêu dùng được bảo đảm, không xảy ra tình trạng thiếu hàng, sốt giá.\n\nTổng mức bán lẻ hàng hoá và doanh thu dịch vụ 6 tháng đầu năm 2026 ước đạt 1,54 tỷ USD, tăng 22,35% so với cùng kỳ năm 2025, phản ánh sức mua trên địa bàn tiếp tục tăng trưởng tốt.\n\nGiá các mặt hàng thiết yếu như lương thực, thực phẩm, xăng dầu, gas đạt mức tăng nhẹ chung theo mặt bằng cả nước và nhanh chóng hạ nhiệt, không để xảy ra biến động cục bộ. Sở Công Thương tăng cường công tác kiểm tra, kiểm soát thị trường và theo dõi sát diễn biến cung cầu nhằm kịp thời đề xuất các giải pháp bình ổn thị trường.",
     category: "Thương mại",
     tags: ["thị trường", "giá cả", "hàng thiết yếu"],
     publishedAt: "2026-07-20",
@@ -405,9 +405,9 @@ export const PORTAL_POSTS: PortalPost[] = [
     title: "Tổng mức bán lẻ hàng hoá và doanh thu dịch vụ 6 tháng đầu năm 2026 tăng 22,35%",
     slug: "tong-muc-ban-le-6-thang-dau-nam-2026",
     summary:
-      "6 tháng đầu năm 2026, tổng mức bán lẻ hàng hoá và doanh thu dịch vụ trên địa bàn tỉnh ước đạt 38.452 tỷ đồng, tăng 22,35% so với cùng kỳ.",
+      "6 tháng đầu năm 2026, tổng mức bán lẻ hàng hoá và doanh thu dịch vụ trên địa bàn tỉnh ước đạt 1,54 tỷ USD, tăng 22,35% so với cùng kỳ.",
     content:
-      "Theo số liệu thống kê, 6 tháng đầu năm 2026, tổng mức bán lẻ hàng hoá và doanh thu dịch vụ trên địa bàn tỉnh Tây Ninh ước đạt 38.452 tỷ đồng, tăng 22,35% so với cùng kỳ năm 2025.\n\nTrong đó, nhóm hàng lương thực, thực phẩm, may mặc, vật phẩm văn hoá giáo dục và nhóm dịch vụ lưu trú, ăn uống tăng trưởng tích cực, phản ánh nhu cầu tiêu dùng nội địa và hoạt động du lịch, dịch vụ trên địa bàn tiếp tục phục hồi.\n\nSở Công Thương tiếp tục theo dõi, nắm bắt tình hình cung cầu, diễn biến giá cả để tham mưu kịp thời các giải pháp bảo đảm cân đối cung cầu, bình ổn thị trường những tháng cuối năm.",
+      "Theo số liệu thống kê, 6 tháng đầu năm 2026, tổng mức bán lẻ hàng hoá và doanh thu dịch vụ trên địa bàn tỉnh Tây Ninh ước đạt 1,54 tỷ USD, tăng 22,35% so với cùng kỳ năm 2025.\n\nTrong đó, nhóm hàng lương thực, thực phẩm, may mặc, vật phẩm văn hoá giáo dục và nhóm dịch vụ lưu trú, ăn uống tăng trưởng tích cực, phản ánh nhu cầu tiêu dùng nội địa và hoạt động du lịch, dịch vụ trên địa bàn tiếp tục phục hồi.\n\nSở Công Thương tiếp tục theo dõi, nắm bắt tình hình cung cầu, diễn biến giá cả để tham mưu kịp thời các giải pháp bảo đảm cân đối cung cầu, bình ổn thị trường những tháng cuối năm.",
     category: "Giá cả thị trường",
     tags: ["bán lẻ", "doanh thu dịch vụ", "thị trường"],
     publishedAt: "2026-07-24",
